@@ -1,0 +1,115 @@
+generated: '2026-08-02'
+method: derived
+source: openapi/videoamp-public-api-openapi.yml + live /.well-known probes + VideoAmp CLI release v0.148.32
+description: >-
+  Which cross-cutting standards the VideoAmp Public API and its MCP surface conform to. Identity and
+  agent-protocol conformance is strong and directly verifiable from live metadata documents; HTTP
+  API hygiene standards (problem+json, API catalog, security.txt) are absent.
+standards:
+  - id: oauth2
+    conforms: true
+    evidence: >-
+      OpenAPI securitySchemes declares type oauth2; https://login.videoamp.com/.well-known/oauth-authorization-server
+      returns HTTP 200 with authorization_endpoint and token_endpoint.
+  - id: oidc
+    conforms: true
+    evidence: >-
+      https://login.videoamp.com/.well-known/openid-configuration returns HTTP 200 with issuer,
+      userinfo_endpoint, jwks_uri and claims_supported (OpenID Connect Discovery 1.0).
+  - id: rfc8414-oauth-authorization-server-metadata
+    conforms: true
+    evidence: /.well-known/oauth-authorization-server served at login.videoamp.com (HTTP 200).
+  - id: rfc9728-oauth-protected-resource-metadata
+    conforms: true
+    evidence: >-
+      https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp returns HTTP 200 with
+      resource, authorization_servers and bearer_methods_supported; the MCP endpoint's 401 response
+      carries a WWW-Authenticate Bearer challenge citing that resource_metadata URL.
+  - id: rfc6750-bearer-token
+    conforms: true
+    evidence: bearer_methods_supported = ["header"]; WWW-Authenticate Bearer challenge observed.
+  - id: rfc7636-pkce
+    conforms: true
+    evidence: code_challenge_methods_supported includes S256 in the OIDC discovery document.
+  - id: rfc8628-device-authorization-grant
+    conforms: true
+    evidence: device_authorization_endpoint https://login.videoamp.com/oauth/device/code present in discovery.
+  - id: rfc7591-dynamic-client-registration
+    conforms: true
+    evidence: registration_endpoint https://login.videoamp.com/oidc/register present in discovery.
+  - id: rfc7009-token-revocation
+    conforms: true
+    evidence: revocation_endpoint https://login.videoamp.com/oauth/revoke present in discovery.
+  - id: mcp
+    conforms: true
+    evidence: >-
+      Hosted remote MCP server at https://api.videoamp.dev/v1/mcp with streamable HTTP transport,
+      101 published tools, OAuth-protected per the MCP authorization spec. Documented at
+      https://github.com/VideoAmp/cli.
+  - id: arazzo
+    conforms: partial
+    evidence: >-
+      The CLI/MCP binary embeds an Arazzo 1.x workflow parser and runner (ParseArazzoFile,
+      validateArazzoDocument, "arazzo: unsupported version %q (only 1.x is supported)") that loads
+      *.arazzo.yaml files as MCP-executable workflows. VideoAmp publishes no Arazzo documents of its
+      own on an anonymous surface — it consumes the format rather than shipping it.
+  - id: aip-136-custom-methods
+    conforms: true
+    evidence: 'Colon-suffixed custom methods across the surface, e.g. POST /v2beta/plans/{planId}:approve, GET /v1/audiences:batchGet.'
+  - id: aip-158-pagination
+    conforms: true
+    evidence: pageSize / pageToken request parameters with next_page_token and total_size response fields on 27 operations.
+  - id: aip-163-validate-only
+    conforms: true
+    evidence: validateOnly dry-run parameter on 7 operations.
+  - id: aip-181-stability-levels
+    conforms: true
+    evidence: alpha, beta and stable channels coexist in the URI path (v1alpha, v1beta, v2beta, v1, v2, v3).
+  - id: openapi
+    conforms: partial
+    evidence: >-
+      VideoAmp generates its CLI, MCP tools and documentation from an internal OpenAPI 3.x
+      specification (the binary links go-openapi/spec and exposes a `--oas` flag that prints it),
+      but the document is served only to authenticated callers — no anonymous OpenAPI is published.
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: No application/problem+json media type is advertised; errors use a proprietary <AREA>_<NNNN> code envelope.
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: /.well-known/security.txt returns 404 on videoamp.com, api.videoamp.dev and login.videoamp.com.
+  - id: rfc9727-api-catalog
+    conforms: false
+    evidence: /.well-known/api-catalog returns 404.
+  - id: a2a
+    conforms: false
+    evidence: >-
+      /.well-known/agent-card.json and /.well-known/agent.json return 404 or an Auth0 redirect on
+      every VideoAmp host probed.
+  - id: asyncapi
+    conforms: not-applicable
+    evidence: >-
+      No webhook, event, streaming or subscription surface exists. Asynchronous results are
+      delivered as files to a caller-owned S3 bucket and collected by polling, so there is no event
+      contract to describe.
+  - id: graphql
+    conforms: false
+    evidence: https://api.videoamp.dev/graphql returns 404; no GraphQL surface is published.
+compliance_program:
+  published: partial
+  trust_center: https://trust.videoamp.com/
+  certifications_verified: []
+  note: >-
+    A Vanta-hosted trust center is live at trust.videoamp.com but renders entirely client-side, so
+    no certification names could be verified anonymously. No `Compliance` pointer is asserted in
+    apis.yml because no named certification could be confirmed. See security/videoamp-trust-center.yml.
+industry_standards:
+  - id: jic-certified-tv-currency
+    conforms: true
+    evidence: >-
+      VideoAmp is certified by the U.S. Joint Industry Committee as a national TV currency provider
+      alongside Nielsen and Comscore. This is a media-measurement accreditation, not an API standard;
+      recorded here because it is the domain standard the API's currency-of-record surface
+      (GET /external/v1/currency-of-record) implements.
+    source: https://en.wikipedia.org/wiki/VideoAmp
+x-evidence:
+  fetched: '2026-08-02'

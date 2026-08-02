@@ -1,0 +1,763 @@
+generated: '2026-08-02'
+method: derived
+source: mcp/videoamp-mcp.yml + openapi/videoamp-public-api-openapi.yml (both from VideoAmp CLI release v0.148.32)
+description: Binds every tool the VideoAmp MCP server publishes to the VideoAmp Public API operation that backs it. Both sides were read from the same first-party artifact — the official `videoamp` CLI binary — so the tool/operation correspondence is exact rather than inferred by name similarity.
+surfaces:
+  openapi:
+    file: openapi/videoamp-public-api-openapi.yml
+    operations: 118
+    gated: true
+    note: No anonymous OpenAPI is published; derived from the CLI operation table.
+  mcp:
+    url: https://api.videoamp.dev/v1/mcp
+    tools: 101
+    gated: true
+    note: tools/list returns 401 anonymously; tool list read offline from the CLI.
+  graphql: null
+  cli:
+    file: cli/videoamp-cli.yml
+    commands: 118
+coverage:
+  tools_named: 101
+  tools_bound: 101
+  mcp_only: 0
+  rest_operations_total: 118
+  rest_operations_with_tool: 101
+  rest_only: 17
+crosswalk:
+- tool: audience_batch_get
+  category: audiences
+  rest:
+  - audience_batch_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `audience_batch_get` are identical and the server advertises the same `GET /v1/audiences:batchGet` route; parameters are the OpenAPI parameters of that operation.
+- tool: audience_create
+  category: audiences
+  rest:
+  - audience_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `audience_create` are identical and the server advertises the same `POST /v2/audiences` route; parameters are the OpenAPI parameters of that operation.
+- tool: audience_demographic_filter_field_lookup
+  category: audiences
+  rest:
+  - audience_demographic_filter_field_lookup
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `audience_demographic_filter_field_lookup` are identical and the server advertises the same `GET /v2/audiences/lookupDemographicFilterFields` route; parameters are the OpenAPI parameters of that operation.
+- tool: audience_demographic_filter_value_lookup
+  category: audiences
+  rest:
+  - audience_demographic_filter_value_lookup
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `audience_demographic_filter_value_lookup` are identical and the server advertises the same `GET /v2/audiences/lookupDemographicFilterValues` route; parameters are the OpenAPI parameters of that operation.
+- tool: audience_export_create
+  category: audiences
+  rest:
+  - audience_export_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `audience_export_create` are identical and the server advertises the same `POST /v1/audiences/{audienceId}/exports` route; parameters are the OpenAPI parameters of that operation.
+- tool: audience_export_get
+  category: audiences
+  rest:
+  - audience_export_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `audience_export_get` are identical and the server advertises the same `GET /v1/audiences/{audienceId}/exports/{id}` route; parameters are the OpenAPI parameters of that operation.
+- tool: audience_export_list
+  category: audiences
+  rest:
+  - audience_export_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `audience_export_list` are identical and the server advertises the same `GET /v1/audiences/{audienceId}/exports` route; parameters are the OpenAPI parameters of that operation.
+- tool: audience_get
+  category: audiences
+  rest:
+  - audience_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `audience_get` are identical and the server advertises the same `GET /v2/audiences/{id}` route; parameters are the OpenAPI parameters of that operation.
+- tool: audience_id_types_lookup
+  category: audiences
+  rest:
+  - audience_id_types_lookup
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `audience_id_types_lookup` are identical and the server advertises the same `GET /v1/audiences:lookUpIdTypes` route; parameters are the OpenAPI parameters of that operation.
+- tool: audience_list
+  category: audiences
+  rest:
+  - audience_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `audience_list` are identical and the server advertises the same `GET /v2/audiences` route; parameters are the OpenAPI parameters of that operation.
+- tool: audience_status_list
+  category: audiences
+  rest:
+  - audience_status_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `audience_status_list` are identical and the server advertises the same `GET /v1/audiences/status` route; parameters are the OpenAPI parameters of that operation.
+- tool: audience_update
+  category: audiences
+  rest:
+  - audience_update
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `audience_update` are identical and the server advertises the same `PATCH /v2/audiences/{id}` route; parameters are the OpenAPI parameters of that operation.
+- tool: campaign_create
+  category: campaigns
+  rest:
+  - campaign_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `campaign_create` are identical and the server advertises the same `POST /v1beta/campaigns` route; parameters are the OpenAPI parameters of that operation.
+- tool: campaign_delete
+  category: campaigns
+  rest:
+  - campaign_delete
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `campaign_delete` are identical and the server advertises the same `DELETE /v1beta/campaigns/{campaignId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: campaign_get
+  category: campaigns
+  rest:
+  - campaign_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `campaign_get` are identical and the server advertises the same `GET /v1beta/campaigns/{campaignId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: campaign_list
+  category: campaigns
+  rest:
+  - campaign_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `campaign_list` are identical and the server advertises the same `GET /v1beta/campaigns` route; parameters are the OpenAPI parameters of that operation.
+- tool: consent_list
+  category: consents
+  rest:
+  - consent_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `consent_list` are identical and the server advertises the same `GET /v1/consents` route; parameters are the OpenAPI parameters of that operation.
+- tool: consent_list_v3
+  category: consents
+  rest:
+  - consent_list_v3
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `consent_list_v3` are identical and the server advertises the same `GET /v3/consents` route; parameters are the OpenAPI parameters of that operation.
+- tool: conversion_group_create
+  category: library
+  rest:
+  - conversion_group_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `conversion_group_create` are identical and the server advertises the same `POST /v1/library/conversionGroups` route; parameters are the OpenAPI parameters of that operation.
+- tool: conversion_group_delete
+  category: library
+  rest:
+  - conversion_group_delete
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `conversion_group_delete` are identical and the server advertises the same `DELETE /v1/library/conversionGroups/{conversionGroupId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: conversion_group_get
+  category: library
+  rest:
+  - conversion_group_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `conversion_group_get` are identical and the server advertises the same `GET /v1/library/conversionGroups/{conversionGroupId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: conversion_group_list
+  category: library
+  rest:
+  - conversion_group_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `conversion_group_list` are identical and the server advertises the same `GET /v1/library/conversionGroups` route; parameters are the OpenAPI parameters of that operation.
+- tool: cor_list
+  category: currency-of-record
+  rest:
+  - cor_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `cor_list` are identical and the server advertises the same `GET /external/v1/currency-of-record` route; parameters are the OpenAPI parameters of that operation.
+- tool: data_stream_create
+  category: dataStreams
+  rest:
+  - data_stream_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `data_stream_create` are identical and the server advertises the same `POST /v1alpha/dataStreams` route; parameters are the OpenAPI parameters of that operation.
+- tool: data_stream_get
+  category: dataStreams
+  rest:
+  - data_stream_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `data_stream_get` are identical and the server advertises the same `GET /v1alpha/dataStreams/{dataStreamId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: data_stream_list
+  category: dataStreams
+  rest:
+  - data_stream_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `data_stream_list` are identical and the server advertises the same `GET /v1alpha/dataStreams` route; parameters are the OpenAPI parameters of that operation.
+- tool: data_stream_type_get
+  category: dataStreamTypes
+  rest:
+  - data_stream_type_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `data_stream_type_get` are identical and the server advertises the same `GET /v1alpha/dataStreamTypes/{dataStreamTypeName}` route; parameters are the OpenAPI parameters of that operation.
+- tool: data_stream_type_list
+  category: dataStreamTypes
+  rest:
+  - data_stream_type_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `data_stream_type_list` are identical and the server advertises the same `GET /v1alpha/dataStreamTypes` route; parameters are the OpenAPI parameters of that operation.
+- tool: data_stream_update
+  category: dataStreams
+  rest:
+  - data_stream_update
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `data_stream_update` are identical and the server advertises the same `PATCH /v1alpha/dataStreams/{dataStreamId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_conversion_provider_search
+  category: library
+  rest:
+  - datasource_conversion_provider_search
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_conversion_provider_search` are identical and the server advertises the same `POST /v1/library/conversionDataProviderOptionsSearch` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_filter_name_search
+  category: library
+  rest:
+  - datasource_filter_name_search
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_filter_name_search` are identical and the server advertises the same `POST /v1/library/datasourceFilterNameOptionsSearch` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_filter_value_search
+  category: library
+  rest:
+  - datasource_filter_value_search
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_filter_value_search` are identical and the server advertises the same `POST /v1/library/datasourceFilterValueOptionsSearch` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_group_create
+  category: library
+  rest:
+  - datasource_group_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_group_create` are identical and the server advertises the same `POST /v1/library/datasourceGroups` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_group_delete
+  category: library
+  rest:
+  - datasource_group_delete
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_group_delete` are identical and the server advertises the same `DELETE /v1/library/datasourceGroups/{datasourceGroupId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_group_get
+  category: library
+  rest:
+  - datasource_group_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_group_get` are identical and the server advertises the same `GET /v1/library/datasourceGroups/{datasourceGroupId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_group_list
+  category: library
+  rest:
+  - datasource_group_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_group_list` are identical and the server advertises the same `GET /v1/library/datasourceGroups` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_group_rule_create
+  category: library
+  rest:
+  - datasource_group_rule_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_group_rule_create` are identical and the server advertises the same `POST /v1/library/datasourceGroups/{datasourceGroupId}/rules` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_group_rule_delete
+  category: library
+  rest:
+  - datasource_group_rule_delete
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_group_rule_delete` are identical and the server advertises the same `DELETE /v1/library/datasourceGroups/{datasourceGroupId}/rules/{ruleId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_group_rule_get
+  category: library
+  rest:
+  - datasource_group_rule_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_group_rule_get` are identical and the server advertises the same `GET /v1/library/datasourceGroups/{datasourceGroupId}/rules/{ruleId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_group_rule_list
+  category: library
+  rest:
+  - datasource_group_rule_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_group_rule_list` are identical and the server advertises the same `GET /v1/library/datasourceGroups/{datasourceGroupId}/rules` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_metadata_search
+  category: library
+  rest:
+  - datasource_metadata_search
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_metadata_search` are identical and the server advertises the same `POST /v1beta/library/datasourceMetadataSearch` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_rule_filter_name_search
+  category: library
+  rest:
+  - datasource_rule_filter_name_search
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_rule_filter_name_search` are identical and the server advertises the same `POST /v1/library/ruleFilterNameOptionsSearch` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_rule_filter_value_search
+  category: library
+  rest:
+  - datasource_rule_filter_value_search
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_rule_filter_value_search` are identical and the server advertises the same `POST /v1/library/ruleFilterValueOptionsSearch` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_schema_get
+  category: library
+  rest:
+  - datasource_schema_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_schema_get` are identical and the server advertises the same `GET /v1beta/library/datasourceSchema` route; parameters are the OpenAPI parameters of that operation.
+- tool: datasource_type_search
+  category: library
+  rest:
+  - datasource_type_search
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `datasource_type_search` are identical and the server advertises the same `POST /v1/library/datasourceTypeOptionsSearch` route; parameters are the OpenAPI parameters of that operation.
+- tool: delivery_config_access_confirm
+  category: dataStreams
+  rest:
+  - delivery_config_access_confirm
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `delivery_config_access_confirm` are identical and the server advertises the same `POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:confirmAccess` route; parameters are the OpenAPI parameters of that operation.
+- tool: delivery_config_approve
+  category: dataStreams
+  rest:
+  - delivery_config_approve
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `delivery_config_approve` are identical and the server advertises the same `POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:approve` route; parameters are the OpenAPI parameters of that operation.
+- tool: delivery_config_file_delete
+  category: dataStreams
+  rest:
+  - delivery_config_file_delete
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `delivery_config_file_delete` are identical and the server advertises the same `POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:deleteUploadedFile` route; parameters are the OpenAPI parameters of that operation.
+- tool: delivery_config_get
+  category: dataStreams
+  rest:
+  - delivery_config_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `delivery_config_get` are identical and the server advertises the same `GET /v1alpha/dataStreams/{dataStreamId}/deliveryConfig` route; parameters are the OpenAPI parameters of that operation.
+- tool: delivery_config_update
+  category: dataStreams
+  rest:
+  - delivery_config_update
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `delivery_config_update` are identical and the server advertises the same `PUT /v1alpha/dataStreams/{dataStreamId}/deliveryConfig` route; parameters are the OpenAPI parameters of that operation.
+- tool: delivery_config_upload_url_create
+  category: dataStreams
+  rest:
+  - delivery_config_upload_url_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `delivery_config_upload_url_create` are identical and the server advertises the same `POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:createUploadUrl` route; parameters are the OpenAPI parameters of that operation.
+- tool: delivery_config_uploaded_files_get
+  category: dataStreams
+  rest:
+  - delivery_config_uploaded_files_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `delivery_config_uploaded_files_get` are identical and the server advertises the same `GET /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:listUploadedFiles` route; parameters are the OpenAPI parameters of that operation.
+- tool: delivery_inspection_create
+  category: dataStreams
+  rest:
+  - delivery_inspection_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `delivery_inspection_create` are identical and the server advertises the same `POST /v1alpha/dataStreams/{dataStreamId}/deliveryInspections` route; parameters are the OpenAPI parameters of that operation.
+- tool: delivery_inspection_files_list
+  category: dataStreams
+  rest:
+  - delivery_inspection_files_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `delivery_inspection_files_list` are identical and the server advertises the same `GET /v1alpha/dataStreams/{dataStreamId}/deliveryInspections/{inspectionId}/files` route; parameters are the OpenAPI parameters of that operation.
+- tool: delivery_inspection_get
+  category: dataStreams
+  rest:
+  - delivery_inspection_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `delivery_inspection_get` are identical and the server advertises the same `GET /v1alpha/dataStreams/{dataStreamId}/deliveryInspections/{inspectionId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: delivery_inspection_list
+  category: dataStreams
+  rest:
+  - delivery_inspection_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `delivery_inspection_list` are identical and the server advertises the same `GET /v1alpha/dataStreams/{dataStreamId}/deliveryInspections` route; parameters are the OpenAPI parameters of that operation.
+- tool: draft_plan_approve
+  category: plans
+  rest:
+  - draft_plan_approve
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `draft_plan_approve` are identical and the server advertises the same `POST /v2beta/plans/{planId}:approve` route; parameters are the OpenAPI parameters of that operation.
+- tool: draft_plan_update
+  category: plans
+  rest:
+  - draft_plan_update
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `draft_plan_update` are identical and the server advertises the same `PATCH /v2beta/plans/{planId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: ingestion_list
+  category: dataStreams
+  rest:
+  - ingestion_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `ingestion_list` are identical and the server advertises the same `GET /v1alpha/dataStreams/{dataStreamId}/ingestions` route; parameters are the OpenAPI parameters of that operation.
+- tool: inventory_get
+  category: inventories
+  rest:
+  - inventory_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `inventory_get` are identical and the server advertises the same `GET /v1beta/inventories/{inventoryId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: inventory_list
+  category: inventories
+  rest:
+  - inventory_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `inventory_list` are identical and the server advertises the same `GET /v1beta/inventories` route; parameters are the OpenAPI parameters of that operation.
+- tool: measurement_create
+  category: adMeasurements
+  rest:
+  - measurement_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `measurement_create` are identical and the server advertises the same `POST /v2/adMeasurements` route; parameters are the OpenAPI parameters of that operation.
+- tool: measurement_create_post_process
+  category: adMeasurements
+  rest:
+  - measurement_create_post_process
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `measurement_create_post_process` are identical and the server advertises the same `POST /v2/adMeasurements/{adMeasurement_uuid}/postProcesses` route; parameters are the OpenAPI parameters of that operation.
+- tool: measurement_delete
+  category: adMeasurements
+  rest:
+  - measurement_delete
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `measurement_delete` are identical and the server advertises the same `DELETE /v2/adMeasurements/{id}` route; parameters are the OpenAPI parameters of that operation.
+- tool: measurement_delete_post_process
+  category: adMeasurements
+  rest:
+  - measurement_delete_post_process
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `measurement_delete_post_process` are identical and the server advertises the same `DELETE /v2/adMeasurements/{adMeasurement_uuid}/postProcesses/{postProcessUuid}` route; parameters are the OpenAPI parameters of that operation.
+- tool: measurement_get
+  category: adMeasurements
+  rest:
+  - measurement_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `measurement_get` are identical and the server advertises the same `GET /v2/adMeasurements/{id}` route; parameters are the OpenAPI parameters of that operation.
+- tool: measurement_get_post_process
+  category: adMeasurements
+  rest:
+  - measurement_get_post_process
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `measurement_get_post_process` are identical and the server advertises the same `GET /v2/adMeasurements/{adMeasurement_uuid}/postProcesses/{postProcessUuid}` route; parameters are the OpenAPI parameters of that operation.
+- tool: measurement_get_post_process_requirements
+  category: adMeasurements
+  rest:
+  - measurement_get_post_process_requirements
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `measurement_get_post_process_requirements` are identical and the server advertises the same `GET /v2/adMeasurements/{adMeasurement_uuid}/postProcesses:requirements` route; parameters are the OpenAPI parameters of that operation.
+- tool: measurement_list
+  category: adMeasurements
+  rest:
+  - measurement_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `measurement_list` are identical and the server advertises the same `GET /v2/adMeasurements` route; parameters are the OpenAPI parameters of that operation.
+- tool: measurement_list_post_processes
+  category: adMeasurements
+  rest:
+  - measurement_list_post_processes
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `measurement_list_post_processes` are identical and the server advertises the same `GET /v2/adMeasurements/{adMeasurement_uuid}/postProcesses` route; parameters are the OpenAPI parameters of that operation.
+- tool: measurement_refresh
+  category: adMeasurements
+  rest:
+  - measurement_refresh
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `measurement_refresh` are identical and the server advertises the same `POST /v2/adMeasurements/trigger` route; parameters are the OpenAPI parameters of that operation.
+- tool: plan_create
+  category: plans
+  rest:
+  - plan_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `plan_create` are identical and the server advertises the same `POST /v1beta/plans` route; parameters are the OpenAPI parameters of that operation.
+- tool: plan_delete
+  category: plans
+  rest:
+  - plan_delete
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `plan_delete` are identical and the server advertises the same `DELETE /v1beta/plans/{planId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: plan_draft_create
+  category: plans
+  rest:
+  - plan_draft_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `plan_draft_create` are identical and the server advertises the same `POST /v2beta/plans` route; parameters are the OpenAPI parameters of that operation.
+- tool: plan_get
+  category: plans
+  rest:
+  - plan_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `plan_get` are identical and the server advertises the same `GET /v1beta/plans/{planId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: plan_list
+  category: plans
+  rest:
+  - plan_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `plan_list` are identical and the server advertises the same `GET /v1beta/plans` route; parameters are the OpenAPI parameters of that operation.
+- tool: rate_card_create
+  category: inventories
+  rest:
+  - rate_card_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `rate_card_create` are identical and the server advertises the same `POST /v1beta/inventories/{inventoryId}/rateCards` route; parameters are the OpenAPI parameters of that operation.
+- tool: rate_card_delete
+  category: inventories
+  rest:
+  - rate_card_delete
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `rate_card_delete` are identical and the server advertises the same `DELETE /v1beta/inventories/{inventoryId}/rateCards/{rateCardId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: rate_card_get
+  category: inventories
+  rest:
+  - rate_card_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `rate_card_get` are identical and the server advertises the same `GET /v1beta/inventories/{inventoryId}/rateCards/{rateCardId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: rate_card_list
+  category: inventories
+  rest:
+  - rate_card_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `rate_card_list` are identical and the server advertises the same `GET /v1beta/inventories/{inventoryId}/rateCards` route; parameters are the OpenAPI parameters of that operation.
+- tool: reach_curve_create
+  category: inventories
+  rest:
+  - reach_curve_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `reach_curve_create` are identical and the server advertises the same `POST /v1beta/inventories/{inventoryId}/reachCurves` route; parameters are the OpenAPI parameters of that operation.
+- tool: reach_curve_delete
+  category: inventories
+  rest:
+  - reach_curve_delete
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `reach_curve_delete` are identical and the server advertises the same `DELETE /v1beta/inventories/{inventoryId}/reachCurves/{reachCurveId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: reach_curve_get
+  category: inventories
+  rest:
+  - reach_curve_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `reach_curve_get` are identical and the server advertises the same `GET /v1beta/inventories/{inventoryId}/reachCurves/{reachCurveId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: reach_curve_list
+  category: inventories
+  rest:
+  - reach_curve_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `reach_curve_list` are identical and the server advertises the same `GET /v1beta/inventories/{inventoryId}/reachCurves` route; parameters are the OpenAPI parameters of that operation.
+- tool: report_context_search
+  category: reports
+  rest:
+  - report_context_search
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `report_context_search` are identical and the server advertises the same `GET /v1alpha/reports/{reportId}:searchContext` route; parameters are the OpenAPI parameters of that operation.
+- tool: report_query_create
+  category: reports
+  rest:
+  - report_query_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `report_query_create` are identical and the server advertises the same `POST /v1alpha/reports/{reportId}:createQuery` route; parameters are the OpenAPI parameters of that operation.
+- tool: schema_mapping_approve
+  category: dataStreams
+  rest:
+  - schema_mapping_approve
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `schema_mapping_approve` are identical and the server advertises the same `POST /v1alpha/dataStreams/{dataStreamId}/schemaMapping:approve` route; parameters are the OpenAPI parameters of that operation.
+- tool: schema_mapping_get
+  category: dataStreams
+  rest:
+  - schema_mapping_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `schema_mapping_get` are identical and the server advertises the same `GET /v1alpha/dataStreams/{dataStreamId}/schemaMapping` route; parameters are the OpenAPI parameters of that operation.
+- tool: schema_mapping_update
+  category: dataStreams
+  rest:
+  - schema_mapping_update
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `schema_mapping_update` are identical and the server advertises the same `PUT /v1alpha/dataStreams/{dataStreamId}/schemaMapping` route; parameters are the OpenAPI parameters of that operation.
+- tool: share_audience_recipient_revoke
+  category: shares
+  rest:
+  - share_audience_recipient_revoke
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `share_audience_recipient_revoke` are identical and the server advertises the same `DELETE /v1/shares/audiences/revoke/recipient/{recipient}` route; parameters are the OpenAPI parameters of that operation.
+- tool: share_audience_revocation_cancel
+  category: shares
+  rest:
+  - share_audience_revocation_cancel
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `share_audience_revocation_cancel` are identical and the server advertises the same `POST /v1/shares/audiences/revoke/cancel/{confirmId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: share_audience_revocation_confirm
+  category: shares
+  rest:
+  - share_audience_revocation_confirm
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `share_audience_revocation_confirm` are identical and the server advertises the same `POST /v1/shares/audiences/revoke/confirm/{confirmId}` route; parameters are the OpenAPI parameters of that operation.
+- tool: share_delete
+  category: shares
+  rest:
+  - share_delete
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `share_delete` are identical and the server advertises the same `DELETE /v1/shares/{id}` route; parameters are the OpenAPI parameters of that operation.
+- tool: share_get
+  category: shares
+  rest:
+  - share_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `share_get` are identical and the server advertises the same `GET /v1/shares/{id}` route; parameters are the OpenAPI parameters of that operation.
+- tool: share_list
+  category: shares
+  rest:
+  - share_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `share_list` are identical and the server advertises the same `GET /v1/shares` route; parameters are the OpenAPI parameters of that operation.
+- tool: share_resource_create
+  category: shares
+  rest:
+  - share_resource_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `share_resource_create` are identical and the server advertises the same `POST /v1/shares` route; parameters are the OpenAPI parameters of that operation.
+- tool: share_resources_create
+  category: shares
+  rest:
+  - share_resources_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `share_resources_create` are identical and the server advertises the same `POST /v2/shares` route; parameters are the OpenAPI parameters of that operation.
+- tool: share_resources_v3_create
+  category: shares
+  rest:
+  - share_resources_v3_create
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `share_resources_v3_create` are identical and the server advertises the same `POST /v3/shares` route; parameters are the OpenAPI parameters of that operation.
+- tool: user_info_get
+  category: me
+  rest:
+  - user_info_get
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `user_info_get` are identical and the server advertises the same `GET /v1/me` route; parameters are the OpenAPI parameters of that operation.
+- tool: user_organization_list
+  category: me
+  rest:
+  - user_organization_list
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `user_organization_list` are identical and the server advertises the same `GET /v1/me/orgs` route; parameters are the OpenAPI parameters of that operation.
+- tool: user_profile_update
+  category: me
+  rest:
+  - user_profile_update
+  binding: rest
+  confidence: high
+  note: MCP tool name and the CLI command for `user_profile_update` are identical and the server advertises the same `PATCH /v1/me` route; parameters are the OpenAPI parameters of that operation.
+mcp_only: []
+rest_only:
+- category: adMeasurements
+  operations:
+  - measurement_update
+- category: audiences
+  operations:
+  - audience_create_v1
+  - audience_get_v1
+  - audience_list_v1
+- category: campaigns
+  operations:
+  - campaign_update
+- category: content
+  operations:
+  - content_metric_compatibility_get
+  - content_metric_create
+  - content_metric_get
+  - episode_get
+  - episode_list
+  - media_group_list
+  - network_get
+  - network_list
+  - program_get
+  - program_list
+- category: inventories
+  operations:
+  - inventory_update
+  - rate_card_update

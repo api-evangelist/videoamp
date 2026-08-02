@@ -1,0 +1,44 @@
+generated: '2026-08-02'
+method: derived
+source: openapi/videoamp-public-api-openapi.yml
+schemes:
+- name: videoampOAuth
+  source: openapi/videoamp-public-api-openapi.yml
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://login.videoamp.com/authorize
+    tokenUrl: https://login.videoamp.com/oauth/token
+  - flow: deviceAuthorization
+    tokenUrl: https://login.videoamp.com/oauth/token
+  description: OAuth 2.0 / OIDC via VideoAmp's Auth0 tenant at https://login.videoamp.com. Verified
+    from https://login.videoamp.com/.well-known/openid-configuration (HTTP 200) and https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp
+    (HTTP 200, RFC 9728). Bearer tokens are presented in the Authorization header.
+scopes:
+- scope: email
+  description: Email address claim
+  flows:
+  - authorizationCode
+  - deviceAuthorization
+  sources:
+  - openapi/videoamp-public-api-openapi.yml
+- scope: offline_access
+  description: Issue a refresh token
+  flows:
+  - authorizationCode
+  - deviceAuthorization
+  sources:
+  - openapi/videoamp-public-api-openapi.yml
+- scope: openid
+  description: OIDC subject identifier
+  flows:
+  - authorizationCode
+  - deviceAuthorization
+  sources:
+  - openapi/videoamp-public-api-openapi.yml
+- scope: profile
+  description: Basic profile claims
+  flows:
+  - authorizationCode
+  - deviceAuthorization
+  sources:
+  - openapi/videoamp-public-api-openapi.yml

@@ -1,0 +1,146 @@
+generated: '2026-08-02'
+method: derived
+source: openapi/videoamp-public-api-openapi.yml (derived from VideoAmp CLI release v0.148.32)
+description: >-
+  Cross-cutting request/response semantics for the VideoAmp Public API. The API is built to Google's
+  API Improvement Proposals (AIP) house style: resource-oriented collection paths, AIP-136 custom
+  methods expressed with a colon suffix, AIP-158 page_token/next_page_token pagination, AIP-163
+  validate_only dry runs, and AIP-181 alpha/beta/stable version channels in the URI. Derived from the
+  operation table and parameter documentation VideoAmp ships inside its own CLI binary.
+authentication:
+  style: oauth2-bearer
+  header: 'Authorization: Bearer <token>'
+  authorization_server: https://login.videoamp.com
+  detail: authentication/videoamp-authentication.yml
+pagination:
+  style: cursor
+  standard: AIP-158
+  request_params:
+    - name: pageSize
+      description: Maximum number of items to return in a page. `cor_list` documents a maximum of 1000.
+      appears_on_operations: 26
+    - name: pageToken
+      description: Opaque continuation token taken from the previous response's next_page_token.
+      appears_on_operations: 27
+  response_fields:
+    - name: next_page_token
+      description: Continuation token. Absence of this field is the correct end-of-results signal.
+    - name: total_size
+      description: >-
+        Point-in-time snapshot of the matching row count. Explicitly documented as able to change
+        between page requests — do not use it to detect the last page.
+  rules:
+    - Do not change filter parameters between pages of the same traversal.
+    - Detect the final page by the absence of next_page_token, not by comparing against total_size.
+ordering:
+  param: orderBy
+  style: comma-separated `field_name [desc]` pairs
+  example: 'currency_of_record, name desc'
+  appears_on_operations: 9
+custom_methods:
+  standard: AIP-136
+  style: colon suffix on the resource path
+  examples:
+    - 'GET /v1/audiences:batchGet'
+    - 'GET /v1/audiences:lookUpIdTypes'
+    - 'POST /v2beta/plans/{planId}:approve'
+    - 'POST /v1alpha/dataStreams/{dataStreamId}/schemaMapping:approve'
+    - 'POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:createUploadUrl'
+    - 'GET /v1alpha/reports/{reportId}:searchContext'
+    - 'POST /v1alpha/reports/{reportId}:createQuery'
+dry_run:
+  standard: AIP-163
+  param: validateOnly
+  appears_on_operations: 7
+  description: >-
+    When true the request is validated and the effect is not persisted. Documented on rate-card
+    creation as returning 200 when all rates are valid, or 400 with per-title violation details.
+idempotency:
+  key_header: null
+  supported: partial
+  summary: >-
+    VideoAmp publishes no idempotency-key mechanism. Instead it documents retry-safety per
+    operation, and the guidance is not uniform — so agents must not assume blanket retry safety.
+  documented:
+    - operation: delivery_config_update
+      method: PUT
+      idempotent: true
+      note: 'Idempotent for DRAFT configs: a second PUT with the same method is a no-op; a PUT with a different method updates it.'
+    - operation: schema_mapping_update
+      method: PUT
+      idempotent: true
+      note: 'First PUT creates the mapping with status DRAFT; a subsequent PUT replaces column_bindings wholesale (omitting a binding removes it — not a partial merge).'
+    - operation: schema_mapping_approve
+      method: POST
+      idempotent: true
+      note: 'Calling :approve again re-triggers ingestion and completes the transition if a previous attempt locked the mapping but did not finish.'
+    - operation: measurement_create
+      method: POST
+      idempotent: false
+      note: >-
+        Explicitly documented as "Idempotency: NOT supported". The documented mitigation is to set a
+        unique `external_id` per report and to check for an existing report before creating.
+  deduplication_field: external_id
+  deduplication_note: >-
+    `external_id` is a caller-supplied correlation key for measurement reports; uniqueness is
+    recommended per organization but is explicitly NOT enforced by the API.
+versioning:
+  style: uri-path
+  standard: AIP-181 stability channels
+  channels:
+    - {prefix: v1, stability: stable, operations: 38}
+    - {prefix: v2, stability: stable, operations: 17}
+    - {prefix: v3, stability: stable, operations: 2}
+    - {prefix: v1beta, stability: beta, operations: 23}
+    - {prefix: v2beta, stability: beta, operations: 3}
+    - {prefix: v1alpha, stability: alpha, operations: 23}
+    - {prefix: external/v1, stability: stable, operations: 12, note: 'Content/metadata surface served under an /external prefix.'}
+  note: >-
+    Multiple channels are live simultaneously for the same resource — e.g. audiences are served by
+    both /v1/audiences and /v2/audiences, and the CLI keeps both as distinct commands
+    (audience_list vs audience_list_v1). Callers should pin a channel explicitly.
+rate_limiting:
+  documented: partial
+  signal_headers: null
+  detail: >-
+    Platform-wide rate limits exist and HTTP 429 is referenced in operation documentation, but
+    VideoAmp publishes no anonymous rate-limit table and no documented rate-limit response headers.
+    `audience_id_types_lookup` states "No endpoint-specific rate limits beyond platform defaults";
+    `cor_list` advises maximising pageSize with pageToken navigation "to minimize round trips while
+    respecting rate limits".
+error_envelope:
+  format: proprietary
+  rfc9457: false
+  detail: errors/videoamp-problem-types.yml
+  note: >-
+    Errors carry a product-scoped alphanumeric code (e.g. MRC_0152, DGR_0001, DSO_0023) alongside
+    the HTTP status. No application/problem+json media type is advertised.
+async_processing:
+  pattern: submit-then-poll
+  description: >-
+    Long-running work is submitted synchronously and completed asynchronously. Ad measurement
+    reports return immediately with metadata, compute for 30 minutes to 4 hours, transition to
+    ready/failed, and deliver CSV/Parquet results to a caller-owned S3 bucket. Callers poll
+    `GET /v2/adMeasurements/{id}`.
+  delivery: S3 (caller-provisioned bucket)
+identifiers:
+  primary: UUID v4
+  legacy: >-
+    Several resources also accept a legacy numeric id encoded as a string; audiences expose both
+    `ids` (UUID) and `legacyIds`. UUID is documented as preferred for new integrations.
+  cross_api_note: >-
+    The Sharing API uses `ORGANIZATION` where the user API uses `HOLDING_COMPANY` for the same
+    organization kind — translate when passing kind values between the two surfaces.
+tenancy:
+  model: organization-scoped
+  description: >-
+    Visibility is controlled by the calling organization's context, with inheritance: resources
+    permissioned to a parent org are visible to all child advertisers. Multi-advertiser filters
+    return a deduplicated union, not a concatenation.
+cross_links:
+  authentication: authentication/videoamp-authentication.yml
+  scopes: scopes/videoamp-scopes.yml
+  errors: errors/videoamp-problem-types.yml
+  lifecycle: lifecycle/videoamp-lifecycle.yml
+  conformance: conformance/videoamp-conformance.yml
+  data_model: data-model/videoamp-data-model.yml

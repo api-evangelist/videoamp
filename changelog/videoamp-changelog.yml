@@ -1,0 +1,65 @@
+generated: '2026-08-02'
+method: searched
+source: https://github.com/VideoAmp/cli/releases
+description: >-
+  VideoAmp does not publish a public changelog for the Public API itself (docs.videoamp.dev is
+  Auth0-gated). It does publish a continuously released, dated, conventional-commit changelog for
+  the `videoamp` CLI, and because the CLI's command surface is generated from the API specification,
+  its release notes track API-affecting changes — field removals, validation changes, new
+  constraints and doc corrections — scoped by product area (audience, library, datamanagement,
+  externalreport, developer).
+versioning:
+  scheme: semver
+  current: v0.148.32
+  cadence: continuous — multiple releases per week
+  api_edition: '2026-07-31'
+  api_edition_note: >-
+    `videoamp version` reports an `api_edition` date alongside the CLI version; it identifies the
+    API specification edition the binary was generated from.
+  commit_convention: 'Conventional Commits with a product-area scope, e.g. `fix(audience): ...`'
+entries:
+  - version: v0.148.32
+    date: '2026-07-31'
+    breaking: false
+    highlights:
+      - 'fix(datamanagement): remove deprecated include_column_samples field (#42543)'
+  - version: v0.148.31
+    date: '2026-07-30'
+    breaking: false
+    highlights:
+      - 'fix(developer): parameterize UI host in generated API docs (#42446)'
+  - version: v0.148.30
+    date: '2026-07-30'
+    breaking: false
+    highlights:
+      - 'docs(externalreport/admeasurements): note S3 path Professional Services provisioning requirement (#37632)'
+  - version: v0.148.29
+    date: '2026-07-30'
+    breaking: false
+    highlights:
+      - 'fix(audience): block USER_PROVIDED as MODELED origin_audience (#42378)'
+  - version: v0.148.28
+    date: '2026-07-30'
+    breaking: false
+    highlights:
+      - 'fix(library): fix YT hierarchy to align with existing data (#42387)'
+  - version: v0.148.27
+    date: '2026-07-29'
+    breaking: false
+    highlights:
+      - 'fix(audience): block USER_PROVIDED as MODELED origin_audience - revert (#42373)'
+  - version: v0.148.26
+    date: '2026-07-29'
+    breaking: false
+    highlights:
+      - 'fix(audience): block USER_PROVIDED as MODELED origin_audience (#42260)'
+  - version: v0.148.25
+    date: '2026-07-28'
+    breaking: false
+    highlights:
+      - 'fix(library): return 400 if snowflake column type mismatch from applied filters (#42052)'
+x-evidence:
+  fetched: '2026-08-02'
+  url: https://api.github.com/repos/VideoAmp/cli/releases
+  http_status: 200
+  window: most recent 8 releases

@@ -1,0 +1,71 @@
+# VideoAmp
+
+> VideoAmp is a Los Angeles-based media measurement and advertising technology company, founded in 2014, certified by the U.S. Joint Industry Committee as a national TV currency provider alongside Nielsen and Comscore. Its platform unifies linear TV, streaming and digital viewership onto one dataset and identity spine (VALID), and exposes that as a read-and-write Public API, a first-party CLI, and a hosted remote MCP server.
+
+Generated: 2026-08-02
+Method: generated (VideoAmp publishes no llms.txt — /llms.txt returns 404 on api.videoamp.dev and 302 to Auth0 on docs.videoamp.dev)
+Source: API Evangelist enrichment pipeline, https://github.com/api-evangelist/videoamp
+
+## Access model
+
+VideoAmp's developer surface is customer-gated. There is no public sign-up, no public pricing page, no anonymous OpenAPI, and no anonymous documentation — `docs.videoamp.dev` 302-redirects every path to the Auth0 universal login at `login.videoamp.com`. What *is* public is the CLI: `github.com/VideoAmp/cli` ships signed release binaries whose `--help` output carries the complete operation table, parameter documentation and MCP tool list. This repo's artifacts are derived from that binary.
+
+## APIs
+
+- [VideoAmp Public API](https://docs.videoamp.dev): 118 operations across audiences, campaigns, media plans, inventories, rate cards, reach curves, ad and content measurement, data streams, and cross-organization sharing. Base URL `https://api.videoamp.dev`. OAuth 2.0 bearer tokens.
+- [VideoAmp MCP Server](https://api.videoamp.dev/v1/mcp): hosted remote Model Context Protocol server, 101 tools, streamable HTTP, OAuth-protected with RFC 9728 protected-resource metadata. Also runnable locally via `videoamp mcp start-server`.
+
+## Specs
+
+- [OpenAPI 3.1](openapi/videoamp-public-api-openapi.yml): 118 operations, 84 paths, 14 tags. Derived from CLI release v0.148.32 (api_edition 2026-07-31). Request/response body schemas are not published anonymously and are deliberately left unspecified.
+- [OpenAPI Overlay](overlays/videoamp-public-api-overlay.yaml): API Evangelist annotations.
+
+## Agent surface
+
+- [MCP server manifest](mcp/videoamp-mcp.yml): the 101 published tools with their backing REST routes.
+- [Tool crosswalk](mcp/videoamp-tool-crosswalk.yml): all 101 MCP tools bound 1:1 to their OpenAPI operations; 17 REST operations have no MCP tool.
+- [Agent skills](skills/_index.yml): five packaged operating instructions — build/export an audience, run an ad measurement, plan and optimize a media buy, onboard a data stream, share and revoke audiences.
+- [Agentic access](agentic-access/videoamp-agentic-access.yml): recommended x-agentic-access execution contracts for all 118 operations.
+- No A2A agent card is published on any VideoAmp host.
+
+## Conventions
+
+- Google AIP house style: AIP-136 colon-suffixed custom methods (`:approve`, `:batchGet`), AIP-158 `pageSize`/`pageToken` with `next_page_token`/`total_size`, AIP-163 `validateOnly` dry runs, AIP-181 alpha/beta/stable channels in the URI path.
+- 49 of 118 operations sit on an alpha or beta channel. Parallel versions of audiences, shares, consents and plans are live simultaneously.
+- No idempotency key. Retry safety is documented per operation and is not uniform — `POST /v2/adMeasurements` is explicitly NOT idempotent; the PUT deliveryConfig/schemaMapping operations are.
+- Errors use a proprietary `<AREA>_<NNNN>` code (MRC, DGR, DSO prefixes observed), not RFC 9457 problem+json.
+- Long-running work is submit-then-poll, with results delivered to a caller-owned S3 bucket.
+- [Full conventions](conventions/videoamp-conventions.yml)
+
+## Auth
+
+- OAuth 2.0 / OIDC via Auth0 at `https://login.videoamp.com`, with PKCE (S256), device authorization grant, dynamic client registration and token revocation.
+- [OIDC discovery](well-known/videoamp-login-openid-configuration.json) · [RFC 8414 metadata](well-known/videoamp-login-oauth-authorization-server.json) · [RFC 9728 protected-resource metadata](well-known/videoamp-api-oauth-protected-resource.json)
+- [Authentication profile](authentication/videoamp-authentication.yml) · [Scopes](scopes/videoamp-scopes.yml)
+
+## Tooling
+
+- [CLI](cli/videoamp-cli.yml): `videoamp`, a single Go binary released for macOS, Linux and Windows. `videoamp login` for browser OAuth; every API operation has a matching command.
+- [Packages](packages/videoamp-packages.yml): no first-party API client SDK exists on any registry. The `@videoamp/*` npm packages are internal front-end tooling.
+
+## Operations
+
+- [Changelog](changelog/videoamp-changelog.yml): continuous conventional-commit releases of the CLI, multiple per week.
+- [Lifecycle](lifecycle/videoamp-lifecycle.yml): no published deprecation policy, no SLA, no status page.
+- [Conformance](conformance/videoamp-conformance.yml) · [Error catalog](errors/videoamp-problem-types.yml) · [Data model](data-model/videoamp-data-model.yml)
+- [Domain security](security/videoamp-domain-security.yml) · [Trust center](security/videoamp-trust-center.yml) · [Vulnerability disclosure](security/videoamp-vulnerability-disclosure.yml): none published.
+
+## Docs
+
+- [Developer documentation](https://docs.videoamp.dev) (Auth0-gated)
+- [Help center](https://help.videoamp.dev/) (articles require login)
+- [CLI + MCP getting started](https://github.com/VideoAmp/cli#mcp-getting-started)
+- [GitHub organization](https://github.com/VideoAmp)
+- [Platform login](https://platform.videoamp.com/)
+
+## Company
+
+- [Website](https://videoamp.com/) · [Platform](https://videoamp.com/platform/) · [Powered by VideoAmp](https://videoamp.com/powered-by-videoamp/)
+- [Blog](https://videoamp.com/blog/) · [Newsroom](https://videoamp.com/newsroom/) · [Case studies](https://videoamp.com/case-studies/)
+- [Trust center](https://trust.videoamp.com/) · [Terms of use](https://videoamp.com/terms-of-use/) · [Privacy notices](https://videoamp.com/privacy-notices/)
+- Support: support@videoamp.com

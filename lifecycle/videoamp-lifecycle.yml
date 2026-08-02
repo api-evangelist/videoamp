@@ -1,0 +1,94 @@
+generated: '2026-08-02'
+method: derived
+source: openapi/videoamp-public-api-openapi.yml + https://github.com/VideoAmp/cli/releases
+description: >-
+  VideoAmp runs an AIP-181 style stability ladder in the URI path — alpha, beta and stable channels
+  coexist for the same resources — and ships a continuously released CLI whose version carries an
+  `api_edition` date identifying the specification edition it was generated from. It publishes no
+  anonymous versioning policy, no deprecation policy page, no SLA, and no status page.
+versioning:
+  scheme: uri-path
+  standard: AIP-181 stability channels
+  current_stable: v2
+  api_edition: '2026-07-31'
+  api_edition_source: videoamp version
+  docs: https://docs.videoamp.dev
+  channels:
+    - {prefix: /v1, stability: stable, operations: 38}
+    - {prefix: /v2, stability: stable, operations: 17}
+    - {prefix: /v3, stability: stable, operations: 2}
+    - {prefix: /v1beta, stability: beta, operations: 23}
+    - {prefix: /v2beta, stability: beta, operations: 3}
+    - {prefix: /v1alpha, stability: alpha, operations: 23}
+    - {prefix: /external/v1, stability: stable, operations: 12}
+  parallel_versions:
+    - resource: audiences
+      channels: [/v1/audiences, /v2/audiences]
+      note: >-
+        Both are live; the CLI keeps them as separate commands (audience_list / audience_list_v1,
+        audience_get / audience_get_v1, audience_create / audience_create_v1).
+    - resource: shares
+      channels: [/v1/shares, /v2/shares, /v3/shares]
+      note: v2 adds bulk creation; v3 adds UUID recipients.
+    - resource: consents
+      channels: [/v1/consents, /v3/consents]
+      note: v3 is the UUID-identifier variant.
+    - resource: plans
+      channels: [/v1beta/plans, /v2beta/plans]
+      note: v2beta adds the draft/approve lifecycle.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: unknown
+  rfc8594: unknown
+  note: >-
+    No deprecation policy page and no documented Sunset/Deprecation header support were found on any
+    anonymous surface. Deprecation is instead communicated inline, per field and per enum value, in
+    the API documentation shipped with the CLI.
+  deprecated_elements:
+    - kind: parameter
+      name: agencyAdvertiserId
+      operations: [conversion_group_list, datasource_schema_get]
+      note: Marked "**Deprecated**"; ignored if advertiser_id is provided.
+    - kind: enum-value
+      name: SOCIAL
+      context: datasource group type
+      note: Marked deprecated — migrated to DIGITAL.
+    - kind: enum-value
+      name: LINEAR_LIFT
+      context: measurement post-process type
+      note: Deprecated — use LIFT instead.
+    - kind: response-field
+      name: organizations
+      operations: [user_info_get]
+      note: Deprecated array; superseded by current_organization_id and the memberships entries.
+    - kind: request-field
+      name: include_column_samples
+      area: datamanagement
+      note: Removed as deprecated in CLI release v0.148.32 (2026-07-31).
+  deprecated_operations: []
+sla:
+  url: null
+  uptime_target: null
+  published: false
+status_page:
+  url: null
+  published: false
+  probed:
+    - {host: status.videoamp.com, result: DNS NXDOMAIN}
+    - {host: status.videoamp.dev, result: not published}
+release_channel:
+  cli_releases: https://github.com/VideoAmp/cli/releases
+  cadence: continuous — multiple releases per week
+  latest: v0.148.32
+  changelog: changelog/videoamp-changelog.yml
+environments:
+  - {name: prod, api_host: api.videoamp.dev, login_host: login.videoamp.com, public: true}
+  - {name: staging, api_host: api.staging.videoamp.dev, login_host: login.staging.videoamp.com, public: false, note: 'Selectable via the CLI `env` config key but does not resolve publicly (DNS NXDOMAIN 2026-08-02) — internal only.'}
+  - {name: preprod, api_host: api.preprod.videoamp.dev, login_host: login.preprod.videoamp.com, public: false, note: 'Selectable via the CLI `env` config key but does not resolve publicly (DNS NXDOMAIN 2026-08-02) — internal only.'}
+x-evidence:
+  fetched: '2026-08-02'
+  sources:
+    - videoamp --help / videoamp <command> --help (CLI release v0.148.32)
+    - videoamp config list
+    - https://api.github.com/repos/VideoAmp/cli/releases (HTTP 200)

@@ -1,0 +1,177 @@
+generated: '2026-08-02'
+method: derived
+source: openapi/videoamp-public-api-openapi.yml (derived from VideoAmp CLI release v0.148.32)
+description: >-
+  Entity-relationship graph for the VideoAmp Public API, derived from the resource nesting in the
+  118 operation paths and the id-reference parameters they accept. VideoAmp publishes no anonymous
+  component schemas — the OpenAPI request/response bodies are Auth0-gated — so this graph is built
+  from path structure and documented id parameters only, and carries no field-level attributes.
+identifiers:
+  primary: UUID v4
+  legacy_numeric: >-
+    Some resources additionally accept a legacy integer id encoded as a string. Audiences expose
+    both `ids` (UUID) and `legacyIds`; UUID is documented as preferred for new integrations.
+  prefixed_ids: false
+domains:
+  - name: audience
+    description: Audience definitions, their classifications and their export/share lifecycle.
+    entities: [Audience, AudienceExport, AudienceStatus, DemographicFilterField, DemographicFilterValue, IdType]
+  - name: planning
+    description: Campaigns, inventory sets and the media plans optimized against them.
+    entities: [Campaign, Plan, DraftPlan, Inventory, RateCard, ReachCurve]
+  - name: measurement
+    description: Ad measurement reports and their post-process (lift) analyses.
+    entities: [AdMeasurement, PostProcess]
+  - name: content
+    description: Content metadata and content measurement metrics.
+    entities: [Network, MediaGroup, Program, Episode, ContentMetric, MetricTypeCompatibilityMatrix, CurrencyOfRecord]
+  - name: library
+    description: Datasource discovery, grouping and rule definitions used to scope reporting.
+    entities: [DatasourceGroup, DatasourceGroupRule, ConversionGroup, DatasourceSchema, DatasourceMetadata]
+  - name: data-management
+    description: Customer data onboarding — streams, schema mapping, delivery and ingestion.
+    entities: [DataStream, DataStreamType, SchemaMapping, DeliveryConfig, DeliveryInspection, DeliveryInspectionFile, Ingestion, UploadedFile]
+  - name: collaboration
+    description: Cross-organization sharing and consent.
+    entities: [Share, Consent, Recipient, RevocationRequest]
+  - name: identity
+    description: The calling user and their organization memberships.
+    entities: [User, Organization]
+  - name: reporting
+    description: Semantic report querying.
+    entities: [Report, ScopedQuery]
+entities:
+  - name: Audience
+    collection: /v2/audiences
+    also: /v1/audiences
+    id_param: id
+    key_fields_documented: [id, legacy_id, name, description, classification, status, use_cases, cadence, level, currency_of_record, created_by_name, permissioned_entities]
+    enums:
+      classification: [EXPOSURE, CONTENT, CUSTOM_DEMOGRAPHIC, USER_PROVIDED, GLOBAL_DEMOGRAPHIC, COMPOSITE, MODELED]
+      cadence: [ONE_TIME, WEEKLY, MONTHLY, QUARTERLY]
+      level: [LEVEL_UNSPECIFIED, HOUSEHOLD, PERSON]
+  - name: AudienceExport
+    collection: /v1/audiences/{audienceId}/exports
+    id_param: id
+  - name: Campaign
+    collection: /v1beta/campaigns
+    id_param: campaignId
+  - name: Plan
+    collection: /v1beta/plans
+    also: /v2beta/plans
+    id_param: planId
+  - name: Inventory
+    collection: /v1beta/inventories
+    id_param: inventoryId
+  - name: RateCard
+    collection: /v1beta/inventories/{inventoryId}/rateCards
+    id_param: rateCardId
+  - name: ReachCurve
+    collection: /v1beta/inventories/{inventoryId}/reachCurves
+    id_param: reachCurveId
+  - name: AdMeasurement
+    collection: /v2/adMeasurements
+    id_param: id
+    alt_id_param: adMeasurement_uuid
+    key_fields_documented: [id, external_id, type, streams, delivery_schedule, status]
+  - name: PostProcess
+    collection: /v2/adMeasurements/{adMeasurement_uuid}/postProcesses
+    id_param: postProcessUuid
+    enums:
+      type: [LIFT, LINEAR_LIFT]
+  - name: DataStream
+    collection: /v1alpha/dataStreams
+    id_param: dataStreamId
+  - name: DataStreamType
+    collection: /v1alpha/dataStreamTypes
+    id_param: dataStreamTypeName
+  - name: SchemaMapping
+    singleton: /v1alpha/dataStreams/{dataStreamId}/schemaMapping
+    key_fields_documented: [status, column_bindings]
+  - name: DeliveryConfig
+    singleton: /v1alpha/dataStreams/{dataStreamId}/deliveryConfig
+  - name: DeliveryInspection
+    collection: /v1alpha/dataStreams/{dataStreamId}/deliveryInspections
+    id_param: inspectionId
+  - name: Ingestion
+    collection: /v1alpha/dataStreams/{dataStreamId}/ingestions
+  - name: DatasourceGroup
+    collection: /v1/library/datasourceGroups
+    id_param: datasourceGroupId
+  - name: DatasourceGroupRule
+    collection: /v1/library/datasourceGroups/{datasourceGroupId}/rules
+    id_param: ruleId
+  - name: ConversionGroup
+    collection: /v1/library/conversionGroups
+    id_param: conversionGroupId
+  - name: Share
+    collection: /v1/shares
+    also: [/v2/shares, /v3/shares]
+    id_param: id
+  - name: Consent
+    collection: /v1/consents
+    also: /v3/consents
+  - name: Network
+    collection: /external/v1/content/networks
+    id_param: id
+  - name: Program
+    collection: /external/v1/content/programs
+    id_param: programId
+  - name: Episode
+    collection: /external/v1/content/episodes
+    id_param: episodeId
+  - name: MediaGroup
+    collection: /external/v1/content/media-groups
+  - name: ContentMetric
+    collection: /external/v1/content/metrics
+    id_param: id
+  - name: CurrencyOfRecord
+    collection: /external/v1/currency-of-record
+    note: Identifies the measurement panel and methodology backing VideoAmp's currency guarantees for a broadcast year.
+  - name: Report
+    id_param: reportId
+    operations: [report_context_search, report_query_create]
+  - name: User
+    singleton: /v1/me
+  - name: Organization
+    collection: /v1/me/orgs
+relationships:
+  - {from: Audience, to: AudienceExport, kind: has_many, via: audienceId}
+  - {from: Audience, to: CurrencyOfRecord, kind: belongs_to, via: currencyOfRecord}
+  - {from: Audience, to: Organization, kind: belongs_to, via: permissioned_entities}
+  - {from: Inventory, to: RateCard, kind: has_many, via: inventoryId}
+  - {from: Inventory, to: ReachCurve, kind: has_many, via: inventoryId}
+  - {from: Campaign, to: Plan, kind: has_many, via: campaignId}
+  - {from: Plan, to: Inventory, kind: belongs_to, via: inventoryId}
+  - {from: AdMeasurement, to: PostProcess, kind: has_many, via: adMeasurement_uuid}
+  - {from: AdMeasurement, to: Audience, kind: has_many, via: audienceIds}
+  - {from: AdMeasurement, to: DatasourceGroup, kind: has_many, via: datasourceGroupId}
+  - {from: AdMeasurement, to: CurrencyOfRecord, kind: belongs_to, via: currencyOfRecord}
+  - {from: DataStream, to: DataStreamType, kind: belongs_to, via: dataStreamTypeName}
+  - {from: DataStream, to: SchemaMapping, kind: has_one, via: dataStreamId}
+  - {from: DataStream, to: DeliveryConfig, kind: has_one, via: dataStreamId}
+  - {from: DataStream, to: DeliveryInspection, kind: has_many, via: dataStreamId}
+  - {from: DeliveryInspection, to: DeliveryInspectionFile, kind: has_many, via: inspectionId}
+  - {from: DataStream, to: Ingestion, kind: has_many, via: dataStreamId}
+  - {from: DatasourceGroup, to: DatasourceGroupRule, kind: has_many, via: datasourceGroupId}
+  - {from: Share, to: Audience, kind: has_many, via: audienceIds}
+  - {from: Share, to: Organization, kind: belongs_to, via: recipient}
+  - {from: Consent, to: Organization, kind: belongs_to, via: recipient}
+  - {from: Network, to: MediaGroup, kind: has_many, via: networkId}
+  - {from: Program, to: Episode, kind: has_many, via: programId}
+  - {from: Network, to: Program, kind: has_many, via: networkIds}
+  - {from: User, to: Organization, kind: has_many, via: current_organization_id}
+notes:
+  - >-
+    Organization is the tenancy root. Visibility inherits downward: resources permissioned to a
+    parent organization are visible to all child advertisers, and multi-advertiser filters return a
+    deduplicated union rather than a concatenation.
+  - >-
+    The Sharing API names the organization kind `ORGANIZATION` where the user API names the same
+    thing `HOLDING_COMPANY`; the values must be translated when crossing between the two surfaces.
+  - >-
+    No component schemas are published anonymously, so no field types, required-field sets or
+    nested object shapes are captured here.
+x-evidence:
+  fetched: '2026-08-02'
+  derived_from: 118 operation paths and 293 documented parameters

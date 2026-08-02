@@ -1,0 +1,91 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the VideoAmp Public API
+  version: 1.0.0
+extends: openapi/videoamp-public-api-openapi.yml
+x-generated: '2026-08-02'
+x-method: generated
+x-source: API Evangelist enrichment pipeline
+x-note: >-
+  Captures the API Evangelist annotations layered onto the VideoAmp Public API description. The
+  underlying openapi/ document is itself derived from the operation table VideoAmp ships in its
+  official CLI binary and is never mutated in place.
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-provenance: >-
+        Derived by API Evangelist from github.com/VideoAmp/cli release v0.148.32 (api_edition
+        2026-07-31). VideoAmp publishes no anonymous OpenAPI document.
+      x-apievangelist-contract-discovery:
+        anonymous_openapi: false
+        docs_host_gated: true
+        graphql: false
+        mcp_server: https://api.videoamp.dev/v1/mcp
+        agent_card: false
+      x-apievangelist-artifacts:
+        conventions: conventions/videoamp-conventions.yml
+        errors: errors/videoamp-problem-types.yml
+        lifecycle: lifecycle/videoamp-lifecycle.yml
+        authentication: authentication/videoamp-authentication.yml
+        scopes: scopes/videoamp-scopes.yml
+        conformance: conformance/videoamp-conformance.yml
+        data_model: data-model/videoamp-data-model.yml
+        mcp: mcp/videoamp-mcp.yml
+        tool_crosswalk: mcp/videoamp-tool-crosswalk.yml
+        cli: cli/videoamp-cli.yml
+        agentic_access: agentic-access/videoamp-agentic-access.yml
+        skills: skills/_index.yml
+  - target: $.info
+    update:
+      x-apievangelist-stability-channels:
+        stable: [/v1, /v2, /v3, /external/v1]
+        beta: [/v1beta, /v2beta]
+        alpha: [/v1alpha]
+        note: >-
+          46% of operations (49 of 118) sit on an alpha or beta channel. Callers should pin a
+          channel explicitly; parallel versions of audiences, shares, consents and plans are live
+          simultaneously.
+  - target: $.info
+    update:
+      x-apievangelist-pagination:
+        style: cursor
+        standard: AIP-158
+        request: [pageSize, pageToken]
+        response: [next_page_token, total_size]
+        end_of_results: absence of next_page_token
+  - target: $.info
+    update:
+      x-apievangelist-idempotency:
+        key_header: null
+        supported: partial
+        note: >-
+          No idempotency-key mechanism. Retry safety is documented per operation and is not uniform —
+          PUT deliveryConfig/schemaMapping and POST schemaMapping:approve are documented idempotent,
+          while POST /v2/adMeasurements is explicitly documented as NOT idempotent.
+  - target: $.info
+    update:
+      x-apievangelist-error-model:
+        rfc9457: false
+        code_format: <AREA>_<NNNN>
+        known_prefixes: [MRC, DGR, DSO]
+        catalog: errors/videoamp-problem-types.yml
+  - target: $.info
+    update:
+      x-apievangelist-async:
+        pattern: submit-then-poll
+        delivery: S3 (caller-provisioned bucket)
+        typical_duration: 30 minutes to 4 hours for ad measurement reports
+  - target: $.components.securitySchemes.videoampOAuth
+    update:
+      x-apievangelist-discovery:
+        openid_configuration: https://login.videoamp.com/.well-known/openid-configuration
+        oauth_authorization_server: https://login.videoamp.com/.well-known/oauth-authorization-server
+        protected_resource_metadata: https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp
+        pkce: S256
+        device_flow: true
+        dynamic_client_registration: true
+  - target: $.externalDocs
+    update:
+      x-apievangelist-access: >-
+        docs.videoamp.dev 302-redirects every path to the Auth0 universal login; the documentation
+        and the authoritative OpenAPI are available only to authenticated VideoAmp customers.

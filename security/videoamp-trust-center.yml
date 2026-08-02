@@ -1,0 +1,35 @@
+generated: '2026-08-02'
+method: probed
+probe: true
+url: https://trust.videoamp.com/
+platform: Vanta
+description: >-
+  VideoAmp operates a Vanta-hosted trust center at trust.videoamp.com. The host resolves and returns
+  HTTP 200, and the served document is a Vanta trust report shell (data-signature-manifest-url on
+  assets.vanta.com, meta keywords "Trust, Security, Compliance, Automation", slug id
+  kc0vaj770r912yhumz0k2). The page body is rendered entirely client-side, so the certification list,
+  subprocessor list and document library could not be read anonymously.
+certifications: []
+certifications_note: >-
+  NOT verified. The 3.5 KB HTML shell served to an anonymous fetch contains no certification names.
+  Reading the actual compliance posture requires a JavaScript-rendering client or a Vanta access
+  request. Do not assert SOC 2 / ISO 27001 / HIPAA / PCI for VideoAmp on the basis of this artifact.
+documents_gated: true
+evidence:
+  - source: https://trust.videoamp.com/
+    http_status: 200
+    content_type: text/html
+    keywords: [trust, security, compliance]
+    platform_markers:
+      - assets.vanta.com/static/index-trust-report.css
+      - data-signature-manifest-url=https://assets.vanta.com/static/signature-manifest...
+      - data-slugid=kc0vaj770r912yhumz0k2
+  - source: https://trust.videoamp.com/.well-known/security.txt
+    http_status: 200
+    content_type: text/html
+    valid: false
+    note: SPA catch-all returns the same HTML shell for every path — not a real security.txt.
+related:
+  vulnerability_disclosure: security/videoamp-vulnerability-disclosure.yml
+x-evidence:
+  fetched: '2026-08-02'

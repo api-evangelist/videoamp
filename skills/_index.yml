@@ -1,0 +1,43 @@
+generated: '2026-08-02'
+method: generated
+source: openapi/videoamp-public-api-openapi.yml + conventions/videoamp-conventions.yml + errors/videoamp-problem-types.yml
+description: >-
+  Packaged Agent Skills for the VideoAmp Public API — one per marquee flow. Every step is grounded in
+  an operationId that exists verbatim in the OpenAPI, which is itself derived from the operation
+  table VideoAmp ships in its official CLI binary. VideoAmp publishes its own agent guidance as a
+  short AGENTS.md in github.com/VideoAmp/cli (recorded below); these skills are the API Evangelist
+  operating instructions built on top of it.
+provider_published:
+  - file: https://github.com/VideoAmp/cli/blob/main/AGENTS.md
+    name: VideoAmp CLI AGENTS.md
+    summary: >-
+      Three rules for coding agents — prefer the MCP server tools over the `videoamp` CLI; if the MCP
+      server is not running, explain how to start it from .vscode/mcp.json; prefer the `version` tool
+      over the `me` tool when testing.
+    method: searched
+skills:
+  - file: videoamp-build-and-export-audience.md
+    name: Build a VideoAmp audience and export it
+    api: openapi/videoamp-public-api-openapi.yml
+    domain: audience
+    operations: [audience_demographic_filter_field_lookup, audience_demographic_filter_value_lookup, audience_id_types_lookup, audience_create, audience_get, audience_list, audience_status_list, audience_update, audience_batch_get, audience_export_create, audience_export_get, audience_export_list]
+  - file: videoamp-run-ad-measurement.md
+    name: Run a VideoAmp ad measurement report
+    api: openapi/videoamp-public-api-openapi.yml
+    domain: measurement
+    operations: [audience_list, audience_get, measurement_create, measurement_get, measurement_list, measurement_get_post_process_requirements, measurement_create_post_process, measurement_get_post_process]
+  - file: videoamp-plan-and-optimize-media.md
+    name: Plan and optimize a VideoAmp media buy
+    api: openapi/videoamp-public-api-openapi.yml
+    domain: planning
+    operations: [campaign_create, campaign_get, campaign_list, campaign_update, inventory_list, inventory_get, inventory_update, rate_card_create, rate_card_list, reach_curve_create, reach_curve_list, plan_create, plan_get, plan_list, plan_draft_create, draft_plan_update, draft_plan_approve]
+  - file: videoamp-onboard-data-stream.md
+    name: Onboard a data stream into VideoAmp
+    api: openapi/videoamp-public-api-openapi.yml
+    domain: data-management
+    operations: [data_stream_type_list, data_stream_type_get, data_stream_create, data_stream_get, data_stream_list, data_stream_update, delivery_config_update, delivery_config_get, delivery_config_upload_url_create, delivery_config_uploaded_files_get, delivery_config_file_delete, delivery_config_access_confirm, delivery_config_approve, schema_mapping_update, schema_mapping_get, schema_mapping_approve, delivery_inspection_create, delivery_inspection_get, delivery_inspection_list, delivery_inspection_files_list, ingestion_list]
+  - file: videoamp-share-and-revoke-audiences.md
+    name: Share VideoAmp audiences and revoke access
+    api: openapi/videoamp-public-api-openapi.yml
+    domain: collaboration
+    operations: [consent_list, consent_list_v3, share_resource_create, share_resources_create, share_resources_v3_create, share_get, share_list, share_delete, share_audience_recipient_revoke, share_audience_revocation_confirm, share_audience_revocation_cancel, user_info_get, user_organization_list]

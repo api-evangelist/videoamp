@@ -1,23 +1,161 @@
 aid: videoamp
 name: VideoAmp
-description: 'VideoAmp is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  VideoAmp is a Los Angeles-based media measurement and advertising technology company, founded in 2014, that
+  operates as a certified national TV currency provider alongside Nielsen and Comscore. Its platform unifies
+  linear TV, streaming and digital viewership onto a single dataset and identity spine (VALID) so agencies,
+  brands and publishers can build audiences, plan and optimize cross-screen media, and measure ad and content
+  outcomes. VideoAmp exposes this as a read-and-write Public API at api.videoamp.dev covering audiences,
+  campaigns, media plans, inventories and rate cards, reach curves, ad and content measurement, data streams
+  and ingestion, and cross-organization data sharing and consent — plus a first-party CLI and a hosted remote
+  MCP server so agents can drive the same operations.
+image: https://videoamp.com/wp-content/uploads/2020/06/5e8e31e378cb39dc533b5e00_blog_covid19-response.jpg
 url: https://raw.githubusercontent.com/api-evangelist/videoamp/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
-specificationVersion: '0.20'
+specificationVersion: '0.21'
 created: '2026-08-02'
 modified: '2026-08-02'
 tags:
-- Company
-apis: []
+  - media-measurement
+  - advertising
+  - adtech
+  - tv-currency
+  - audience-measurement
+  - media-planning
+  - streaming
+  - attribution
+  - data-collaboration
+  - mcp
+  - agent-native
+apis:
+  - name: VideoAmp Public API
+    description: >-
+      The VideoAmp Public API powers audience building and lookup, campaign and media plan creation and
+      optimization, inventory sets, rate cards and reach curves, ad and content measurement reporting with
+      post-process lift analysis, data stream onboarding with schema mapping and delivery configuration, and
+      cross-organization sharing and consent. 117 operations across the v1, v1alpha, v1beta, v2, v2beta and v3
+      channels, authenticated with OAuth 2.0 bearer tokens from VideoAmp's Auth0 tenant.
+    humanURL: https://docs.videoamp.dev
+    baseURL: https://api.videoamp.dev
+    tags:
+      - media-measurement
+      - advertising
+      - adtech
+      - audience-measurement
+      - media-planning
+      - attribution
+      - data-collaboration
+    properties:
+      - type: OpenAPI
+        url: openapi/videoamp-public-api-openapi.yml
+      - type: Documentation
+        url: https://docs.videoamp.dev
+      - type: APIReference
+        url: https://docs.videoamp.dev
+      - type: Overlay
+        url: overlays/videoamp-public-api-overlay.yaml
+      - type: Authentication
+        url: authentication/videoamp-authentication.yml
+      - type: OAuthScopes
+        url: scopes/videoamp-scopes.yml
+      - type: ErrorCatalog
+        url: errors/videoamp-problem-types.yml
+      - type: Conventions
+        url: conventions/videoamp-conventions.yml
+      - type: DataModel
+        url: data-model/videoamp-data-model.yml
+      - type: AgenticAccess
+        url: agentic-access/videoamp-agentic-access.yml
+  - name: VideoAmp MCP Server
+    description: >-
+      VideoAmp's hosted remote Model Context Protocol server, exposing 101 tools that mirror the VideoAmp Public
+      API operations for audiences, measurement, planning, inventory, data streams and sharing. Streamable HTTP
+      transport at https://api.videoamp.dev/v1/mcp, protected by OAuth 2.0 with RFC 9728 protected-resource
+      metadata pointing at login.videoamp.com. Can also be run locally via `videoamp mcp start-server`.
+    humanURL: https://github.com/VideoAmp/cli
+    baseURL: https://api.videoamp.dev/v1/mcp
+    tags:
+      - mcp
+      - agent-native
+      - media-measurement
+    properties:
+      - type: MCPServer
+        url: mcp/videoamp-mcp.yml
+      - type: ToolCrosswalk
+        url: mcp/videoamp-tool-crosswalk.yml
+      - type: Documentation
+        url: https://github.com/VideoAmp/cli#mcp-getting-started
+      - type: Authentication
+        url: authentication/videoamp-authentication.yml
 maintainers:
-- FN: Kin Lane
-  email: kin@apievangelist.com
-- FN: APIs.json
-  email: info@apis.io
+  - FN: Kin Lane
+    email: kin@apievangelist.com
+  - FN: APIs.json
+    email: info@apis.io
 common:
-- type: Website
-  url: https://forgeglobal.com/videoamp_stock/
+  - type: Website
+    url: https://videoamp.com/
+  - type: DeveloperPortal
+    url: https://docs.videoamp.dev
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: GettingStarted
+    url: https://github.com/VideoAmp/cli#mcp-getting-started
+  - type: Support
+    url: https://help.videoamp.dev/
+  - type: HelpCenter
+    url: https://help.videoamp.dev/
+  - type: Blog
+    url: https://videoamp.com/blog/
+  - type: GitHubOrganization
+    url: https://github.com/VideoAmp
+  - type: Login
+    url: https://platform.videoamp.com/
+  - type: TermsOfService
+    url: https://videoamp.com/terms-of-use/
+  - type: PrivacyPolicy
+    url: https://videoamp.com/privacy-notices/
+  - type: TrustCenter
+    url: https://trust.videoamp.com/
+  - type: ChangeLog
+    url: changelog/videoamp-changelog.yml
+  - type: CLI
+    url: cli/videoamp-cli.yml
+  - type: Packages
+    url: packages/videoamp-packages.yml
+  - type: MCPServer
+    url: mcp/videoamp-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/videoamp-tool-crosswalk.yml
+  - type: WellKnown
+    url: well-known/videoamp-well-known.yml
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: Conformance
+    url: conformance/videoamp-conformance.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/videoamp-lifecycle.yml
+  - type: DomainSecurity
+    url: security/videoamp-domain-security.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: LLMsTxt
+    url: llms/videoamp-llms.txt
+x-enrichment:
+  date: '2026-08-02'
+  status: enriched
+  artifacts_added: 30
+  pass: local-v1

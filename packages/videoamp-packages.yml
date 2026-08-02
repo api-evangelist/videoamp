@@ -1,0 +1,125 @@
+generated: '2026-08-02'
+method: searched
+source: npm registry search, PyPI, RubyGems, crates.io, pkg.go.dev, Homebrew, github.com/VideoAmp
+description: >-
+  VideoAmp ships no first-party API client library in any language registry. Its supported
+  programmatic distribution is a single Go binary — the `videoamp` CLI, released as GitHub release
+  assets — which also embeds the MCP server. The `@videoamp/*` and `*-videoamp` packages on npm are
+  genuine VideoAmp publications but are internal front-end tooling (lint configs, an icon set, a Hapi
+  route loader, a CSS framework), not clients for the VideoAmp Public API.
+api_client_sdks: []
+api_client_sdk_note: >-
+  Searched npm, PyPI (videoamp, videoamp-sdk, videoamp-api), RubyGems, crates.io, pkg.go.dev and
+  Homebrew on 2026-08-02. No first-party client library for api.videoamp.dev exists on any registry.
+  Integrators use the CLI, the MCP server, or raw HTTP.
+packages:
+  - language: go
+    registry: github-releases
+    name: videoamp
+    url: https://github.com/VideoAmp/cli/releases
+    install: >-
+      Download videoamp_<version>_<os>_<arch>.tar.gz (or .zip on Windows) from the releases page,
+      extract, and move `videoamp` onto your $PATH.
+    version: v0.148.32
+    platforms:
+      - darwin/amd64
+      - darwin/arm64
+      - linux/amd64
+      - linux/arm64
+      - windows/amd64
+    official: true
+    kind: cli
+    note: The CLI binary; also runs the MCP server via `videoamp mcp start-server`.
+  - language: javascript
+    registry: npm
+    name: eslint-config-videoamp
+    url: https://www.npmjs.com/package/eslint-config-videoamp
+    install: npm install eslint-config-videoamp
+    version: 6.0.0
+    official: true
+    kind: internal-tooling
+  - language: javascript
+    registry: npm
+    name: eslint-config-videoamp-react
+    url: https://www.npmjs.com/package/eslint-config-videoamp-react
+    install: npm install eslint-config-videoamp-react
+    version: 3.1.0
+    official: true
+    kind: internal-tooling
+  - language: javascript
+    registry: npm
+    name: eslint-config-videoamp-node
+    url: https://www.npmjs.com/package/eslint-config-videoamp-node
+    install: npm install eslint-config-videoamp-node
+    version: 1.0.2
+    official: true
+    kind: internal-tooling
+  - language: javascript
+    registry: npm
+    name: eslint-plugin-videoamp
+    url: https://www.npmjs.com/package/eslint-plugin-videoamp
+    install: npm install eslint-plugin-videoamp
+    version: 0.1.6
+    official: true
+    kind: internal-tooling
+  - language: javascript
+    registry: npm
+    name: stylelint-config-videoamp
+    url: https://www.npmjs.com/package/stylelint-config-videoamp
+    install: npm install stylelint-config-videoamp
+    version: 1.7.0
+    official: true
+    kind: internal-tooling
+  - language: javascript
+    registry: npm
+    name: tslint-config-videoamp
+    url: https://www.npmjs.com/package/tslint-config-videoamp
+    install: npm install tslint-config-videoamp
+    version: 1.0.4
+    official: true
+    kind: internal-tooling
+    deprecated: true
+    note: TSLint is end-of-life; superseded by eslint-config-videoamp.
+  - language: javascript
+    registry: npm
+    name: '@videoamp/videoamp-icons'
+    url: https://www.npmjs.com/package/@videoamp/videoamp-icons
+    install: npm install @videoamp/videoamp-icons
+    version: 0.1.10
+    official: true
+    kind: ui-assets
+    note: Material Design inspired icon suite used in the VideoAmp Console.
+  - language: javascript
+    registry: npm
+    name: '@videoamp/hapi-route-autoloader'
+    url: https://www.npmjs.com/package/@videoamp/hapi-route-autoloader
+    install: npm install @videoamp/hapi-route-autoloader
+    version: 1.0.1
+    official: true
+    kind: internal-tooling
+  - language: javascript
+    registry: npm
+    name: '@videoamp/semantic-release-config'
+    url: https://www.npmjs.com/package/@videoamp/semantic-release-config
+    install: npm install @videoamp/semantic-release-config
+    version: 1.0.5
+    official: true
+    kind: internal-tooling
+  - language: javascript
+    registry: npm
+    name: '@preamp/mixer'
+    url: https://www.npmjs.com/package/@preamp/mixer
+    install: npm install @preamp/mixer
+    version: 1.43.0
+    official: true
+    kind: css-framework
+    note: VideoAmp's CSS framework, published under the @preamp scope.
+registries_checked:
+  - {registry: npm, result: internal tooling only, api_client: false}
+  - {registry: pypi, result: no packages, api_client: false}
+  - {registry: rubygems, result: 404, api_client: false}
+  - {registry: crates.io, result: no crate, api_client: false}
+  - {registry: pkg.go.dev, result: 404 for github.com/VideoAmp/cli (module not published to the proxy), api_client: false}
+  - {registry: homebrew, result: 404, api_client: false}
+  - {registry: maven-central, result: not searched — no JVM surface indicated, api_client: false}
+  - {registry: nuget, result: not searched — no .NET surface indicated, api_client: false}

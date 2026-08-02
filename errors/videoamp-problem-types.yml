@@ -1,0 +1,112 @@
+generated: '2026-08-02'
+method: derived
+source: openapi/videoamp-public-api-openapi.yml (derived from VideoAmp CLI release v0.148.32)
+format: proprietary
+rfc9457: false
+description: >-
+  VideoAmp does not advertise application/problem+json and publishes no anonymous error reference.
+  Errors are signalled by HTTP status, and specific failure modes additionally carry a
+  product-scoped alphanumeric code of the form <AREA>_<NNNN> (optionally suffixed with a symbolic
+  name, e.g. DSO_0023_RULE_FILTER_NOT_SUPPORTED_ON_DSG). The codes below are the ones VideoAmp
+  documents by name in its own operation help text; the full registry is behind the Auth0-gated
+  docs at https://docs.videoamp.dev.
+status_codes:
+  - status: 400
+    title: Bad Request
+    description: >-
+      Invalid, unsupported or out-of-range parameter values. Documented as returning per-field or
+      per-item violation detail — e.g. rate-card validation returns per-title violations, and an
+      invalid currencyOfRecord returns a 400 listing the valid options.
+    operations_documenting: 19
+  - status: 401
+    title: Unauthorized
+    description: Missing or invalid bearer token. The MCP resource additionally returns an RFC 9728 WWW-Authenticate challenge.
+  - status: 403
+    title: Forbidden
+    description: The calling organization is not permissioned for the requested resource or datasource.
+    operations_documenting: 9
+  - status: 404
+    title: Not Found
+    description: >-
+      The resource does not exist, or is not accessible to the calling organization — VideoAmp
+      deliberately conflates these two cases so that resource existence is not leaked across tenants.
+    operations_documenting: 26
+  - status: 409
+    title: Conflict
+    description: The request conflicts with the current state of the resource (for example an already-approved or locked workflow object).
+    operations_documenting: 5
+  - status: 429
+    title: Too Many Requests
+    description: Platform rate limit exceeded. No rate-limit response headers are documented.
+  - status: 500
+    title: Internal Server Error
+    operations_documenting: 2
+problems:
+  - code: MRC_0152
+    range: MRC_0152–MRC_0157
+    status: 400
+    area: measurement
+    title: Content-measurement datasource content gate not satisfied
+    description: >-
+      Returned when an ad measurement report's data sources include a constrained
+      content-measurement datasource type and the request fails one of five content gates — a
+      supported audience, the required time shift, a supported Currency of Record
+      (viewership_type_id), supported dimension sets, and at least one supported metric type.
+    remediation: >-
+      The supported values for each category are resolved at request time and are not enumerated by
+      the API. Inspect the 400 response body and the DataSource.type field, then adjust the audience,
+      time shift, currency of record, dimension set or metric type accordingly.
+    source_operation: openapi/videoamp-public-api-openapi.yml#measurement_create
+  - code: MRC_0157
+    range: MRC_0152–MRC_0157
+    status: 400
+    area: measurement
+    title: Content-measurement datasource content gate not satisfied (upper bound of range)
+    description: Upper bound of the MRC_0152–MRC_0157 content-gate error range for ad measurement creation.
+    source_operation: openapi/videoamp-public-api-openapi.yml#measurement_create
+  - code: DGR_0001
+    status: 400
+    area: datasource-groups
+    title: Datasource group not eligible for rules
+    description: >-
+      Raised when creating a datasource group rule against a datasource group the caller cannot
+      access, or whose reporting scope / datasource types do not support rules.
+    remediation: >-
+      Reference a datasource group the caller has access to whose reporting scope and datasource
+      types support rules. Do not create rules against competitor or unsupported-scope groups, and
+      do not use persisted rules for ad-hoc filtering.
+    source_operation: openapi/videoamp-public-api-openapi.yml#datasource_group_rule_create
+  - code: DGR_0003
+    status: 400
+    area: datasource-groups
+    title: Datasource group scope does not support rules
+    description: Companion failure to DGR_0001 for datasource groups whose reporting scope does not support rules.
+    source_operation: openapi/videoamp-public-api-openapi.yml#datasource_group_rule_create
+  - code: DGR_0004
+    status: 400
+    area: datasource-groups
+    title: Datasource types do not support rules
+    description: Companion failure to DGR_0001 for datasource groups whose datasource types do not support rules.
+    source_operation: openapi/videoamp-public-api-openapi.yml#datasource_group_rule_create
+  - code: DSO_0023
+    symbolic_name: DSO_0023_RULE_FILTER_NOT_SUPPORTED_ON_DSG
+    status: 400
+    area: datasource-options
+    title: Rule filter not supported on this datasource group
+    description: >-
+      Raised when a rule targets a filter identifier that is not in the target datasource group's
+      allowlist. The `in:` enum returned by filter-name search is the cross-DSG universe, not the
+      per-DSG allowlist.
+    remediation: >-
+      Call datasource_rule_filter_name_search against the specific datasource group to discover the
+      applicable filter identifiers before calling value search or creating a rule.
+    source_operation: openapi/videoamp-public-api-openapi.yml#datasource_rule_filter_value_search
+notes:
+  - >-
+    Code prefixes observed: MRC (measurement report creation), DGR (datasource group rules), DSO
+    (datasource options). The numbering is zero-padded to four digits and appears to be a
+    contiguous per-area registry, so more codes exist than are documented anonymously.
+  - No machine-readable error registry, error type URIs, or problem+json schema is published.
+x-evidence:
+  fetched: '2026-08-02'
+  extracted_from: videoamp <command> --help across 118 API commands (CLI release v0.148.32)

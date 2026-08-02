@@ -1,0 +1,117 @@
+generated: '2026-08-02'
+method: searched
+source: live probes of every VideoAmp host in apis.yml plus the OpenAPI servers[] host
+description: >-
+  VideoAmp splits its estate across two domains: videoamp.com carries the corporate site and the
+  Auth0 identity tenant (login.videoamp.com), while videoamp.dev carries the developer surface
+  (api.videoamp.dev, docs.videoamp.dev, help.videoamp.dev). The discovery documents that exist are
+  all identity/authorization related — the Auth0 OIDC + RFC 8414 metadata, and the RFC 9728
+  protected-resource metadata that the MCP endpoint advertises in its 401 challenge.
+hosts:
+  - host: https://login.videoamp.com
+    role: authorization server (Auth0 tenant)
+    documents:
+      - path: /.well-known/openid-configuration
+        status: 200
+        content_type: application/json
+        file: videoamp-login-openid-configuration.json
+        spec: OpenID Connect Discovery 1.0
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        content_type: application/json
+        file: videoamp-login-oauth-authorization-server.json
+        spec: RFC 8414
+      - path: /.well-known/jwks.json
+        status: 200
+        content_type: application/json
+        note: JSON Web Key Set; not mirrored here because signing keys rotate.
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://api.videoamp.dev
+    role: API + MCP resource server
+    documents:
+      - path: /.well-known/oauth-protected-resource/v1/mcp
+        status: 200
+        content_type: application/json
+        file: videoamp-api-oauth-protected-resource.json
+        spec: RFC 9728
+        note: >-
+          Advertised by the WWW-Authenticate challenge returned from an anonymous POST to
+          https://api.videoamp.dev/v1/mcp. Names login.videoamp.com as the authorization server.
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /llms.txt
+        status: 404
+  - host: https://videoamp.com
+    role: corporate website
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /security.txt
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://docs.videoamp.dev
+    role: developer documentation (Auth0-gated)
+    documents:
+      - path: /.well-known/agent-card.json
+        status: 302
+        note: Every path on this host 302-redirects to the Auth0 universal login; no anonymous discovery surface.
+      - path: /.well-known/agent.json
+        status: 302
+      - path: /llms.txt
+        status: 302
+      - path: /openapi.json
+        status: 302
+  - host: https://trust.videoamp.com
+    role: trust center (Vanta-hosted)
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        content_type: text/html
+        valid: false
+        note: >-
+          Single-page-app catch-all — this host answers HTTP 200 with the same HTML shell for every
+          /.well-known/* path, so none of these are real discovery documents. Recorded as a rejected
+          false positive rather than a hit.
+notes:
+  - No RFC 9116 security.txt is published on any VideoAmp host.
+  - No /.well-known/api-catalog (RFC 9727) is published.
+  - No A2A agent card was found at either the canonical or the legacy path on any host.
+x-evidence:
+  fetched: '2026-08-02'
+  hosts_probed:
+    - videoamp.com
+    - www.videoamp.com
+    - api.videoamp.com
+    - docs.videoamp.com
+    - app.videoamp.com
+    - platform.videoamp.com
+    - login.videoamp.com
+    - trust.videoamp.com
+    - videoamp.dev
+    - api.videoamp.dev
+    - docs.videoamp.dev
+    - help.videoamp.dev
+    - mcp.videoamp.dev
+    - app.videoamp.dev

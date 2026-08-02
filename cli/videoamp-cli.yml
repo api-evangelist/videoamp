@@ -1,0 +1,448 @@
+generated: '2026-08-02'
+method: searched
+source: https://github.com/VideoAmp/cli
+name: videoamp
+description: First-party VideoAmp CLI. A single Go binary that exposes the same capabilities as the VideoAmp Public API, and can also run the VideoAmp MCP server locally.
+docs: https://github.com/VideoAmp/cli#cli-installation
+releases: https://github.com/VideoAmp/cli/releases
+latest_version: v0.148.32
+api_edition: '2026-07-31'
+language: go
+install:
+- method: github-release
+  platforms:
+  - darwin/amd64
+  - darwin/arm64
+  - linux/amd64
+  - linux/arm64
+  - windows/amd64
+  steps: Download the asset matching your OS/arch from the releases page, extract, and move `videoamp` onto your $PATH.
+- method: devcontainer
+  steps: Open the repo as a GitHub Codespace — the devcontainer provisions `videoamp` and wires Copilot to the remote MCP server.
+auth:
+  login_command: videoamp login
+  description: Browser-based OAuth 2.0 login against login.videoamp.com; the token is cached in the CLI config.
+  config_file: $HOME/.videoamp/config.yaml
+global_flags:
+- flag: --config
+  description: config file (default $HOME/.videoamp/config.yaml)
+- flag: -j, --json
+  description: JSON request body for POST/PATCH commands
+- flag: -c, --csv-output
+  description: write results to a CSV file
+- flag: -o, --oas
+  description: print the OpenAPI spec for the command as JSON (requires login)
+- flag: -m, --mcp-tool
+  description: print the MCP tool definition for the command as JSON (requires login)
+- flag: --encrypt-key
+  description: encrypt / decrypt sensitive values
+config_keys:
+- key: api_host
+  default: api.videoamp.dev
+- key: login_host
+  default: login.videoamp.com
+- key: env
+  default: prod
+  values:
+  - prod
+  - staging
+  - preprod
+- key: verbose
+  default: 'false'
+management_commands:
+- command: login
+  summary: obtain an access_token via the browser
+- command: logout
+  summary: clear the cached token
+- command: version
+  summary: print CLI version, api_edition and docs URL
+- command: config get|set|list
+  summary: manage CLI configuration
+- command: mcp list-tools
+  summary: list the MCP tools built from the API spec
+- command: mcp start-server
+  summary: run the VideoAmp MCP server locally
+api_command_count: 118
+api_commands:
+- group: adMeasurements
+  commands:
+  - command: measurement_create
+    summary: Create Measurement report
+    rest: POST /v2/adMeasurements
+  - command: measurement_create_post_process
+    summary: Create post-process analysis
+    rest: POST /v2/adMeasurements/{adMeasurement_uuid}/postProcesses
+  - command: measurement_delete
+    summary: Delete Measurement report
+    rest: DELETE /v2/adMeasurements/{id}
+  - command: measurement_delete_post_process
+    summary: Delete a post-process (lift) request
+    rest: DELETE /v2/adMeasurements/{adMeasurement_uuid}/postProcesses/{postProcessUuid}
+  - command: measurement_get
+    summary: Get Measurement report details
+    rest: GET /v2/adMeasurements/{id}
+  - command: measurement_get_post_process
+    summary: Get post-process request details
+    rest: GET /v2/adMeasurements/{adMeasurement_uuid}/postProcesses/{postProcessUuid}
+  - command: measurement_get_post_process_requirements
+    summary: Get post-process configuration options
+    rest: GET /v2/adMeasurements/{adMeasurement_uuid}/postProcesses:requirements
+  - command: measurement_list
+    summary: List Measurement reports with filtering and pagination
+    rest: GET /v2/adMeasurements
+  - command: measurement_list_post_processes
+    summary: List post-processes for an AdMeasurement
+    rest: GET /v2/adMeasurements/{adMeasurement_uuid}/postProcesses
+  - command: measurement_refresh
+    summary: Trigger delivery of a Measurement report
+    rest: POST /v2/adMeasurements/trigger
+  - command: measurement_update
+    summary: Update Measurement configuration
+    rest: PATCH /v2/adMeasurements/{id}
+- group: audiences
+  commands:
+  - command: audience_batch_get
+    summary: Batch Get Audiences
+    rest: GET /v1/audiences:batchGet
+  - command: audience_create
+    summary: Create Audience
+    rest: POST /v2/audiences
+  - command: audience_create_v1
+    summary: Create Audience
+    rest: POST /v1/audiences
+  - command: audience_demographic_filter_field_lookup
+    summary: Lookup Demographic Filter Fields
+    rest: GET /v2/audiences/lookupDemographicFilterFields
+  - command: audience_demographic_filter_value_lookup
+    summary: Lookup Demographic Filter Values
+    rest: GET /v2/audiences/lookupDemographicFilterValues
+  - command: audience_export_create
+    summary: Create Export
+    rest: POST /v1/audiences/{audienceId}/exports
+  - command: audience_export_get
+    summary: Get Export
+    rest: GET /v1/audiences/{audienceId}/exports/{id}
+  - command: audience_export_list
+    summary: List Exports
+    rest: GET /v1/audiences/{audienceId}/exports
+  - command: audience_get
+    summary: Get Audience
+    rest: GET /v2/audiences/{id}
+  - command: audience_get_v1
+    summary: Get Audience
+    rest: GET /v1/audiences/{id}
+  - command: audience_id_types_lookup
+    summary: Look Up Id Types
+    rest: GET /v1/audiences:lookUpIdTypes
+  - command: audience_list
+    summary: List Audiences
+    rest: GET /v2/audiences
+  - command: audience_list_v1
+    summary: List Audiences
+    rest: GET /v1/audiences
+  - command: audience_status_list
+    summary: List Statuses
+    rest: GET /v1/audiences/status
+  - command: audience_update
+    summary: Update Audience
+    rest: PATCH /v2/audiences/{id}
+- group: campaigns
+  commands:
+  - command: campaign_create
+    summary: Create Campaign
+    rest: POST /v1beta/campaigns
+  - command: campaign_delete
+    summary: Delete Campaign
+    rest: DELETE /v1beta/campaigns/{campaignId}
+  - command: campaign_get
+    summary: Get Campaign
+    rest: GET /v1beta/campaigns/{campaignId}
+  - command: campaign_list
+    summary: List Campaigns
+    rest: GET /v1beta/campaigns
+  - command: campaign_update
+    summary: Update Campaign
+    rest: PATCH /v1beta/campaigns/{campaignId}
+- group: consents
+  commands:
+  - command: consent_list
+    summary: List Consents
+    rest: GET /v1/consents
+  - command: consent_list_v3
+    summary: List Consents (UUID)
+    rest: GET /v3/consents
+- group: content
+  commands:
+  - command: content_metric_compatibility_get
+    summary: List Metric and Dimension Types
+    rest: GET /external/v1/content/metric-type-compatibility-matrix
+  - command: content_metric_create
+    summary: Create Metrics
+    rest: POST /external/v1/content/metrics
+  - command: content_metric_get
+    summary: Get Metrics
+    rest: GET /external/v1/content/metrics/{id}
+  - command: episode_get
+    summary: Get Episode
+    rest: GET /external/v1/content/episodes/{episodeId}
+  - command: episode_list
+    summary: List Episodes
+    rest: GET /external/v1/content/episodes
+  - command: media_group_list
+    summary: List Network MediaGroups
+    rest: GET /external/v1/content/media-groups
+  - command: network_get
+    summary: Get Network
+    rest: GET /external/v1/content/networks/{id}
+  - command: network_list
+    summary: List Networks
+    rest: GET /external/v1/content/networks
+  - command: program_get
+    summary: Get Program
+    rest: GET /external/v1/content/programs/{programId}
+  - command: program_list
+    summary: List Programs
+    rest: GET /external/v1/content/programs
+- group: currency-of-record
+  commands:
+  - command: cor_list
+    summary: List Currency of Records
+    rest: GET /external/v1/currency-of-record
+- group: dataStreamTypes
+  commands:
+  - command: data_stream_type_get
+    summary: Get Data Stream Type
+    rest: GET /v1alpha/dataStreamTypes/{dataStreamTypeName}
+  - command: data_stream_type_list
+    summary: List Data Stream Types
+    rest: GET /v1alpha/dataStreamTypes
+- group: dataStreams
+  commands:
+  - command: data_stream_create
+    summary: Create Data Stream
+    rest: POST /v1alpha/dataStreams
+  - command: data_stream_get
+    summary: Get Data Stream
+    rest: GET /v1alpha/dataStreams/{dataStreamId}
+  - command: data_stream_list
+    summary: List Data Streams
+    rest: GET /v1alpha/dataStreams
+  - command: data_stream_update
+    summary: Update Data Stream
+    rest: PATCH /v1alpha/dataStreams/{dataStreamId}
+  - command: delivery_config_access_confirm
+    summary: Confirm Delivery Config Access
+    rest: POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:confirmAccess
+  - command: delivery_config_approve
+    summary: Approve Delivery Config
+    rest: POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:approve
+  - command: delivery_config_file_delete
+    summary: Delete Uploaded File
+    rest: POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:deleteUploadedFile
+  - command: delivery_config_get
+    summary: Get Delivery Config
+    rest: GET /v1alpha/dataStreams/{dataStreamId}/deliveryConfig
+  - command: delivery_config_update
+    summary: Upsert Delivery Config
+    rest: PUT /v1alpha/dataStreams/{dataStreamId}/deliveryConfig
+  - command: delivery_config_upload_url_create
+    summary: Create Upload URL
+    rest: POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:createUploadUrl
+  - command: delivery_config_uploaded_files_get
+    summary: List Uploaded Files
+    rest: GET /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:listUploadedFiles
+  - command: delivery_inspection_create
+    summary: Create Delivery Inspection
+    rest: POST /v1alpha/dataStreams/{dataStreamId}/deliveryInspections
+  - command: delivery_inspection_files_list
+    summary: List Delivery Inspection Files
+    rest: GET /v1alpha/dataStreams/{dataStreamId}/deliveryInspections/{inspectionId}/files
+  - command: delivery_inspection_get
+    summary: Get Delivery Inspection
+    rest: GET /v1alpha/dataStreams/{dataStreamId}/deliveryInspections/{inspectionId}
+  - command: delivery_inspection_list
+    summary: List Delivery Inspections
+    rest: GET /v1alpha/dataStreams/{dataStreamId}/deliveryInspections
+  - command: ingestion_list
+    summary: List Ingestions
+    rest: GET /v1alpha/dataStreams/{dataStreamId}/ingestions
+  - command: schema_mapping_approve
+    summary: Approve Schema Mapping
+    rest: POST /v1alpha/dataStreams/{dataStreamId}/schemaMapping:approve
+  - command: schema_mapping_get
+    summary: Get Schema Mapping
+    rest: GET /v1alpha/dataStreams/{dataStreamId}/schemaMapping
+  - command: schema_mapping_update
+    summary: Upsert Schema Mapping
+    rest: PUT /v1alpha/dataStreams/{dataStreamId}/schemaMapping
+- group: inventories
+  commands:
+  - command: inventory_get
+    summary: Get Inventory
+    rest: GET /v1beta/inventories/{inventoryId}
+  - command: inventory_list
+    summary: List Inventories
+    rest: GET /v1beta/inventories
+  - command: inventory_update
+    summary: Update Inventory Dimension Names
+    rest: PATCH /v1beta/inventories/{inventoryId}
+  - command: rate_card_create
+    summary: Create Rate Card
+    rest: POST /v1beta/inventories/{inventoryId}/rateCards
+  - command: rate_card_delete
+    summary: Delete Rate Card
+    rest: DELETE /v1beta/inventories/{inventoryId}/rateCards/{rateCardId}
+  - command: rate_card_get
+    summary: Get Rate Card
+    rest: GET /v1beta/inventories/{inventoryId}/rateCards/{rateCardId}
+  - command: rate_card_list
+    summary: List Rate Cards
+    rest: GET /v1beta/inventories/{inventoryId}/rateCards
+  - command: rate_card_update
+    summary: Update Rate Card
+    rest: PATCH /v1beta/inventories/{inventoryId}/rateCards/{rateCardId}
+  - command: reach_curve_create
+    summary: Create Custom Reach Curve
+    rest: POST /v1beta/inventories/{inventoryId}/reachCurves
+  - command: reach_curve_delete
+    summary: Delete Custom Reach Curve
+    rest: DELETE /v1beta/inventories/{inventoryId}/reachCurves/{reachCurveId}
+  - command: reach_curve_get
+    summary: Get Custom Reach Curve
+    rest: GET /v1beta/inventories/{inventoryId}/reachCurves/{reachCurveId}
+  - command: reach_curve_list
+    summary: List Custom Reach Curves
+    rest: GET /v1beta/inventories/{inventoryId}/reachCurves
+- group: library
+  commands:
+  - command: conversion_group_create
+    summary: Create Conversion Group
+    rest: POST /v1/library/conversionGroups
+  - command: conversion_group_delete
+    summary: Delete Conversion Group
+    rest: DELETE /v1/library/conversionGroups/{conversionGroupId}
+  - command: conversion_group_get
+    summary: Get Conversion Group
+    rest: GET /v1/library/conversionGroups/{conversionGroupId}
+  - command: conversion_group_list
+    summary: List Conversion Groups
+    rest: GET /v1/library/conversionGroups
+  - command: datasource_conversion_provider_search
+    summary: Search Conversion Data Providers
+    rest: POST /v1/library/conversionDataProviderOptionsSearch
+  - command: datasource_filter_name_search
+    summary: Search Datasource Filter Names
+    rest: POST /v1/library/datasourceFilterNameOptionsSearch
+  - command: datasource_filter_value_search
+    summary: Search Datasource Filter Values
+    rest: POST /v1/library/datasourceFilterValueOptionsSearch
+  - command: datasource_group_create
+    summary: Create Datasource Group
+    rest: POST /v1/library/datasourceGroups
+  - command: datasource_group_delete
+    summary: Delete Datasource Group
+    rest: DELETE /v1/library/datasourceGroups/{datasourceGroupId}
+  - command: datasource_group_get
+    summary: Get Datasource Group
+    rest: GET /v1/library/datasourceGroups/{datasourceGroupId}
+  - command: datasource_group_list
+    summary: List Datasource Groups
+    rest: GET /v1/library/datasourceGroups
+  - command: datasource_group_rule_create
+    summary: Create Rule
+    rest: POST /v1/library/datasourceGroups/{datasourceGroupId}/rules
+  - command: datasource_group_rule_delete
+    summary: Delete Rule
+    rest: DELETE /v1/library/datasourceGroups/{datasourceGroupId}/rules/{ruleId}
+  - command: datasource_group_rule_get
+    summary: Get Rule
+    rest: GET /v1/library/datasourceGroups/{datasourceGroupId}/rules/{ruleId}
+  - command: datasource_group_rule_list
+    summary: List Rules
+    rest: GET /v1/library/datasourceGroups/{datasourceGroupId}/rules
+  - command: datasource_metadata_search
+    summary: Search Datasource Metadata
+    rest: POST /v1beta/library/datasourceMetadataSearch
+  - command: datasource_rule_filter_name_search
+    summary: Search Rule Filter Names
+    rest: POST /v1/library/ruleFilterNameOptionsSearch
+  - command: datasource_rule_filter_value_search
+    summary: Search Rule Filter Values
+    rest: POST /v1/library/ruleFilterValueOptionsSearch
+  - command: datasource_schema_get
+    summary: Get Datasource Schema
+    rest: GET /v1beta/library/datasourceSchema
+  - command: datasource_type_search
+    summary: Search Datasource Types
+    rest: POST /v1/library/datasourceTypeOptionsSearch
+- group: me
+  commands:
+  - command: user_info_get
+    summary: Get Current User
+    rest: GET /v1/me
+  - command: user_organization_list
+    summary: List All User Organizations
+    rest: GET /v1/me/orgs
+  - command: user_profile_update
+    summary: Update User Profile (Internal Only)
+    rest: PATCH /v1/me
+- group: plans
+  commands:
+  - command: draft_plan_approve
+    summary: Approve Plan
+    rest: POST /v2beta/plans/{planId}:approve
+  - command: draft_plan_update
+    summary: Patch Plan (Draft)
+    rest: PATCH /v2beta/plans/{planId}
+  - command: plan_create
+    summary: Create Plan
+    rest: POST /v1beta/plans
+  - command: plan_delete
+    summary: Delete Plan
+    rest: DELETE /v1beta/plans/{planId}
+  - command: plan_draft_create
+    summary: Create Plan (Draft)
+    rest: POST /v2beta/plans
+  - command: plan_get
+    summary: Get Plan
+    rest: GET /v1beta/plans/{planId}
+  - command: plan_list
+    summary: List Plans
+    rest: GET /v1beta/plans
+- group: reports
+  commands:
+  - command: report_context_search
+    summary: Search Report Semantic Context
+    rest: GET /v1alpha/reports/{reportId}:searchContext
+  - command: report_query_create
+    summary: Create Scoped Query for Report
+    rest: POST /v1alpha/reports/{reportId}:createQuery
+- group: shares
+  commands:
+  - command: share_audience_recipient_revoke
+    summary: Initiate Bulk Audience Revocation (Step 1 of 2)
+    rest: DELETE /v1/shares/audiences/revoke/recipient/{recipient}
+  - command: share_audience_revocation_cancel
+    summary: 'Cancel Bulk Audience Revocation (Step 2b: Abort)'
+    rest: POST /v1/shares/audiences/revoke/cancel/{confirmId}
+  - command: share_audience_revocation_confirm
+    summary: 'Confirm Bulk Audience Revocation (Step 2a: Execute)'
+    rest: POST /v1/shares/audiences/revoke/confirm/{confirmId}
+  - command: share_delete
+    summary: Revoke Share
+    rest: DELETE /v1/shares/{id}
+  - command: share_get
+    summary: Get Share
+    rest: GET /v1/shares/{id}
+  - command: share_list
+    summary: List Shares
+    rest: GET /v1/shares
+  - command: share_resource_create
+    summary: Create Share
+    rest: POST /v1/shares
+  - command: share_resources_create
+    summary: Bulk Create Shares
+    rest: POST /v2/shares
+  - command: share_resources_v3_create
+    summary: Bulk Create Shares (UUID Recipients)
+    rest: POST /v3/shares
