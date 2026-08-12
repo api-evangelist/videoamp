@@ -29,71 +29,399 @@ tags:
   - mcp
   - agent-native
 apis:
-  - name: VideoAmp Public API
-    description: >-
-      The VideoAmp Public API powers audience building and lookup, campaign and media plan creation and
-      optimization, inventory sets, rate cards and reach curves, ad and content measurement reporting with
-      post-process lift analysis, data stream onboarding with schema mapping and delivery configuration, and
-      cross-organization sharing and consent. 117 operations across the v1, v1alpha, v1beta, v2, v2beta and v3
-      channels, authenticated with OAuth 2.0 bearer tokens from VideoAmp's Auth0 tenant.
-    humanURL: https://docs.videoamp.dev
-    baseURL: https://api.videoamp.dev
-    tags:
-      - media-measurement
-      - advertising
-      - adtech
-      - audience-measurement
-      - media-planning
-      - attribution
-      - data-collaboration
-    properties:
-      - type: OpenAPI
-        url: openapi/videoamp-public-api-openapi.yml
-      - type: Documentation
-        url: https://docs.videoamp.dev
-      - type: APIReference
-        url: https://docs.videoamp.dev
-      - type: Overlay
-        url: overlays/videoamp-public-api-overlay.yaml
-      - type: Authentication
-        url: authentication/videoamp-authentication.yml
-      - type: OAuthScopes
-        url: scopes/videoamp-scopes.yml
-      - type: ErrorCatalog
-        url: errors/videoamp-problem-types.yml
-      - type: Conventions
-        url: conventions/videoamp-conventions.yml
-      - type: DataModel
-        url: data-model/videoamp-data-model.yml
-      - type: AgenticAccess
-        url: agentic-access/videoamp-agentic-access.yml
-  - name: VideoAmp MCP Server
-    description: >-
-      VideoAmp's hosted remote Model Context Protocol server, exposing 101 tools that mirror the VideoAmp Public
-      API operations for audiences, measurement, planning, inventory, data streams and sharing. Streamable HTTP
-      transport at https://api.videoamp.dev/v1/mcp, protected by OAuth 2.0 with RFC 9728 protected-resource
-      metadata pointing at login.videoamp.com. Can also be run locally via `videoamp mcp start-server`.
-    humanURL: https://github.com/VideoAmp/cli
-    baseURL: https://api.videoamp.dev/v1/mcp
-    tags:
-      - mcp
-      - agent-native
-      - media-measurement
-    properties:
-      - type: MCPServer
-        url: mcp/videoamp-mcp.yml
-      - type: ToolCrosswalk
-        url: mcp/videoamp-tool-crosswalk.yml
-      - type: Documentation
-        url: https://github.com/VideoAmp/cli#mcp-getting-started
-      - type: Authentication
-        url: authentication/videoamp-authentication.yml
+- name: VideoAmp MCP Server
+  description: >-
+    VideoAmp's hosted remote Model Context Protocol server, exposing 101 tools that mirror the VideoAmp
+    Public API operations for audiences, measurement, planning, inventory, data streams and sharing. Streamable
+    HTTP transport at https://api.videoamp.dev/v1/mcp, protected by OAuth 2.0 with RFC 9728 protected-resource
+    metadata pointing at login.videoamp.com. Can also be run locally via `videoamp mcp start-server`.
+  humanURL: https://github.com/VideoAmp/cli
+  baseURL: https://api.videoamp.dev/v1/mcp
+  tags:
+  - mcp
+  - agent-native
+  - media-measurement
+  properties:
+  - type: MCPServer
+    url: mcp/videoamp-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/videoamp-tool-crosswalk.yml
+  - type: Documentation
+    url: https://github.com/VideoAmp/cli#mcp-getting-started
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+- aid: videoamp:videoamp-admeasurements-api
+  name: VideoAmp Ad Measurements API
+  description: adMeasurements operations.
+  humanURL: https://docs.videoamp.dev
+  baseURL: https://api.videoamp.dev
+  tags:
+  - adMeasurements
+  properties:
+  - type: OpenAPI
+    url: openapi/videoamp-admeasurements-api-openapi.yml
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
+- aid: videoamp:videoamp-audiences-api
+  name: VideoAmp Audiences API
+  description: audiences operations.
+  humanURL: https://docs.videoamp.dev
+  baseURL: https://api.videoamp.dev
+  tags:
+  - audiences
+  properties:
+  - type: OpenAPI
+    url: openapi/videoamp-audiences-api-openapi.yml
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
+- aid: videoamp:videoamp-campaigns-api
+  name: VideoAmp Campaigns API
+  description: campaigns operations.
+  humanURL: https://docs.videoamp.dev
+  baseURL: https://api.videoamp.dev
+  tags:
+  - campaigns
+  properties:
+  - type: OpenAPI
+    url: openapi/videoamp-campaigns-api-openapi.yml
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
+- aid: videoamp:videoamp-consents-api
+  name: VideoAmp Consents API
+  description: consents operations.
+  humanURL: https://docs.videoamp.dev
+  baseURL: https://api.videoamp.dev
+  tags:
+  - consents
+  properties:
+  - type: OpenAPI
+    url: openapi/videoamp-consents-api-openapi.yml
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
+- aid: videoamp:videoamp-content-api
+  name: VideoAmp Content API
+  description: content operations.
+  humanURL: https://docs.videoamp.dev
+  baseURL: https://api.videoamp.dev
+  tags:
+  - content
+  properties:
+  - type: OpenAPI
+    url: openapi/videoamp-content-api-openapi.yml
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
+- aid: videoamp:videoamp-currency-of-record-api
+  name: VideoAmp Currency Of Record API
+  description: currency-of-record operations.
+  humanURL: https://docs.videoamp.dev
+  baseURL: https://api.videoamp.dev
+  tags:
+  - currency-of-record
+  properties:
+  - type: OpenAPI
+    url: openapi/videoamp-currency-of-record-api-openapi.yml
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
+- aid: videoamp:videoamp-datastreams-api
+  name: VideoAmp Data Streams API
+  description: dataStreams operations.
+  humanURL: https://docs.videoamp.dev
+  baseURL: https://api.videoamp.dev
+  tags:
+  - dataStreams
+  properties:
+  - type: OpenAPI
+    url: openapi/videoamp-datastreams-api-openapi.yml
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
+- aid: videoamp:videoamp-datastreamtypes-api
+  name: VideoAmp Data Stream Types API
+  description: dataStreamTypes operations.
+  humanURL: https://docs.videoamp.dev
+  baseURL: https://api.videoamp.dev
+  tags:
+  - dataStreamTypes
+  properties:
+  - type: OpenAPI
+    url: openapi/videoamp-datastreamtypes-api-openapi.yml
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
+- aid: videoamp:videoamp-inventories-api
+  name: VideoAmp Inventories API
+  description: inventories operations.
+  humanURL: https://docs.videoamp.dev
+  baseURL: https://api.videoamp.dev
+  tags:
+  - inventories
+  properties:
+  - type: OpenAPI
+    url: openapi/videoamp-inventories-api-openapi.yml
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
+- aid: videoamp:videoamp-library-api
+  name: VideoAmp Library API
+  description: library operations.
+  humanURL: https://docs.videoamp.dev
+  baseURL: https://api.videoamp.dev
+  tags:
+  - library
+  properties:
+  - type: OpenAPI
+    url: openapi/videoamp-library-api-openapi.yml
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
+- aid: videoamp:videoamp-me-api
+  name: VideoAmp Me API
+  description: me operations.
+  humanURL: https://docs.videoamp.dev
+  baseURL: https://api.videoamp.dev
+  tags:
+  - me
+  properties:
+  - type: OpenAPI
+    url: openapi/videoamp-me-api-openapi.yml
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
+- aid: videoamp:videoamp-plans-api
+  name: VideoAmp Plans API
+  description: plans operations.
+  humanURL: https://docs.videoamp.dev
+  baseURL: https://api.videoamp.dev
+  tags:
+  - plans
+  properties:
+  - type: OpenAPI
+    url: openapi/videoamp-plans-api-openapi.yml
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
+- aid: videoamp:videoamp-reports-api
+  name: VideoAmp Reports API
+  description: reports operations.
+  humanURL: https://docs.videoamp.dev
+  baseURL: https://api.videoamp.dev
+  tags:
+  - reports
+  properties:
+  - type: OpenAPI
+    url: openapi/videoamp-reports-api-openapi.yml
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
+- aid: videoamp:videoamp-shares-api
+  name: VideoAmp Shares API
+  description: shares operations.
+  humanURL: https://docs.videoamp.dev
+  baseURL: https://api.videoamp.dev
+  tags:
+  - shares
+  properties:
+  - type: OpenAPI
+    url: openapi/videoamp-shares-api-openapi.yml
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
   - FN: APIs.json
     email: info@apis.io
 common:
+  - type: Overlay
+    url: overlays/videoamp-public-api-overlay.yaml
   - type: Website
     url: https://videoamp.com/
   - type: DeveloperPortal
