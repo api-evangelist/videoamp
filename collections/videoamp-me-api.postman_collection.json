@@ -1,0 +1,542 @@
+{
+  "item": [
+    {
+      "id": "6e7505ce-45fd-4f78-9e2d-da919264c669",
+      "name": "me",
+      "description": {
+        "content": "me operations.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ff4b29cb-c3b5-4c9c-80ec-4c09a7f29a92",
+          "name": "Get Current User",
+          "request": {
+            "name": "Get Current User",
+            "description": {
+              "content": "### What\n\nReturns authenticated user profile including personal details (name, email), and business entity memberships (holding companies, agencies, advertisers). Delivers identity (UUID, names, email) plus org hierarchy for authorization and multi-tenant resource scoping.\n\n### Why\n\n- App initialization: provides identity, org context, and permissions for session management\n- Multi-tenant isolation: enforces resource scoping and authorization decisions\n- **Business Name Resolution**: Discover UUIDs from business names (e.g., \"Genesis\") via `memberships` array\n\n### When\n\n- App startup after authentication\n- Login completion to establish state\n- User menu rendering\n- Business entity selector population\n- Pre-flight validation before mutations\n- **When users reference businesses by name** - resolve to UUID for API calls\n\n### How\n\n- Auth: OAuth2 Bearer token (identity from JWT claims)\n- Latency: ~100ms\n- Returns: user UUID, name, email, org UUID, memberships array\n- Cache per session; refresh on permission changes\n- **Name→UUID Resolution**: Search `memberships` for `display_name` match, use `id` field in API calls. Filter with `?membership_search=Genesis&membership_kinds=ADVERTISER`\n\n### Organization Identity & Cross-API Usage\n\n`current_organization_id`, the deprecated `organizations` array, and the `memberships` entry where `kind = HOLDING_COMPANY` all share the **same UUID** referencing the same organization (tenant).\n\nPass this UUID as `org_id`, `public_org_id`, or `organization_id` in other VideoAmp APIs (Library, Deal, Share, Forecast, etc.).\n\n\"Organization\" = tenant. `HOLDING_COMPANY` in `memberships` = its access-hierarchy representation (1:1, same UUID). Some legacy APIs accept a numeric `holding_company_id` — that is a different identifier, not this UUID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "me"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "include_memberships",
+                  "value": "<string>",
+                  "description": "Filter support If true, includes the memberships array in the response. Set to false to omit business entity details for lightweight responses when organizational context is not needed. Default is true. (default true)"
+                },
+                {
+                  "disabled": false,
+                  "key": "membership_kinds",
+                  "value": "<string>",
+                  "description": "If provided, filters the memberships array to only include business entities of the specified kinds (e.g., only `ADVERTISER` entities). If empty or not set, all membership kinds are returned. Accepts multiple values for combined filtering.Ex: /v1/me?membership_kinds=ADVERTISER,AD_AGENCY to return both ADVERTISER and AD_AGENCY. **Cross-API note**: The Sharing API uses `ORGANIZATION` instead of `HOLDING_COMPANY` — translate when passing kind values to sharing endpoints. - HOLDING_COMPANY: Top-level entity in the business/access hierarchy, corresponding to \"Organization\" (tenant) in external terminology. The `id` of a HOLDING_COMPANY business entity is the same UUID as `current_organization_id` from the `/v1/me` response. This UUID can be used as `org_id`, `public_org_id`, or `organization_id` in other APIs accepting string UUIDs. - AD_AGENCY: Media buying agency under a holding company. Same as `AD_AGENCY` in Sharing API's SubjectKind. - ADVERTISER: Brand or advertiser purchasing media. Same as `ADVERTISER` in Sharing API's SubjectKind. Use `membership_kinds=ADVERTISER` for name resolution to avoid returning agencies with the same name."
+                },
+                {
+                  "disabled": false,
+                  "key": "membership_search",
+                  "value": "<string>",
+                  "description": "Optional search string to filter 'memberships' by display name. Performs case-insensitive substring match against the 'display_name' field of each business entity. Useful for implementing search-as-you-type functionality in business entity selectors. If empty or not set, no name filtering is applied."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "<integer>",
+                  "description": "Pagination for memberships Number of membership records to return per page. Used for paginating through large sets of business entity memberships. If not set a default page size of 999 is used."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_token",
+                  "value": "<string>",
+                  "description": "Token from a previous 'IdentifyUser' response to retrieve the next page of membership results. Used in conjunction with 'page_size' for pagination. If not set, retrieves the first page."
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ab852b79-5e34-405d-af18-478fa20fae9c",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "include_memberships",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "membership_kinds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "membership_search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b2b399b5-5b7a-4378-9c87-d924bfa0c428",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "include_memberships",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "membership_kinds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "membership_search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4d227cdd-92be-4daa-bbc8-7bbddd43c339",
+          "name": "Update User Profile (Internal Only)",
+          "request": {
+            "name": "Update User Profile (Internal Only)",
+            "description": {
+              "content": "### What\n\nUpdates the authenticated user's profile settings, specifically the current organization context. Changes which organization the user is operating within, affecting resource visibility, permissions, and data filtering across the platform. Returns updated user profile including the new organization context and available memberships. This endpoint only updates `current_organization_id`. Other profile fields (`given_name`, `family_name`, `email`) are read-only and cannot be modified through this endpoint.\n\n### Access Control\n\n**RESTRICTED TO INTERNAL VIDEOAMP USERS ONLY**: This endpoint is only accessible to VideoAmp employees. External users will receive `403 Forbidden` when attempting to access this endpoint.\n\n### Why\n\n- Internal users need to switch between organizations for administrative and support operations\n- Multi-tenant applications require organization context switching for proper resource scoping\n- Session state must reflect the active organization for authorization and data filtering\n- UI components (org selectors) need to persist user's organization selection across sessions\n### When\n\n- Call when user selects a different organization from an org selector dropdown\n- Use during application initialization if user's last-selected org differs from JWT claim\n- Execute before cross-organization operations requiring context switch\n### How\n\n- Auth via OAuth2 Bearer token (identity derived from JWT claims)\n- Provide organization UUID in request body via `current_organization_id` field\n- User must have membership in the specified organization\n- Returns full IdentifyResponse with updated `current_organization_id` field\n- Client applications may need to refresh session after org switch for updated claims\n- Response includes updated memberships array with same pagination as `/v1/me`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "me"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4e3ab2d1-c576-4ceb-b275-f91c26518bd8",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6960fc1b-97a5-4180-9aa2-8b5b01a55884",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cd450a30-c3a4-4b36-a560-59e3f6d3cdb1",
+              "name": "Forbidden — the caller's organization is not permissioned for this resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bec10ebb-ae22-41b4-9fac-0c193a0b1e44",
+          "name": "List All User Organizations",
+          "request": {
+            "name": "List All User Organizations",
+            "description": {
+              "content": "### What\n\nReturns **ALL organizations** the authenticated user has access to or can switch to. Provides complete list of organizations with UUID, display name, and organizational kind.\n\n**Key Distinction from `/v1/me`:**\n- This endpoint (`/v1/me/orgs`) returns **ALL** organizations the user can access\n- `/v1/me` returns only the **current** organization (via `current_organization_id` field)\n\n### Why\n\n- Organization switching: Shows which organizations users can switch between\n- Access discovery: Users need to see what organizations they can access\n- UI population: Powers organization selector dropdowns\n- Admin tools: View and manage user organization memberships\n- Troubleshooting: Verify organizational access for permission issues\n\n### When\n\n**Use this endpoint when users ask about:**\n- \"What organizations can I switch to?\" / \"List all my organizations\"\n- \"What organizations do I have access to?\"\n- Any variation of listing/viewing available organizations\n\n**Do NOT use for current org context** → Use `GET /v1/me` instead\n\n### How\n\n- User identity derived automatically from OAuth2 Bearer token (JWT subject claim)\n- No request parameters required - operates on authenticated user\n- Typical latency under 200ms\n- Returns array of organizations with `id` (UUID), `display_name` (string), `kind` (enum)\n- No pagination required (users typically belong to <100 organizations)\n\nEach organization `id` here is the same UUID that appears as `current_organization_id` in `/v1/me` and as the `HOLDING_COMPANY` membership's `id`. Use it as `org_id`, `public_org_id`, or `organization_id` in other APIs.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "me",
+                "orgs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b507533c-26a1-424e-bd20-34abec4c8096",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "me",
+                    "orgs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a8ada650-9fe9-4d00-a910-fd8c5d943701",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "me",
+                    "orgs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.videoamp.dev",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "scope",
+        "value": "openid profile email offline_access"
+      },
+      {
+        "key": "redirect_uri",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "authUrl",
+        "value": "https://login.videoamp.com/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "authorization_code"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "203b512b-3eed-47fa-a04f-a40b7265755f",
+    "name": "VideoAmp Public Me API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.\n\n**Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI's `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary's own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.\n\n**Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.\n\nContact Support:\n Name: VideoAmp Support\n Email: support@videoamp.com",
+      "type": "text/plain"
+    }
+  }
+}

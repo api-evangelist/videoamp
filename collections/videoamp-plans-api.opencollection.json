@@ -1,0 +1,211 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VideoAmp Public Plans API",
+    "version": "2026-07-31"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://login.videoamp.com/authorize",
+      "accessTokenUrl": "https://login.videoamp.com/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "plans",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Plans",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1beta/plans",
+            "params": [
+              {
+                "name": "campaignIds",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter by campaign UUID. Returns plans that include the specified campaigns. Pass multiple values as repeated query params for OR logic."
+              },
+              {
+                "name": "createdBy",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter by the user ID who created the plan. Provide creator UUIDs to retrieve only plans created by those users. Pass multiple values as repeated query params for OR logic."
+              },
+              {
+                "name": "displayNames",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter by plan name using case-insensitive substring matching on the display_name field. Returns plans whose name contains the provided string. Pass multiple values as repeated query params for OR logic."
+              },
+              {
+                "name": "ids",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter by plan UUIDs. Pass multiple values as repeated query params: ?ids=uuid1&ids=uuid2. Use for efficient batch retrieval when you already know which specific plans you need. Plans not found or not accessible to the caller are silently omitted from results rather than causing an error."
+              },
+              {
+                "name": "inventorySetIds",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter by inventory set UUID. Returns plans associated with the specified inventory sets. Pass multiple values as repeated query params for OR logic."
+              },
+              {
+                "name": "orderBy",
+                "value": "",
+                "type": "query",
+                "description": "This field specifies how to order the list results. If no value is provided, the results will be sorted by created_at descending order. Specify the order by providing a comma separated list of 'field_name direction' strings. Omitted direction defaults to asc. Example: 'created_at desc, display_name' Accepted Values: - 'status' - 'failure_msg' - 'display_name' - 'inventory_set_id' - 'budget' - 'minimum_investment' - 'created_at' - 'created_by' Accepted Sort: - 'desc' - 'asc'"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Query param pageSize specifies the number of results to include in a page of results. Defaults to 100 when omitted. Maximum value is 1000."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+              },
+              {
+                "name": "statuses",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter by plan processing status. Use to find completed plans (READY), in-progress plans (PROCESSING/QUEUED), or failed plans (FAILED). Pass multiple values for OR logic. - STATUS_UNSPECIFIED: Status is unspecified. Default proto3 zero value. Do not use in client logic. - QUEUED: The plan has been created and its required data dependencies are being resolved. Transitions to PROCESSING once all required data is available. - PROCESSING: The plan optimization is actively running. Processing time varies based on plan complexity (number of titles, constraints, and audience combinations). - READY: The plan optimization completed successfully. Results are available via the output field which contains a presigned S3 URL for downloading the optimized allocation. - FAILED: The plan optimization failed. Check `failure_msg` for a human-readable error message and `status_info` for structured error details (code, status, diagnostics). Common causes include invalid inventory data, insufficient rates, or optimizer errors. Fix the configuration and create a new plan to retry. - DRAFT: The plan has been created and allows further modification"
+              }
+            ]
+          },
+          "docs": "Returns a paginated, filterable list of Plans accessible to the caller. Plans represent optimization scenarios that allocate budget across campaigns and inventory titles.\n\n**Why**: Discover and manage plans across your organization. Use to find completed plans for result retrieval, monitor processing status, or audit plan configurations.\n\n**When**: Call when building a plan management UI, checking optimization status across multiple plans, or filtering plans by status, creator, or campaign.\n\n**H"
+        },
+        {
+          "info": {
+            "name": "Create Plan",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v1beta/plans",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new media plan optimization scenario. The plan defines a budget allocation strategy across inventory titles and constraints to maximize reach, impressions, or audience concentration for a campaign.\n\n**Why**: Run reach and frequency optimization against a campaign's inventory set. Plans are the core output of the media planning workflow, producing optimized budget allocations. Use `OBJECTIVE_FORECAST_ONLY` to skip optimization and forecast reach, impressions, and frequency directly from"
+        },
+        {
+          "info": {
+            "name": "Get Plan",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1beta/plans/:planId",
+            "params": [
+              {
+                "name": "planId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the Plan to retrieve. Obtain this value from the 'id' field in plan creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the plan does not exist or is not accessible to the caller."
+              }
+            ]
+          },
+          "docs": "Returns the complete Plan resource for a single known plan ID. Use this endpoint when you already have the plan UUID and need to retrieve full details including status, output, and configuration.\n\n**Why**: Retrieve plan details to check optimization status, access results (presigned URL when READY), or review the plan configuration. Essential for polling async plan processing.\n\n**When**: Call after creating a plan to poll for completion (QUEUED → PROCESSING → READY/FAILED). Also use to retrieve "
+        },
+        {
+          "info": {
+            "name": "Delete Plan",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.videoamp.dev/v1beta/plans/:planId",
+            "params": [
+              {
+                "name": "planId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the Plan to delete. Obtain this value from the 'id' field in plan creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the plan does not exist or is not accessible to the caller."
+              }
+            ]
+          },
+          "docs": "Deletes a Plan, removing it from all API responses. This action cannot be undone through the API — there is no undelete operation.\n\n**Why**: Remove plans that are no longer needed, were created in error, or have been superseded by a new optimization scenario.\n\n**When**: Call when a plan is no longer required regardless of its current status (QUEUED, PROCESSING, READY, and FAILED plans can all be deleted). Verify the plan exists via `GET /v1beta/plans/{plan_id}` before deleting.\n\n**How**: Supply "
+        },
+        {
+          "info": {
+            "name": "Create Plan (Draft)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v2beta/plans",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Starts the draft branch of the planning workflow by creating a media plan in DRAFT status for a campaign. The draft captures the budget-allocation strategy — budget, constraints, objectives, filters, and rates — so it can be refined before optimization.\n\n**Why**: A media plan can be produced two ways — submitted complete and sent straight to optimization, or built incrementally through draft → edit → approve. This endpoint begins the incremental path: create the draft now, refine it, and approve"
+        },
+        {
+          "info": {
+            "name": "Patch Plan (Draft)",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.videoamp.dev/v2beta/plans/:planId",
+            "params": [
+              {
+                "name": "planId",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the Plan in UUID v4 format. Auto-generated on creation and immutable thereafter. Use this ID in subsequent get and delete operations. Store this value after creation to poll for optimization status."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Refines a DRAFT media plan in the draft branch of the planning workflow. Send only the fields you want to change; omitted fields keep their current values.\n\n**Why**: Lets planners iterate on a draft — adjust budget, constraints, objectives, filters, or rate card / overrides — between creating it and approving it for optimization.\n\n**When**: While the plan is still in DRAFT status, after it is created and before it is approved.\n\n**How**: Supply the plan UUID as `plan_id`. Merge semantics: a field"
+        },
+        {
+          "info": {
+            "name": "Approve Plan",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v2beta/plans/:planId:approve",
+            "params": [
+              {
+                "name": "planId",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the Plan in UUID v4 format. Auto-generated on creation and immutable thereafter. Use this ID in subsequent get and delete operations. Store this value after creation to poll for optimization status."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Approves a DRAFT media plan, completing the draft branch of the planning workflow: it runs full cross-field validation and, on success, submits the plan for asynchronous optimization.\n\n**Why**: The commit step of the draft → edit → approve path. Approval transitions the plan from DRAFT to QUEUED and runs the same optimization a directly-submitted plan would, producing the allocated media plan.\n\n**When**: After the draft is fully configured. The plan MUST be in DRAFT status. Rates are required at"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

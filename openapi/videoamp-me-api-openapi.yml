@@ -1,0 +1,295 @@
+openapi: 3.2.0
+info:
+  title: VideoAmp Public Me API
+  version: '2026-07-31'
+  summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
+  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
+
+
+    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
+
+
+    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  contact:
+    name: VideoAmp Support
+    email: support@videoamp.com
+    url: https://help.videoamp.dev
+  termsOfService: https://videoamp.com/terms-of-use/
+servers:
+- url: https://api.videoamp.dev
+  description: Production. The VideoAmp CLI also references `staging` and `preprod` environments (api.staging.videoamp.dev, api.preprod.videoamp.dev), but neither resolves publicly (DNS NXDOMAIN as of 2026-08-02), so they are not listed as callable servers.
+security:
+- videoampOAuth: []
+tags:
+- name: me
+  description: me operations.
+paths:
+  /v1/me:
+    get:
+      operationId: user_info_get
+      summary: Get Current User
+      tags:
+      - me
+      description: '### What
+
+
+        Returns authenticated user profile including personal details (name, email), and business entity memberships (holding companies, agencies, advertisers). Delivers identity (UUID, names, email) plus org hierarchy for authorization and multi-tenant resource scoping.
+
+
+        ### Why
+
+
+        - App initialization: provides identity, org context, and permissions for session management
+
+        - Multi-tenant isolation: enforces resource scoping and authorization decisions
+
+        - **Business Name Resolution**: Discover UUIDs from business names (e.g., "Genesis") via `memberships` array
+
+
+        ### When
+
+
+        - App startup after authentication
+
+        - Login completion to establish state
+
+        - User menu rendering
+
+        - Business entity selector population
+
+        - Pre-flight validation before mutations
+
+        - **When users reference businesses by name** - resolve to UUID for API calls
+
+
+        ### How
+
+
+        - Auth: OAuth2 Bearer token (identity from JWT claims)
+
+        - Latency: ~100ms
+
+        - Returns: user UUID, name, email, org UUID, memberships array
+
+        - Cache per session; refresh on permission changes
+
+        - **Name→UUID Resolution**: Search `memberships` for `display_name` match, use `id` field in API calls. Filter with `?membership_search=Genesis&membership_kinds=ADVERTISER`
+
+
+        ### Organization Identity & Cross-API Usage
+
+
+        `current_organization_id`, the deprecated `organizations` array, and the `memberships` entry where `kind = HOLDING_COMPANY` all share the **same UUID** referencing the same organization (tenant).
+
+
+        Pass this UUID as `org_id`, `public_org_id`, or `organization_id` in other VideoAmp APIs (Library, Deal, Share, Forecast, etc.).
+
+
+        "Organization" = tenant. `HOLDING_COMPANY` in `memberships` = its access-hierarchy representation (1:1, same UUID). Some legacy APIs accept a numeric `holding_company_id` — that is a different identifier, not this UUID.'
+      parameters:
+      - name: include_memberships
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter support If true, includes the memberships array in the response. Set to false to omit business entity details for lightweight responses when organizational context is not needed. Default is true. (default true)
+      - name: membership_kinds
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'If provided, filters the memberships array to only include business entities of the specified kinds (e.g., only `ADVERTISER` entities). If empty or not set, all membership kinds are returned. Accepts multiple values for combined filtering.Ex: /v1/me?membership_kinds=ADVERTISER,AD_AGENCY to return both ADVERTISER and AD_AGENCY. **Cross-API note**: The Sharing API uses `ORGANIZATION` instead of `HOLDING_COMPANY` — translate when passing kind values to sharing endpoints. - HOLDING_COMPANY: Top-level entity in the business/access hierarchy, corresponding to "Organization" (tenant) in external terminology. The `id` of a HOLDING_COMPANY business entity is the same UUID as `current_organization_id` from the `/v1/me` response. This UUID can be used as `org_id`, `public_org_id`, or `organization_id` in other APIs accepting string UUIDs. - AD_AGENCY: Media buying agency under a holding company. Same as `AD_AGENCY` in Sharing API''s SubjectKind. - ADVERTISER: Brand or advertiser purchasing media. Same as `ADVERTISER` in Sharing API''s SubjectKind. Use `membership_kinds=ADVERTISER` for name resolution to avoid returning agencies with the same name.'
+      - name: membership_search
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Optional search string to filter 'memberships' by display name. Performs case-insensitive substring match against the 'display_name' field of each business entity. Useful for implementing search-as-you-type functionality in business entity selectors. If empty or not set, no name filtering is applied.
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Pagination for memberships Number of membership records to return per page. Used for paginating through large sets of business entity memberships. If not set a default page size of 999 is used.
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Token from a previous 'IdentifyUser' response to retrieve the next page of membership results. Used in conjunction with 'page_size' for pagination. If not set, retrieves the first page.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: user_info_get
+    patch:
+      operationId: user_profile_update
+      summary: Update User Profile (Internal Only)
+      tags:
+      - me
+      description: '### What
+
+
+        Updates the authenticated user''s profile settings, specifically the current organization context. Changes which organization the user is operating within, affecting resource visibility, permissions, and data filtering across the platform. Returns updated user profile including the new organization context and available memberships. This endpoint only updates `current_organization_id`. Other profile fields (`given_name`, `family_name`, `email`) are read-only and cannot be modified through this endpoint.
+
+
+        ### Access Control
+
+
+        **RESTRICTED TO INTERNAL VIDEOAMP USERS ONLY**: This endpoint is only accessible to VideoAmp employees. External users will receive `403 Forbidden` when attempting to access this endpoint.
+
+
+        ### Why
+
+
+        - Internal users need to switch between organizations for administrative and support operations
+
+        - Multi-tenant applications require organization context switching for proper resource scoping
+
+        - Session state must reflect the active organization for authorization and data filtering
+
+        - UI components (org selectors) need to persist user''s organization selection across sessions
+
+        ### When
+
+
+        - Call when user selects a different organization from an org selector dropdown
+
+        - Use during application initialization if user''s last-selected org differs from JWT claim
+
+        - Execute before cross-organization operations requiring context switch
+
+        ### How
+
+
+        - Auth via OAuth2 Bearer token (identity derived from JWT claims)
+
+        - Provide organization UUID in request body via `current_organization_id` field
+
+        - User must have membership in the specified organization
+
+        - Returns full IdentifyResponse with updated `current_organization_id` field
+
+        - Client applications may need to refresh session after org switch for updated claims
+
+        - Response includes updated memberships array with same pagination as `/v1/me`.'
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp user_profile_update --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '403':
+          description: Forbidden — the caller's organization is not permissioned for this resource.
+      x-videoamp-cli-command: user_profile_update
+  /v1/me/orgs:
+    get:
+      operationId: user_organization_list
+      summary: List All User Organizations
+      tags:
+      - me
+      description: '### What
+
+
+        Returns **ALL organizations** the authenticated user has access to or can switch to. Provides complete list of organizations with UUID, display name, and organizational kind.
+
+
+        **Key Distinction from `/v1/me`:**
+
+        - This endpoint (`/v1/me/orgs`) returns **ALL** organizations the user can access
+
+        - `/v1/me` returns only the **current** organization (via `current_organization_id` field)
+
+
+        ### Why
+
+
+        - Organization switching: Shows which organizations users can switch between
+
+        - Access discovery: Users need to see what organizations they can access
+
+        - UI population: Powers organization selector dropdowns
+
+        - Admin tools: View and manage user organization memberships
+
+        - Troubleshooting: Verify organizational access for permission issues
+
+
+        ### When
+
+
+        **Use this endpoint when users ask about:**
+
+        - "What organizations can I switch to?" / "List all my organizations"
+
+        - "What organizations do I have access to?"
+
+        - Any variation of listing/viewing available organizations
+
+
+        **Do NOT use for current org context** → Use `GET /v1/me` instead
+
+
+        ### How
+
+
+        - User identity derived automatically from OAuth2 Bearer token (JWT subject claim)
+
+        - No request parameters required - operates on authenticated user
+
+        - Typical latency under 200ms
+
+        - Returns array of organizations with `id` (UUID), `display_name` (string), `kind` (enum)
+
+        - No pagination required (users typically belong to <100 organizations)
+
+
+        Each organization `id` here is the same UUID that appears as `current_organization_id` in `/v1/me` and as the `HOLDING_COMPANY` membership''s `id`. Use it as `org_id`, `public_org_id`, or `organization_id` in other APIs.'
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: user_organization_list
+components:
+  securitySchemes:
+    videoampOAuth:
+      type: oauth2
+      description: OAuth 2.0 / OIDC via VideoAmp's Auth0 tenant at https://login.videoamp.com. Verified from https://login.videoamp.com/.well-known/openid-configuration (HTTP 200) and https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp (HTTP 200, RFC 9728). Bearer tokens are presented in the Authorization header.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.videoamp.com/authorize
+          tokenUrl: https://login.videoamp.com/oauth/token
+          refreshUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://login.videoamp.com/oauth/device/code
+          tokenUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+externalDocs:
+  url: https://docs.videoamp.dev
+  description: VideoAmp Public API documentation (Auth0-gated)
+x-evidence:
+  method: derived
+  derived_from: github.com/VideoAmp/cli release v0.148.32 (videoamp_v0.148.32_darwin_arm64.tar.gz)
+  extraction: videoamp --help; videoamp <command> --help
+  fetched: '2026-08-02'
+  operations: 118
+  parameters: 295
+  anonymous_openapi_published: false
+  notes: docs.videoamp.dev returns HTTP 302 to Auth0 for every path; api.videoamp.dev returns 404 for /openapi.json, /swagger.json, /v1/openapi.json, /api-docs, /docs, /redoc.

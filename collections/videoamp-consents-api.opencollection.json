@@ -1,0 +1,104 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VideoAmp Public Consents API",
+    "version": "2026-07-31"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://login.videoamp.com/authorize",
+      "accessTokenUrl": "https://login.videoamp.com/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "consents",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Consents",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1/consents",
+            "params": [
+              {
+                "name": "fetchRecipientAncestorPath",
+                "value": "",
+                "type": "query",
+                "description": "When true, populates the recipient_ancestor_path field in each consent showing the recipient's full position in the organizational hierarchy (e.g., 'Organization > Ad Agency > Advertiser'). Useful for consent dashboards that need to display organizational context. May increase response time for large result sets - omit if hierarchy information is not needed. (default true)"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Query param pageSize specifies the number of results to include in a page of results."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Advanced query filter for attribute-based filtering. Supported attributes: - **recipient_kind**: Filter by recipient type. Operators: eq, in. Values: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, PRODUCT. - **recipient_name**: Filter by recipient organization name. Operators: startswith, endswith, contains. Multiple q parameters are AND'd by default. Use OR keyword between conditions for OR logic. Examples: - ?q=recipient_kind eq ADVERTISER - ?q=recipient_kind in ADVERTISER,AD_AGENCY - ?q=recipient_name startswith Acme - ?q=recipient_name contains Media OR recipient_kind eq AD_AGENCY"
+              }
+            ]
+          },
+          "docs": "### What\n\nReturns a paginated list of consent records where recipients have authorized your organization to share resources with them. Each consent contains recipient identity, status, organization names, and optionally the recipient's organizational hierarchy path.\n\n### Why\n\nEnables discovery of which recipients have consented to receive shared data from your organization. Essential for pre-share validation (verifying consent exists before creating shares), building consent management dashboard"
+        },
+        {
+          "info": {
+            "name": "List Consents (UUID)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v3/consents",
+            "params": [
+              {
+                "name": "fetchRecipientAncestorPath",
+                "value": "",
+                "type": "query",
+                "description": "When true, populates the recipient_ancestor_path field in each consent showing the recipient's full position in the organizational hierarchy (e.g., 'Organization > Ad Agency > Advertiser'). Useful for consent dashboards that need to display organizational context. May increase response time for large result sets - omit if hierarchy information is not needed. (default true)"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Query param pageSize specifies the number of results to include in a page of results."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Advanced query filter for attribute-based filtering. Supported attributes: - **recipient_kind**: Filter by recipient type. Operators: eq, in. Values: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, PRODUCT. - **recipient_name**: Filter by recipient organization name. Operators: startswith, endswith, contains. Multiple q parameters are AND'd by default. Use OR keyword between conditions for OR logic. Examples: - ?q=recipient_kind eq ADVERTISER - ?q=recipient_kind in ADVERTISER,AD_AGENCY - ?q=recipient_name startswith Acme - ?q=recipient_name contains Media OR recipient_kind eq AD_AGENCY"
+              }
+            ]
+          },
+          "docs": "### What\n\nReturns a paginated list of consent records where recipients have authorized your organization to share resources with them. Sharer and recipient are identified exclusively by UUID.\n\n### Why\n\nEnables discovery of which recipients have consented to receive shared data from your organization using UUID identifiers. Essential for pre-share validation (verifying consent exists before creating shares via POST /v3/shares), building consent management dashboards, and searching for specific pa"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

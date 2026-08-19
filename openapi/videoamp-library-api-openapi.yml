@@ -1,0 +1,1294 @@
+openapi: 3.2.0
+info:
+  title: VideoAmp Public Library API
+  version: '2026-07-31'
+  summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
+  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
+
+
+    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
+
+
+    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  contact:
+    name: VideoAmp Support
+    email: support@videoamp.com
+    url: https://help.videoamp.dev
+  termsOfService: https://videoamp.com/terms-of-use/
+servers:
+- url: https://api.videoamp.dev
+  description: Production. The VideoAmp CLI also references `staging` and `preprod` environments (api.staging.videoamp.dev, api.preprod.videoamp.dev), but neither resolves publicly (DNS NXDOMAIN as of 2026-08-02), so they are not listed as callable servers.
+security:
+- videoampOAuth: []
+tags:
+- name: library
+  description: library operations.
+paths:
+  /v1/library/conversionDataProviderOptionsSearch:
+    post:
+      operationId: datasource_conversion_provider_search
+      summary: Search Conversion Data Providers
+      tags:
+      - library
+      description: 'Searches for a list of available Conversion Data Providers for a given agency advertiser. The response includes details such as the provider''s value and label.
+
+        Please view our [help page](https://help.videoamp.dev/en/articles/11429353-datasource-options) for more information on how datasource options can be used.'
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp datasource_conversion_provider_search --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: datasource_conversion_provider_search
+  /v1/library/conversionGroups:
+    post:
+      operationId: conversion_group_create
+      summary: Create Conversion Group
+      tags:
+      - library
+      description: 'Creates a new Conversion Group using the provided details. A valid `data_provider_id` must be specified. The `data_provider_id` can be retrieved using the [`Search Conversion Data Providers`](/#tag/datasource-options-service/POST/v1/library/conversionDataProviderOptionsSearch) endpoint. The response returns the details of the newly created Conversion Group, including its unique identifier, metadata, and associated datasources.
+
+        Please view our [help page](https://help.videoamp.dev/en/articles/11429351-conversion-groups) for more information on how conversion groups can be used.'
+      parameters:
+      - name: validateOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Optional. When true, performs all validation without persisting the resource. Returns the resource with defaults applied on success. (default true)
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp conversion_group_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: conversion_group_create
+    get:
+      operationId: conversion_group_list
+      summary: List Conversion Groups
+      tags:
+      - library
+      description: '### What
+
+
+        Retrieves paginated Conversion Groups configured within your organization. Returns group metadata, datasource configurations, and conversion definitions.
+
+
+        ### Why
+
+
+        Conversion Groups are required for creating outcomes Measurement reports (ADVANCED_RF_OUTCOMES, TOPLINE_LINEAR_OUTCOMES, ADVANCED_RF_OUTCOMES_SUPPLEMENTAL). Use this endpoint to discover available Conversion Groups before creating attribution analysis reports.
+
+
+        ### When
+
+
+        - Discover Conversion Groups before creating outcomes Measurement reports
+
+        - Search groups by advertiser, date range, or data provider
+
+        - Audit conversion tracking configurations
+
+        - Bulk fetch specific groups by UUID
+
+
+        ### How
+
+
+        Filter by `advertiserId`, `startDate`/`endDate`, `search`, `includeDataProviderId`/`excludeDataProviderId`, `currencyOfRecord`, `dataLatency`. Use `ids` for bulk fetch. Use `includeDeleted` for soft-deleted groups.
+
+
+        ### Related Endpoints
+
+
+        - `GET /v1/library/conversionGroups/{id}` - Retrieve specific group
+
+        - `POST /v1/library/conversionGroups` - Create new group
+
+        - `DELETE /v1/library/conversionGroups/{id}` - Delete group
+
+        - `POST /v2beta/adMeasurements` - Create outcomes report
+
+
+        See [help page](https://help.videoamp.dev/en/articles/11429351-conversion-groups) for more information.'
+      parameters:
+      - name: agencyAdvertiserId
+        in: query
+        required: false
+        schema:
+          type: string
+        description: '**Deprecated** Optional. Ignored if advertiserId is provided. Supports multiple values via repeated query parameters.'
+      - name: currencyOfRecord
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by currency of record identifier. Must be combined with 'data_latency' filter. Returns groups with matching value or no currency_of_record set.
+      - name: dataLatency
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by data latency. Required when using ''currency_of_record'' filter. - DATA_LATENCY_UNSPECIFIED: No selection; Default value. - FINAL: Fully reconciled data with complete accuracy. Available 2-3 weeks after broadcast. **DSGs:** Valid when reporting_scope=AD_MEASUREMENT with KANTAR_COMMINGLE or NATIONAL_LINEAR_AND_BROADCAST_CABLE datasources; or reporting_scope=CONTENT_MEASUREMENT. **CGs:** Required when data_provider_id=linear_tune_in; not valid otherwise. - PRELIMINARY: Fast-processed data, 3-4 days after broadcast, subject to revisions. **DSGs:** Valid when reporting_scope=CONTENT_MEASUREMENT and currency_of_record supports it. **CGs:** Not valid. - NEXT_NEXT_DAY: Near real-time data, ~2 days after broadcast. Volatile. **DSGs:** Valid when reporting_scope=CONTENT_MEASUREMENT and currency_of_record supports it. **CGs:** Not valid.'
+      - name: endDate
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter Conversion Groups by their configured date range end. Format YYYY-MM-DD (ISO 8601). When provided, returns groups where 'filter_start_date' is on or before this date, enabling discovery of groups with conversion data coverage overlapping or before this date. Can be used independently or combined with 'start_date' for complete date range filtering. Useful when creating reports for specific campaign periods to ensure returned groups have data coverage for the analysis timeframe. Validation error occurs if date format is invalid.
+      - name: excludeDataProviderId
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: 'Excludes Conversion Groups configured with the specified data provider IDs. Supports multiple values via repeated query parameters. In addition to individual provider IDs, accepts predefined group keys that represent a set of related providers. Available group keys: streaming_tune_in (paramount_streamlog, nbcu_streamlog, tubi_streamlog). If same provider appears in both include_data_provider_id and this field, exclusion takes precedence. Use conversionDataProviderOptionsSearch endpoint to discover valid individual provider IDs.'
+      - name: ids
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Bulk fetch specific Conversion Groups by UUID identifiers. Format is UUID v4 for each ID. Use this for efficient batch retrieval when specific group IDs are known, avoiding filtering through large result sets. Common use case is retrieving multiple groups referenced in existing report configurations or fetching groups from saved preferences. Maximum recommended is 50 IDs per request. A user needs to have access to the IDs included for them to appear in the results.
+      - name: includeDataProviderId
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: 'Includes only Conversion Groups configured with data provider IDs in the specified list. Supports multiple values via repeated query parameters with OR logic. In addition to individual provider IDs, accepts predefined group keys that represent a set of related providers. Available group keys: streaming_tune_in (paramount_streamlog, nbcu_streamlog, tubi_streamlog). If same provider appears in both this field and exclude_data_provider_id, exclusion takes precedence. Use conversionDataProviderOptionsSearch endpoint to discover valid individual provider IDs.'
+      - name: includeDeleted
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Controls whether soft-deleted Conversion Groups appear in results. Default false returns only active non-deleted groups. Set to true to include deleted groups for auditing or historical reference. Deleted groups retain all configuration data and can be referenced in historical reports but cannot be used for new report creation. Useful for auditing, troubleshooting reports created before group deletion, or recovering configurations. Response includes deleted_at timestamp for each deleted group when true. Hard-deleted groups never appear regardless of this setting. (default true)
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results. Defaults to 20 if not specified. Maximum allowed value is 200.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      - name: search
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Free-text search query to filter Conversion Groups by 'display_name' field. Performs case-insensitive partial match against Conversion Group names. When omitted, no name filtering is applied and all groups matching other criteria are returned. When provided, only groups with names containing the search term as substring are included. Useful for quickly finding groups when partial name is known but not full name or ID. Search is not tokenized; entire search string is matched as phrase. Does not search other fields like 'description' or 'advertiser_name'. Combine with other filters like 'advertiserId' for precise results.
+      - name: startDate
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter Conversion Groups by their configured date range start. Format YYYY-MM-DD (ISO 8601). When provided, returns groups where 'filter_end_date' is on or after this date, enabling discovery of groups with conversion data coverage overlapping or after this date. Can be used independently or combined with 'end_date' for complete date range filtering. Useful when creating reports for specific campaign periods to ensure returned groups have data coverage for the analysis timeframe. Validation error occurs if date format is invalid.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: conversion_group_list
+  /v1/library/conversionGroups/{conversionGroupId}:
+    delete:
+      operationId: conversion_group_delete
+      summary: Delete Conversion Group
+      tags:
+      - library
+      description: 'Soft deletes a Conversion Group by its unique identifier (UUID). The resource can still be referenced by ID but will not be included in list results unless `include_deleted` is set to true.
+
+        Please view our [help page](https://help.videoamp.dev/en/articles/11429351-conversion-groups) for more information on how conversion groups can be used.'
+      parameters:
+      - name: conversionGroupId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: conversion_group_delete
+    get:
+      operationId: conversion_group_get
+      summary: Get Conversion Group
+      tags:
+      - library
+      description: 'Retrieves complete details of a specific Conversion Group by UUID. Returns the full resource configuration including datasources with filters, lookback window settings, metadata, and timestamps. The response structure matches the format used when creating or listing Conversion Groups. Use `top_level_only=true` to retrieve metadata without datasource details for reduced response size. Use `include_deleted=true` to retrieve soft-deleted groups by ID. Do NOT use for: listing multiple groups (use GET /v1/library/conversionGroups with query parameters instead); creating new groups (use POST /v1/library/conversionGroups). Next Steps: After retrieval, use the `id` field to reference this group in subsequent API operations; examine `datasources` array to understand filter configuration; cache response client-side if displaying in UI to avoid repeated calls. Typical latency under 100ms; full datasource details (top_level_only=false, default) may add 50-100ms for groups with extensive filter configurations. See [help page](https://help.videoamp.dev/en/articles/11429351-conversion-groups) for more information on Conversion Groups.'
+      parameters:
+      - name: conversionGroupId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique identifier for the Conversion Group in standard UUID v4 format without prefix. Immutable and system-assigned when created via POST /v1/library/conversionGroups. Obtain from list operations, GET responses, or Location header of creation. Fetches complete configuration including datasources, filters, lookback window, and metadata. Required for retrieval. Returns 404 if ID nonexistent or group deleted (unless include_deleted=true). Invalid UUID format returns 400 with field validation error.
+      - name: includeDeleted
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Enables retrieval of soft-deleted groups by ID. Default false restricts to active groups; deleted IDs return 404. True allows soft-deleted retrieval for audit trails, historical analysis, restoration. Soft-deleted groups have deleted_at timestamp, excluded from lists unless requested. Used by support investigating attribution on campaigns with deleted groups or restoring configurations. Does not affect hard-deleted groups (permanently removed). (default true)
+      - name: topLevelOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Controls datasource inclusion in response. Default false returns complete configuration with datasources array (filters, values, labels). True retrieves only metadata (id, name, lookback window, timestamps), reducing response size 60-80% and latency 50-100ms for groups with extensive filters. Use true when datasource details are not needed. (default true)
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: conversion_group_get
+  /v1/library/datasourceFilterNameOptionsSearch:
+    post:
+      operationId: datasource_filter_name_search
+      summary: Search Datasource Filter Names
+      tags:
+      - library
+      description: '### What
+
+
+        Returns available filter names by advertiser (business unit) for a given datasource type for Datasource Group (DSG) or data provider for Conversion Group (CG). Each type or provider has specific set of filter names that must be fetched from this endpoint.
+
+
+        ### Why
+
+
+        Discovers which filters can be applied when building a DSG or CG.
+
+
+        **Business Scenarios:**
+
+        - Agent finds `network` and `daypart` filters for NATIONAL_LINEAR_BROADCAST_AND_CABLE
+
+
+        - User is building a CG with data provider CIRCANA and calls this endpoint to find that `pixel_id` and then `campaign_id` are available to use.
+
+        ### When
+
+
+        Call after selecting a `datasource_type` from `POST /v1/library/datasourceTypeOptionsSearch` for a DSG. If building a CG, call after selecting a `data_provider_id` from `POST /v1/library/conversionDataProviderOptionsSearch`.
+
+
+        **Important:** Supports iterative narrowing via `applied_filters`. Pass previously selected filters to see remaining filter names.
+
+
+        **Do NOT use when:**
+
+        - You already know the exact filter names for the datasource type
+
+        - You need filter values (use `POST /v1/library/datasourceFilterValueOptionsSearch`)
+
+
+        **Next Steps:** Select filter names, then call `POST /v1/library/datasourceFilterValueOptionsSearch` to get values for each.
+
+
+        ### How
+
+
+        **Iterative Discovery:** Call with type or provider + advertiser, select a filter name, get values via `datasourceFilterValueOptionsSearch`, call this endpoint again with `applied_filters`, repeat until done.'
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp datasource_filter_name_search --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: datasource_filter_name_search
+  /v1/library/datasourceFilterValueOptionsSearch:
+    post:
+      operationId: datasource_filter_value_search
+      summary: Search Datasource Filter Values
+      tags:
+      - library
+      description: '### What
+
+
+        Returns available filter values (e.g., pixel IDs, campaign IDs, network names) for a given datasource type and filter name. Supports text search via `search` and pagination via `page_size`/`page_token`.
+
+
+        ### Why
+
+
+        Discovers specific values available for a selected filter when building a Datasource Group (DSG) or Conversion Group (CG).
+
+
+        **Business Scenarios:**
+
+        - Agent retrieves pixel IDs for VA_PIXEL with `datasource_filter_name=pixel_id`, uses `search` to find a specific pixel
+
+        - User browses network names for NATIONAL_LINEAR_BROADCAST_AND_CABLE, paginating through results
+
+        ### When
+
+
+        Call after selecting a filter name from `POST /v1/library/datasourceFilterNameOptionsSearch`. Pass the same `advertiser_id`, `datasource_type`, `data_provider_id` if for CG, `reporting_scope` if for DSG, and date range.
+
+
+        **Important:** Returns paginated results (default 200/page). Use `search` for text filtering or `next_page_token` to iterate pages. If you have already selected values for other filters on this datasource, include them in `applied_filters` to narrow results.
+
+
+        **Do NOT use when:**
+
+        - You already know the exact filter values
+
+        - You need filter names (use `POST /v1/library/datasourceFilterNameOptionsSearch`)
+
+        - You need datasource types (use `POST /v1/library/datasourceTypeOptionsSearch`)
+
+
+        **Next Steps:** Select values, then call `POST /v1/library/datasourceFilterNameOptionsSearch` with `applied_filters` to add more filters, or `POST /v1/library/datasourceGroups` to create the DSG, or `POST /v1/library/conversionGroups` to create the CG.
+
+
+        ### How
+
+
+        **Paginated Search:** Call with type + filter name + advertiser. Use `search` to text-filter, `page_token` to paginate, `applied_filters` to narrow results.'
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp datasource_filter_value_search --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: datasource_filter_value_search
+  /v1/library/datasourceGroups:
+    post:
+      operationId: datasource_group_create
+      summary: Create Datasource Group
+      tags:
+      - library
+      description: 'Creates a new Datasource Group using the provided details. To retrieve the `datasource_type`, use the [`Search Datasource Type Options`](/#tag/datasource-options-service/POST/v1/library/datasourceTypeOptionsSearch) endpoint. To retrieve filters, use the [`Search Datasource Filter Names`](/#tag/datasource-options-service/POST/v1/library/datasourceFilterNameOptionsSearch) and [`Search Datasource Filter Values`](/#tag/datasource-options-service/POST/v1/library/datasourceFilterValueOptionsSearch) endpoints. The response includes the details of the newly created Datasource Group, including its unique identifier, metadata, and associated datasources.
+
+        Please view our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more information on how Datasource Groups and Datasource Group Rules are used.'
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp datasource_group_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: datasource_group_create
+    get:
+      operationId: datasource_group_list
+      summary: List Datasource Groups
+      tags:
+      - library
+      description: '### What
+
+
+        Retrieves a paginated list of Datasource Groups configured within your organization. Groups define collections of Measurement Datasources with specific filters and date ranges. Response includes group metadata, Datasource configurations, ownership status, and associated advertiser information.
+
+
+        ### Why
+
+
+        Datasource Groups are foundational resources that define what data gets included in Measurement reports. Before creating any Measurement report, you must first identify available Datasource Groups that contain the appropriate vendor data, date ranges, and filters for your analysis needs.
+
+
+        ### When
+
+
+        Call this endpoint when you need to:
+
+        - Discover available Datasource Groups before creating Measurement reports (required prerequisite)
+
+        - Search Datasource Groups by advertiser, date range, medium, or ownership to filter available Datasources
+
+        - Audit Datasource Group configurations including currency settings, data latency, and reporting scope
+
+        ### How
+
+
+        - Typical latency under 200ms for queries returning <100 results; pagination recommended for large result sets. Cache responses for up to 1 hour as Datasource Groups change infrequently.
+
+        - Filter by `advertiserId`, `reportingScope` (`AD_MEASUREMENT` vs `CONTENT_MEASUREMENT`), `includeMedium`/`excludeMedium` (`LINEAR`, `DIGITAL`, `SOCIAL`), `ownership` (`OWNED` vs `SHARED`), and `dataLatency` (`FINAL`, `PRELIMINARY`). Use `search` parameter to find groups by name.
+
+
+        ### Related Endpoints
+
+
+        - `GET /v1/library/datasourceGroups/{id}` - Retrieve specific group details for a target ID
+
+        - `GET /v1/library/datasourceGroups/{id}/rules` - Retrieve Measurement Rules available for a Datasource Group
+
+        - `POST /v1/library/datasourceGroups` - Create a new group
+
+        - `POST /v2beta/adMeasurements` - Create a Measurement report using specific Datasource Groups
+
+
+        Please view our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more information on how Datasource Groups and Datasource Group Rules are used.'
+      parameters:
+      - name: advertiserId
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Filter Datasource Groups by advertiser UUID. Supports multiple advertiser IDs via repeated query parameters to retrieve groups across multiple advertisers in a single request. Format is UUID v4. Returns only Datasource Groups associated with specified advertiser(s). Each advertiser ID must be valid UUID belonging to an advertiser your organization has access to, otherwise 403 Forbidden error occurs.
+      - name: agencyAdvertiserId
+        in: query
+        required: false
+        schema:
+          type: string
+        description: '**Deprecated** Optional. Ignored if advertiserId is provided. Supports multiple values via repeated query parameters.'
+      - name: currencyOfRecord
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by currency of record identifier. Must be combined with 'data_latency' filter. Returns groups with matching value or no currency_of_record set.
+      - name: dataLatency
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by data latency. Required when using ''currency_of_record'' filter. - DATA_LATENCY_UNSPECIFIED: No selection; Default value. - FINAL: Fully reconciled data with complete accuracy. Available 2-3 weeks after broadcast. **DSGs:** Valid when reporting_scope=AD_MEASUREMENT with KANTAR_COMMINGLE or NATIONAL_LINEAR_AND_BROADCAST_CABLE datasources; or reporting_scope=CONTENT_MEASUREMENT. **CGs:** Required when data_provider_id=linear_tune_in; not valid otherwise. - PRELIMINARY: Fast-processed data, 3-4 days after broadcast, subject to revisions. **DSGs:** Valid when reporting_scope=CONTENT_MEASUREMENT and currency_of_record supports it. **CGs:** Not valid. - NEXT_NEXT_DAY: Near real-time data, ~2 days after broadcast. Volatile. **DSGs:** Valid when reporting_scope=CONTENT_MEASUREMENT and currency_of_record supports it. **CGs:** Not valid.'
+      - name: endDate
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter Datasource Groups using their configured ''filter_start_date'' and ''filter_end_date'' by verifying if ''[filter_start_date, filter_end_date]'' overlaps with ''[startDate, endDate]'', inclusively. Format ''YYYY-MM-DD'' (ISO 8601 date format). Used to find Datasource Groups that include data within a specific date range. Must be combined with ''startDate'' for complete date range filtering. Useful when creating reports for specific campaign periods - ensures returned groups have data coverage for your analysis timeframe. Validation error occurs if date format is invalid or if ''endDate'' is before ''startDate''. Example use case: Filter to groups covering Q1 2024 data by setting ''endDate'' to 2024-03-31.'
+      - name: excludeDatasourceType
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Excludes Datasource Groups containing the specified datasource type(s). Groups with excluded types are not returned, even if they contain other types. If the same type appears in both includeDatasourceType and `excludeDatasourceType`, `excludeDatasourceType` takes precedence. Valid datasource type values can be retrieved via the `datasource_type_search` operation.
+      - name: excludeMedium
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Excludes Datasource Groups containing the specified medium(s). Groups with excluded mediums are not returned, even if they contain other mediums. If the same medium appears in both includeMedium and `excludeMedium`, `excludeMedium` takes precedence. - LINEAR: Category for broadcast/cable TV ads. Example: `KANTAR_COMMINGLE`. - DIGITAL: Category for internet-delivered ads including from streaming, social media, websites and platforms like YouTube and Amazon. Example: `VA_PIXEL`. - SOCIAL: **Deprecated** Migrated to DIGITAL. - CROSS_SCREEN: **Rule Filters Only** Indicates a rule filter is applicable to multiple mediums.'
+      - name: ids
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Bulk fetch specific Datasource Groups by UUID identifiers. Optional parameter that accepts multiple Datasource Group IDs via repeated query parameters. Format is UUID v4 for each ID. Use this for efficient batch retrieval when you already know the specific group IDs you need - avoids filtering through large result sets. Common use case is retrieving multiple groups referenced in existing report configurations or fetching groups from saved user preferences. Maximum recommended is 50 IDs per request to avoid URL length limits and maintain reasonable response times. Each ID must be valid UUID - malformed IDs cause 400 Bad Request error. If an ID doesn't exist or user lacks access, it's silently omitted from results rather than causing error.
+      - name: includeDatasourceType
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Includes Datasource Groups with at least one Datasource matching the specified datasource type(s). Groups may also contain other datasource types. Valid datasource type values can be retrieved via the datasource_type_search operation.
+      - name: includeDeleted
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Controls whether soft-deleted Datasource Groups appear in results. Default false returns only active non-deleted groups. Set to `true` to include deleted groups in response for auditing purposes or historical data retrieval. Deleted groups retain all configuration data and can be referenced in historical reports but cannot be used for new report creation. Useful for compliance audits, data lineage tracking, or troubleshooting reports created before group deletion. When `true`, response includes `deleted_at` timestamp for each deleted group. Note: Hard-deleted groups (purged from system after retention period) never appear regardless of this setting. (default true)'
+      - name: includeEventCounts
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Opt-in. When true, populates `event_count` on each returned Datasource Group with best-effort event counts. (default true)
+      - name: includeMedium
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Includes Datasource Groups with at least one Datasource matching the specified medium(s). Groups may also contain other mediums. - LINEAR: Category for broadcast/cable TV ads. Example: KANTAR_COMMINGLE. - DIGITAL: Category for internet-delivered ads including from streaming, social media, websites and platforms like YouTube and Amazon. Example: `VA_PIXEL`. - SOCIAL: **Deprecated** Migrated to DIGITAL. - CROSS_SCREEN: **Rule Filters Only** Indicates a rule filter is applicable to multiple mediums.'
+      - name: isCompetitor
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter Datasource Groups by competitive analysis designation. Default null returns all groups regardless of competitive type. Set to `true` to return only groups configured for competitive intelligence reporting (analyzing competitor advertising activity). Set to `false` to return only groups for owned brand measurement (analyzing your own advertising campaigns). Competitive groups typically contain broader market data across multiple brands while non-competitive groups focus on single advertiser measurement. This filter helps separate competitive intelligence workflows from standard campaign Measurement workflows. Note: This field filters the `report_type` attribute of associated Datasource configurations. (default true)'
+      - name: ownership
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter Datasource Groups by data ownership and access rights. ''OWNED'' returns groups where all Datasources are fully owned by your organization with unrestricted usage rights for any reporting purpose. ''SHARED'' returns groups containing a mix of owned and shared Datasources where some data may have contractual usage restrictions or access limitations. ''OWNERSHIP_FILTER_UNSPECIFIED'' (default) returns all groups regardless of ownership status. - OWNERSHIP_FILTER_UNSPECIFIED: Default filter value that returns all Datasource Groups regardless of ownership status. - OWNED: Returns only Datasource Groups where all constituent Datasources are fully owned by your organization with unrestricted usage rights. - SHARED: Returns only Datasource Groups that contain a mix of owned and shared Datasources where some Datasources may have contractual usage restrictions or access limitations.'
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results. Defaults to 20 if not specified. Maximum allowed value is 200.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      - name: reportingScope
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter Datasource Groups by Measurement request type. Defaults to ''AD_MEASUREMENT'' if not specified. Available, valid scopes are: ''AD_MEASUREMENT'' and ''CONTENT_MEASUREMENT''. This filter is critical for ensuring compatibility between Datasource Groups and target report type: Ad Measurement reports require ''AD_MEASUREMENT'' groups while Content Measurement reports require ''CONTENT_MEASUREMENT'' groups. Groups are configured with specific reporting scope at creation time. Attempting to use groups with mismatched reporting scope in report creation will result in validation error. - REPORTING_SCOPE_UNSPECIFIED: Value when unspecified. Should not be used directly. - AD_MEASUREMENT: For Datasource Groups to be used for advertising campaign measurement and attribution analysis. Groups within this scope contain vendor measurement data focused on ad exposure, reach, frequency, and campaign effectiveness metrics. - CONTENT_MEASUREMENT: For Datasource Groups to be used for content viewership and audience measurement analysis. Groups within this scope contain viewing data focused on program ratings, audience composition, and content consumption patterns.'
+      - name: search
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Free-text search query to filter Datasource Groups by 'name' field. Performs case-insensitive partial match against Datasource Group display names. When omitted, no name filtering is applied and all groups matching other criteria are returned. When provided, only groups with names containing the search term as a substring are included. Useful for quickly finding groups when you remember part of the name but not the full name or ID. Search is not tokenized - the entire search string is matched as a phrase. Does not search other fields like 'description' or 'advertiser_name'. Combine with other filters like 'advertiserId' for more precise results.
+      - name: startDate
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter Datasource Groups using their configured ''filter_start_date'' and ''filter_end_date'' by verifying if ''[filter_start_date, filter_end_date]'' overlaps with ''[startDate, endDate]'', inclusively. Format ''YYYY-MM-DD'' (ISO 8601 date format). Used to find Datasource Groups that include data within a specific date range. Must be combined with ''endDate'' for complete date range filtering. Useful when creating reports for specific campaign periods - ensures returned groups have data coverage for your analysis timeframe. Validation error occurs if date format is invalid or if ''startDate'' is after ''endDate''. Example use case: Filter to groups covering Q1 2024 data by setting ''startDate'' to 2024-01-01.'
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: datasource_group_list
+  /v1/library/datasourceGroups/{datasourceGroupId}:
+    delete:
+      operationId: datasource_group_delete
+      summary: Delete Datasource Group
+      tags:
+      - library
+      description: 'Soft deletes a Datasource Group by its unique identifier (UUID). The resource can still be referenced by ID but will not be included in list results unless `include_deleted` is set to true.
+
+        Please view our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more information on how Datasource Groups and Datasource Group Rules are used.'
+      parameters:
+      - name: datasourceGroupId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: datasource_group_delete
+    get:
+      operationId: datasource_group_get
+      summary: Get Datasource Group
+      tags:
+      - library
+      description: '### What
+
+
+        Retrieves a complete Datasource Group configuration by UUID, including metadata, Datasources, and Rules count.
+
+
+        ### Why
+
+
+        Datasource Groups are essential for specifying vendor data, date ranges, and filters to constrain the context when building a Measurement report.
+
+
+        ### When
+
+
+        - Use this endpoint for validating configuration before report creation, displaying metadata in UI, auditing for compliance, troubleshooting errors, and checking soft-delete status.
+
+        - Avoid using this endpoint for first-time discovery, bulk retrieval, or existence checks; use `List` for those cases instead.
+
+
+        ### Next steps
+
+
+        Validate that date ranges match report needs. Use `id` in `POST /v2beta/adMeasurements`. If `total_rules` > 0, call `GET /v1/library/datasourceGroups/{id}/rules` for more associated rule details.
+
+
+        ### Related endpoints
+
+
+        - `GET /v1/library/datasourceGroups` - List Datasource Groups
+
+        - `GET /v1/library/datasourceGroups/{id}/rules` - List Rules for a Datasource Group
+
+        - `POST /v2beta/adMeasurements` - Create a report
+
+        - `DELETE /v1/library/datasourceGroups/{id}` - Delete a Datasource Group
+
+
+        See [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for details.'
+      parameters:
+      - name: datasourceGroupId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'UUID v4 identifier for Datasource Group to retrieve. Obtained from ''List'' endpoint or creation response. Required for all ''GET'' operations. Returns 404 if group doesn''t exist, user lacks access, or group is soft-deleted (set ''includeDeleted = true'' to retrieve deleted groups). Fetches complete configuration including metadata, Datasources, and Rule counts. Primary use: validating group before Measurement report creation.'
+      - name: includeDeleted
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Controls soft-deleted group retrieval. Default false verifies if group is active (404 if ID is deleted). Set to `true` to corroborate if group is deleted. Deleted groups retain configuration and `deleted_at` timestamp but cannot be used in new reports. Useful for lineage tracking, compliance audits, or recovering configuration to recreate. (default true)
+      - name: includeEventCounts
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Opt-in. When true, populates `event_count` on the returned Datasource Group with best-effort event counts. No-op when `top_level_only=true`: the summary fetch never populates `datasources`, so `event_count` is always returned as unavailable (empty `counts_by_unit`). (default true)'
+      - name: ownership
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Verify Datasource Group ownership and access rights. ''OWNED'' returns group if all Datasources are fully owned by your organization (404 if ''SHARED''). ''SHARED'' returns group if it contains a mix of owned and shared Datasources (404 if all ''OWNED''). ''OWNERSHIP_FILTER_UNSPECIFIED'' (default) returns the group regardless of ownership status. - OWNERSHIP_FILTER_UNSPECIFIED: Default filter value that returns all Datasource Groups regardless of ownership status. - OWNED: Returns only Datasource Groups where all constituent Datasources are fully owned by your organization with unrestricted usage rights. - SHARED: Returns only Datasource Groups that contain a mix of owned and shared Datasources where some Datasources may have contractual usage restrictions or access limitations.'
+      - name: topLevelOnly
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Performance optimization controlling payload size. Default false returns complete group with all Datasources. Set to `true` to retrieve only metadata (ID, name, dates, advertiser, Rule count) excluding `datasources` array. Use for fast UI dropdowns, existence checks, or audits when Datasource details are not necessary. (default true)
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: datasource_group_get
+  /v1/library/datasourceGroups/{datasourceGroupId}/rules:
+    post:
+      operationId: datasource_group_rule_create
+      summary: Create Rule
+      tags:
+      - library
+      description: '### What
+
+
+        Creates a Rule scoped to a Datasource Group (DSG). The Rule''s `strategy_definition` is a tree of `RuleItem`s combining filter conditions with boolean operators; it constrains which underlying datasource records contribute to measurement reports built on the DSG.
+
+
+        ### Why
+
+
+        Rules persist reusable, label-bearing slices of a DSG so downstream reports render meaningful breakdowns instead of bare identifiers — e.g., an analyst scoping a report to specific LINEAR networks, or a data engineer slicing a DSG by source dimension.
+
+
+        ### When
+
+
+        Use to programmatically scope DSG measurement to a subset of underlying data. **Do NOT use** for ad-hoc filtering that need not persist, for filters not exposed by `datasource_rule_filter_name_search` on the target DSG, or against competitor / unsupported-scope DSGs (fails `DGR_0001` / `DGR_0003` / `DGR_0004`).
+
+
+        ### How
+
+
+        **Workflow** to build a leaf `RuleItem`:
+
+        1. Call `datasource_rule_filter_name_search` → pick a `RuleFilterNameOption`. Its `value` → `field`; `label` → `field_label`.
+
+        2. If the filter is shared across LINEAR/DIGITAL (`advertiser`, `creative`) and medium is ambiguous, **ask — do not guess.**
+
+        3. Call `datasource_rule_filter_value_search` with the chosen `field` and `medium` → pick `RuleFilterValueOption`s. Values → `values`; labels → `value_labels`.
+
+        4. Wrap leaves per the double-nesting constraint on `RuleDefinition`; populate all four leaf fields.
+
+
+        ### Next Steps
+
+
+        Reference the new Rule by `id` in measurement-report calls. Use `datasource_group_rule_get` to confirm; `datasource_group_rule_list` to enumerate.
+
+
+        ### Related Endpoints
+
+
+        `datasource_rule_filter_name_search`, `datasource_rule_filter_value_search`, `datasource_group_rule_get`, `datasource_group_rule_list`, `datasource_group_rule_delete`.
+
+
+        See [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more on Datasource Groups and Rules.'
+      parameters:
+      - name: datasourceGroupId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The Datasource Group ID that the Rule belongs to. Must reference a DSG the caller has access to whose reporting scope and datasource types support rules; otherwise the call fails with 'DGR_0001' / 'DGR_0003' / 'DGR_0004'.
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp datasource_group_rule_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: datasource_group_rule_create
+    get:
+      operationId: datasource_group_rule_list
+      summary: List Rules
+      tags:
+      - library
+      description: 'Retrieves all Rules associated with a user or by Datasource Group ID, with the ability to bulk fetch by providing a list of Rule IDs. Use the `-` character to list all Rules associated to a user. Otherwise, provide the Datasource Group ID in the path to return Rules associated to the Datasource Group ID. The response includes a list of all Rules.
+
+        Please view our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more information on how Datasource Groups and Datasource Group Rules are used.'
+      parameters:
+      - name: datasourceGroupId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Specify the Datasource Group ID to fetch Rules for. Use '-' to retrieve Rules from all Datasource Groups.
+      - name: ids
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: List of Rule IDs to retrieve a bulk set of specific Rules.
+      - name: includeDeleted
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Default false. Deleted Rules will only be included when true. (default true)
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results. Defaults to 20 if not specified. Maximum allowed value is 200.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      - name: search
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Free-text search query to filter Rules by 'name' and 'description' fields. Performs case-insensitive partial match against Rule names and descriptions. When omitted, no text filtering is applied and all rules matching other criteria are returned. When provided, only rules with names or descriptions containing the search term as a substring are included. Useful for quickly finding rules when you remember part of the name or description but not the full name or ID. Search is not tokenized - the entire search string is matched as a phrase. Combine with other filters like 'datasource_group_id' for more precise results.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: datasource_group_rule_list
+  /v1/library/datasourceGroups/{datasourceGroupId}/rules/{ruleId}:
+    delete:
+      operationId: datasource_group_rule_delete
+      summary: Delete Rule
+      tags:
+      - library
+      description: 'Soft deletes a Rule by its unique identifier (UUID). The resource can still be referenced by ID but will not be included in list results unless `include_deleted` is set to true.
+
+        Please view our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more information on how Datasource Groups and Datasource Group Rules are used.'
+      parameters:
+      - name: datasourceGroupId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ruleId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: datasource_group_rule_delete
+    get:
+      operationId: datasource_group_rule_get
+      summary: Get Rule
+      tags:
+      - library
+      description: 'Retrieves complete details of a specific Rule by UUID including name, description, Rule definition with operators and filters, and metadata (creator, timestamps). Use `top_level_only=true` to retrieve metadata without nested items for reduced response size. Use `include_deleted=true` to retrieve soft-deleted Rules.
+
+
+        **Why**: Rules define criteria for grouping measurement data within Datasource Groups. Rules are optional to use and they provide customers with additional flexibility to view their data grouped in ways that may not be native in report views. Understanding Rule details is essential for configuring accurate measurement analyses and troubleshooting data grouping behavior.
+
+
+        **When to Use**:
+
+        - Display Rule configuration in UI or validate before applying to reports
+
+        - Troubleshoot unexpected measurement results or check soft-delete status for lineage tracking
+
+
+        **How**: Requires bearer token authentication with read permissions.
+
+
+        **Error Handling**:
+
+        - 404: Rule not found or user lacks access (set `include_deleted=true` to retrieve soft-deleted Rules)
+
+        - 400: Invalid UUID format
+
+
+        **Related Endpoints**:
+
+        - `GET /v1/library/datasourceGroups/{datasourceGroupId}/rules` - List all Rules for a Datasource Group
+
+        - `POST /v1/library/datasourceGroups/{datasourceGroupId}/rules` - Create new Rule
+
+        - `DELETE /v1/library/datasourceGroups/{datasourceGroupId}/rules/{ruleId}` - Delete Rule
+
+
+        **Common Workflow**: List Rules -> Get detailed config -> Apply to measurement report
+
+
+        See our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more information on Datasource Groups and Rules.'
+      parameters:
+      - name: datasourceGroupId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'UUID v4 identifier of Datasource Group containing the target Rule. Datasource Groups are parent containers that organize Rules for measurement analysis. Use ''-'' wildcard to retrieve Rules without knowing parent group ID (returns Rule if found in any accessible group). Format accepts standard UUID or ''-'' character. Common use: retrieving Rules when only Rule ID is known, or validating parent-child relationship for configuration audits. Returns 404 if not found or not accessible.'
+      - name: ruleId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'UUID v4 identifier for specific Rule to retrieve. Obtained from List endpoint, creation response, or UI selection. Required for all GET operations. When ''include_deleted'' is false (default), returns 404 if rule is soft-deleted. When ''include_deleted'' is true, retrieves deleted rules. Also returns 404 if rule doesn''t exist or user lacks access. Fetches complete configuration including name, description, strategy definition with operators and filters, and metadata (creator, timestamps). Primary use: validating rule configuration before applying to measurement reports or displaying rule details in UI.'
+      - name: includeDeleted
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Controls soft-deleted rule retrieval. Default false returns only active rules (404 if ID is deleted). Set to true to retrieve deleted rules for audit trails, historical analysis, compliance reporting, or recovering configuration to recreate. Deleted rules retain all configuration data and deleted_at timestamp but cannot be used in new measurement reports. Useful for lineage tracking when investigating reports created before rule deletion. (default true)
+      - name: topLevelOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Performance optimization controlling payload size. Default false returns complete rule with all nested items (strategy definition, filters, operators, values). Set to true to retrieve only metadata (ID, name, description, timestamps) excluding strategy_definition array. Significantly reduces response size and latency for rules with extensive filter configurations. Use for fast UI dropdowns, existence checks, or audits when item details are unnecessary. (default true)
+      responses:
+        '200':
+          description: Successful response.
+        '400':
+          description: Bad Request — invalid or unsupported parameter values.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '404':
+          description: Not Found — the resource does not exist or is not accessible to the calling organization.
+      x-videoamp-cli-command: datasource_group_rule_get
+  /v1/library/datasourceTypeOptionsSearch:
+    post:
+      operationId: datasource_type_search
+      summary: Search Datasource Types
+      tags:
+      - library
+      description: '### What
+
+
+        Returns available datasource types for a given advertiser and filter parameters. Must supply reporting scope and medium filters.
+
+
+        ### Why
+
+
+        Discovers valid datasource_type values for Datasource Group (DSG) creation.
+
+
+        **Business Scenarios:**
+
+        - User finds VA_PIXEL type is available by searching reporting_scope=AD_MEASUREMENT and medium=DIGITAL
+
+        - Agent discovers NATIONAL_LINEAR_BROADCAST_AND_CABLE by searching with reporting_scope=CONTENT_MEASUREMENT and medium=LINEAR
+
+        ### When
+
+
+        Call after selecting reporting_scope, advertiser_id, and date range desired for datasource group.
+
+
+        **Important:** To discover all available datasource types, call this endpoint twice: once with `medium=DIGITAL` and once with `medium=LINEAR`. If a date range is provided, the types returned have data within that range.
+
+
+        **Do NOT use when:**
+
+        - You already know the exact datasource_type
+
+        **Next Steps:** Select a type from results, then call `POST /v1/library/datasourceFilterNameOptionsSearch` with that type.
+
+
+        ### How
+
+
+        **Discovery Pattern:** Try DIGITAL first (faster queries), then LINEAR (slower). Combine results from both calls to see all available types by medium.'
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp datasource_type_search --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: datasource_type_search
+  /v1/library/ruleFilterNameOptionsSearch:
+    post:
+      operationId: datasource_rule_filter_name_search
+      summary: Search Rule Filter Names
+      tags:
+      - library
+      description: '### What
+
+
+        Returns the valid filter names (`field` identifiers) for building a leaf `RuleItem` against a specific Datasource Group (DSG). The runtime per-DSG set depends on the DSG''s datasource types — always discover via this call; the static `rule_filter_name.in:` list is the cross-DSG universe, not the per-DSG subset.
+
+
+        ### Why
+
+
+        The valid `field` identifiers vary per DSG based on its constituent datasource types. The static `rule_filter_name.in:` enum is the cross-DSG universe, not the per-DSG allowlist — discover the applicable identifiers here before calling value search to avoid `DSO_0023_RULE_FILTER_NOT_SUPPORTED_ON_DSG` failures and rules that target unsupported filters.
+
+
+        ### When
+
+
+        Step 1 of the rule-creation chain. Call after picking a DSG, before `RuleFilterValueOptionsSearch`. Skip if you already hold a validated `RuleItem.field` for this DSG.
+
+
+        ### How
+
+
+        Each `RuleFilterNameOption` supplies:
+
+        - `value` → `RuleItem.field`
+
+        - `label` → `RuleItem.field_label` (required to persist the rule with readable field names; used by API/MCP and UI consumers)
+
+        - `medium` → pass through to `RuleFilterValueOptionsSearchRequest.medium`
+
+
+        Shared LINEAR/DIGITAL filters (`advertiser`, `creative`) appear once per medium. When the user''s intent doesn''t specify, **ask — do not guess.**
+
+
+        ### Next Steps
+
+
+        For each chosen option, call `RuleFilterValueOptionsSearch` with `datasource_group_id`, `rule_filter_name = option.value`, `medium = option.medium`.
+
+
+        ### Related
+
+
+        `RuleFilterValueOptionsSearch`, `CreateRule`. [help page](https://help.videoamp.dev/en/articles/11429353-datasource-options).'
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp datasource_rule_filter_name_search --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: datasource_rule_filter_name_search
+  /v1/library/ruleFilterValueOptionsSearch:
+    post:
+      operationId: datasource_rule_filter_value_search
+      summary: Search Rule Filter Values
+      tags:
+      - library
+      description: '### What
+
+
+        Returns the valid values (`RuleItem.values` entries) for a given `rule_filter_name` on a specific Datasource Group (DSG). Each entry carries a label that maps to `RuleItem.value_labels`.
+
+
+        ### Why
+
+
+        Value identifiers and their human-readable labels are per-DSG and not derivable from the filter name alone. Fetching them here is the only way to obtain the correct `values` and `value_labels` to populate on the leaf `RuleItem`.
+
+
+        ### When
+
+
+        Step 2 of the rule-creation chain. Call once per leaf `RuleItem`, after `RuleFilterNameOptionsSearch`. **`medium` is effectively required** — pass `RuleFilterNameOption.medium` through; see the `medium` field for the CROSS_SCREEN footgun and `DSO_0023` failure.
+
+
+        ### How
+
+
+        Each option supplies `value` (→ append to `RuleItem.values`) and `label` (→ `RuleItem.value_labels[value]`; required to persist the rule with readable labels). Populate all four leaf fields together; partial leaves persist with bare identifiers (used by API/MCP and UI consumers alike). Pass the leaf to `CreateRule`.
+
+
+        **Worked example:**
+
+        ```
+
+        1. NameSearch(dsg_id) → {value:"campaign", label:"Campaign", medium:DIGITAL}
+
+        2. ValueSearch(dsg_id, rule_filter_name:"campaign", medium:DIGITAL) → {value:"camp_1", label:"Spring 24"}
+
+        3. Leaf: {field:"campaign", field_label:"Campaign", operator:"=", values:["camp_1"], value_labels:{"camp_1":"Spring 24"}}
+
+        ```
+
+
+        ### Next Steps
+
+
+        Assemble all four leaf fields together — `field` (from name search), `field_label` (from name search), `values` (from this call), `value_labels` (from this call) — and pass the completed leaf `RuleItem` to `CreateRule`.
+
+
+        ### Related
+
+
+        `RuleFilterNameOptionsSearch`, `CreateRule`. [help page](https://help.videoamp.dev/en/articles/11429353-datasource-options).'
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp datasource_rule_filter_value_search --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: datasource_rule_filter_value_search
+  /v1beta/library/datasourceMetadataSearch:
+    post:
+      operationId: datasource_metadata_search
+      summary: Search Datasource Metadata
+      tags:
+      - library
+      description: '### What
+
+
+        Queries actual data values for a datasource, returning distinct metadata rows based on the requested fields and filters. Supports pagination, search, and ordering.
+
+
+        The endpoint automatically injects required fields (parent filters, supplemental labels) into the response based on the datasource schema hierarchy. This means requesting a child field will automatically include its required parent fields.
+
+
+        ### Why
+
+
+        Retrieves the concrete values available for datasource filters — the data that populates filter dropdowns, catalog tables, and airing selection modals.
+
+
+        **Business Scenarios:**
+
+        - User browses available pixels for VA_PIXEL datasource: `distinct_fields: ["pixel_id"]` returns pixel IDs + names
+
+        - Agent fetches campaigns under a specific pixel: `distinct_fields: ["campaign_id"], filters: [{name: "pixel_id", values: ["123"], operator: "in"}]`
+
+        - User searches for airings on a linear network for tune-in CG: `distinct_fields: ["program_name"], search: "NFL"`
+
+
+        ### When
+
+
+        Call after calling `GET /v1beta/library/datasourceSchema` to discover the available fields and their hierarchy.
+
+
+        **Important:** The schema determines which fields are valid for `distinct_fields` and `filters`. Required parent filters are auto-injected, but providing them explicitly in `filters` narrows results.
+
+
+        **Do NOT use when:**
+
+        - You need to discover the field structure (use `GET /v1beta/library/datasourceSchema` first)
+
+        - You need the list of available datasource types (use `POST /v1/library/datasourceTypeOptionsSearch`)
+
+
+        **Next Steps:** Use the returned metadata values as filter selections when creating or editing Datasource Groups or Conversion Groups.
+
+
+        ### How
+
+
+        **Discovery Pattern:** Call schema first to learn fields. Then call this endpoint with desired `distinct_fields`. Use `filters` to narrow results (e.g., filter by parent hierarchy value). Use `search` for text matching across fields. Paginate with `page_token` from previous response.'
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp datasource_metadata_search --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: datasource_metadata_search
+  /v1beta/library/datasourceSchema:
+    get:
+      operationId: datasource_schema_get
+      summary: Get Datasource Schema
+      tags:
+      - library
+      description: '### What
+
+
+        Returns the hierarchical schema for a specific datasource type, describing all available filter hierarchies, rule filter hierarchies, and supporting metadata fields.
+
+
+        The schema is a tree structure where each node represents a filterable field. Nodes can have children (forming a hierarchy), supporting data (labels, links, metrics), and a required flag indicating whether the filter must be provided.
+
+
+        ### Why
+
+
+        Discovers the structure of a datasource before querying its metadata. The schema tells you which fields exist, how they relate hierarchically, and which are required.
+
+
+        **Business Scenarios:**
+
+        - Agent discovers that VA_PIXEL has a hierarchy: advertiser_id → source_type_id → campaign_id → line_item_id
+
+        - User learns that NATIONAL_LINEAR_BROADCAST_AND_CABLE requires `network` as a mandatory filter
+
+        - Agent identifies which fields are available as `distinct_fields` for `DatasourceMetadataSearch`
+
+
+        ### When
+
+
+        Call after selecting a `datasource_type` from `POST /v1/library/datasourceTypeOptionsSearch` for a Datasource Group. If building a Conversion Group, call after selecting a `data_provider_id` from `POST /v1/library/conversionDataProviderOptionsSearch` — each provider has a different schema. Call before `POST /v1beta/library/datasourceMetadataSearch`.
+
+
+        **Do NOT use when:**
+
+        - You need the actual data values (use `POST /v1beta/library/datasourceMetadataSearch`)
+
+        - You need the list of available datasource types (use `POST /v1/library/datasourceTypeOptionsSearch`)
+
+
+        **Next Steps:** Use field names from `datasource_filter_hierarchies` as `distinct_fields` and `filters` in `POST /v1beta/library/datasourceMetadataSearch`.
+
+
+        ### How
+
+
+        **Discovery Pattern:** Call with datasource_type (+ data_provider_id for CGs). Parse `datasource_filter_hierarchies` to understand the filter tree. Fields marked `is_required: true` must be included when querying metadata. Use `supporting_data` fields to get human-readable labels alongside IDs.'
+      parameters:
+      - name: advertiserId
+        in: query
+        required: false
+        schema:
+          type: string
+        description: '**Required** Advertiser (business unit) to scope results to. Obtain available ids by calling ''GET /v1/me?membership_kinds=ADVERTISER'' and using the ''id'' field from the ''memberships'' array.'
+      - name: agencyAdvertiserId
+        in: query
+        required: false
+        schema:
+          type: string
+        description: '**Deprecated** Ignored if advertiser_id is provided.'
+      - name: currencyOfRecord
+        in: query
+        required: false
+        schema:
+          type: string
+        description: '**Conditionally Required** when ''datasource_type=NATIONAL_LINEAR_BROADCAST_AND_CABLE'' or ''data_provider_id=linear_tune_in''. Retrieve valid options from ''GET /external/v1/currency-of-record''. When provided, ''data_latency'' must also be specified. For ConversionGroups with ''data_provider_id=linear_tune_in'', use 26.'
+      - name: dataLatency
+        in: query
+        required: false
+        schema:
+          type: string
+        description: '**Conditionally Required** when ''currency_of_record'' is provided. PRELIMINARY and NEXT_NEXT_DAY are only available when used with NATIONAL_LINEAR_BROADCAST_AND_CABLE datasources. When ''data_provider_id=linear_tune_in'', use FINAL. - DATA_LATENCY_UNSPECIFIED: No selection; Default value. - FINAL: Fully reconciled data with complete accuracy. Available 2-3 weeks after broadcast. **DSGs:** Valid when reporting_scope=AD_MEASUREMENT with KANTAR_COMMINGLE or NATIONAL_LINEAR_AND_BROADCAST_CABLE datasources; or reporting_scope=CONTENT_MEASUREMENT. **CGs:** Required when data_provider_id=linear_tune_in; not valid otherwise. - PRELIMINARY: Fast-processed data, 3-4 days after broadcast, subject to revisions. **DSGs:** Valid when reporting_scope=CONTENT_MEASUREMENT and currency_of_record supports it. **CGs:** Not valid. - NEXT_NEXT_DAY: Near real-time data, ~2 days after broadcast. Volatile. **DSGs:** Valid when reporting_scope=CONTENT_MEASUREMENT and currency_of_record supports it. **CGs:** Not valid.'
+      - name: dataProviderId
+        in: query
+        required: false
+        schema:
+          type: string
+        description: '**Conditionally Required** when ''datasource_type=CONVERSIONS''. Used for ConversionGroups (CGs). Obtain valid values by calling ''POST /v1/library/conversionDataProviderOptionsSearch'' and using the ''value'' field from results.'
+      - name: datasourceType
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Required. The datasource type to retrieve the schema for. Used for DSGs. CGs will use CONVERSIONS as the datasource type and require data provider id to be specified. Obtain valid values by calling 'POST /v1/library/datasourceTypeOptionsSearch' and using the 'value' field from results.
+      - name: reportingScope
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Required when DatasourceType is not CONVERSIONS. Should be same value used when calling ''POST /v1/library/datasourceTypeOptionsSearch''. Use AD_MEASUREMENT to query for datasource types used to measure impressions. Use CONTENT_MEASUREMENT to query for datasource types used to measure content viewership. - REPORTING_SCOPE_UNSPECIFIED: Value when unspecified. Should not be used directly. - AD_MEASUREMENT: For Datasource Groups to be used for advertising campaign measurement and attribution analysis. Groups within this scope contain vendor measurement data focused on ad exposure, reach, frequency, and campaign effectiveness metrics. - CONTENT_MEASUREMENT: For Datasource Groups to be used for content viewership and audience measurement analysis. Groups within this scope contain viewing data focused on program ratings, audience composition, and content consumption patterns.'
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: datasource_schema_get
+components:
+  securitySchemes:
+    videoampOAuth:
+      type: oauth2
+      description: OAuth 2.0 / OIDC via VideoAmp's Auth0 tenant at https://login.videoamp.com. Verified from https://login.videoamp.com/.well-known/openid-configuration (HTTP 200) and https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp (HTTP 200, RFC 9728). Bearer tokens are presented in the Authorization header.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.videoamp.com/authorize
+          tokenUrl: https://login.videoamp.com/oauth/token
+          refreshUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://login.videoamp.com/oauth/device/code
+          tokenUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+externalDocs:
+  url: https://docs.videoamp.dev
+  description: VideoAmp Public API documentation (Auth0-gated)
+x-evidence:
+  method: derived
+  derived_from: github.com/VideoAmp/cli release v0.148.32 (videoamp_v0.148.32_darwin_arm64.tar.gz)
+  extraction: videoamp --help; videoamp <command> --help
+  fetched: '2026-08-02'
+  operations: 118
+  parameters: 295
+  anonymous_openapi_published: false
+  notes: docs.videoamp.dev returns HTTP 302 to Auth0 for every path; api.videoamp.dev returns 404 for /openapi.json, /swagger.json, /v1/openapi.json, /api-docs, /docs, /redoc.

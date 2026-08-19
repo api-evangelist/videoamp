@@ -1,0 +1,201 @@
+openapi: 3.2.0
+info:
+  title: VideoAmp Public Consents API
+  version: '2026-07-31'
+  summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
+  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
+
+
+    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
+
+
+    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  contact:
+    name: VideoAmp Support
+    email: support@videoamp.com
+    url: https://help.videoamp.dev
+  termsOfService: https://videoamp.com/terms-of-use/
+servers:
+- url: https://api.videoamp.dev
+  description: Production. The VideoAmp CLI also references `staging` and `preprod` environments (api.staging.videoamp.dev, api.preprod.videoamp.dev), but neither resolves publicly (DNS NXDOMAIN as of 2026-08-02), so they are not listed as callable servers.
+security:
+- videoampOAuth: []
+tags:
+- name: consents
+  description: consents operations.
+paths:
+  /v1/consents:
+    get:
+      operationId: consent_list
+      summary: List Consents
+      tags:
+      - consents
+      description: '### What
+
+
+        Returns a paginated list of consent records where recipients have authorized your organization to share resources with them. Each consent contains recipient identity, status, organization names, and optionally the recipient''s organizational hierarchy path.
+
+
+        ### Why
+
+
+        Enables discovery of which recipients have consented to receive shared data from your organization. Essential for pre-share validation (verifying consent exists before creating shares), building consent management dashboards, and searching for specific partner organizations by name or type.
+
+
+        ### When
+
+
+        - Verify consent exists before calling POST /v1/shares or POST /v2/shares to create new shares
+
+        - Build partner management UIs displaying all consenting recipients
+
+        - Search for specific recipients by name using q=recipient_name filters
+
+        - Filter recipients by organizational type using q=recipient_kind filters
+
+
+        Use POST /v1/shares to create shares with consenting recipients. Use GET /v1/shares to view existing shares.
+
+
+        ### How
+
+
+        Requires valid JWT authentication. Results are automatically filtered to show only consents where your organization is the approved sharer. Use pageSize and pageToken for pagination. Use q parameter to filter by recipient_kind (eq, in) or recipient_name (startswith, endswith, contains).'
+      parameters:
+      - name: fetchRecipientAncestorPath
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: When true, populates the recipient_ancestor_path field in each consent showing the recipient's full position in the organizational hierarchy (e.g., 'Organization > Ad Agency > Advertiser'). Useful for consent dashboards that need to display organizational context. May increase response time for large result sets - omit if hierarchy information is not needed. (default true)
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: 'Advanced query filter for attribute-based filtering. Supported attributes: - **recipient_kind**: Filter by recipient type. Operators: eq, in. Values: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, PRODUCT. - **recipient_name**: Filter by recipient organization name. Operators: startswith, endswith, contains. Multiple q parameters are AND''d by default. Use OR keyword between conditions for OR logic. Examples: - ?q=recipient_kind eq ADVERTISER - ?q=recipient_kind in ADVERTISER,AD_AGENCY - ?q=recipient_name startswith Acme - ?q=recipient_name contains Media OR recipient_kind eq AD_AGENCY'
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: consent_list
+  /v3/consents:
+    get:
+      operationId: consent_list_v3
+      summary: List Consents (UUID)
+      tags:
+      - consents
+      description: '### What
+
+
+        Returns a paginated list of consent records where recipients have authorized your organization to share resources with them. Sharer and recipient are identified exclusively by UUID.
+
+
+        ### Why
+
+
+        Enables discovery of which recipients have consented to receive shared data from your organization using UUID identifiers. Essential for pre-share validation (verifying consent exists before creating shares via POST /v3/shares), building consent management dashboards, and searching for specific partner organizations by name or type.
+
+
+        ### When
+
+
+        - Verify a recipient has consented before creating a share via POST /v3/shares
+
+        - Build consent management dashboards showing all consented partners
+
+        - Search for specific recipients by name or organizational type
+
+        - Audit consent relationships for compliance reporting
+
+
+        Use GET /v1/consents for composite (kind+id) identifiers.
+
+
+        ### How
+
+
+        Requires valid JWT authentication. Use optional query parameters for filtering and pagination. Results are automatically filtered to show only consents where your organization is the sharer.'
+      parameters:
+      - name: fetchRecipientAncestorPath
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: When true, populates the recipient_ancestor_path field in each consent showing the recipient's full position in the organizational hierarchy (e.g., 'Organization > Ad Agency > Advertiser'). Useful for consent dashboards that need to display organizational context. May increase response time for large result sets - omit if hierarchy information is not needed. (default true)
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: 'Advanced query filter for attribute-based filtering. Supported attributes: - **recipient_kind**: Filter by recipient type. Operators: eq, in. Values: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, PRODUCT. - **recipient_name**: Filter by recipient organization name. Operators: startswith, endswith, contains. Multiple q parameters are AND''d by default. Use OR keyword between conditions for OR logic. Examples: - ?q=recipient_kind eq ADVERTISER - ?q=recipient_kind in ADVERTISER,AD_AGENCY - ?q=recipient_name startswith Acme - ?q=recipient_name contains Media OR recipient_kind eq AD_AGENCY'
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: consent_list_v3
+components:
+  securitySchemes:
+    videoampOAuth:
+      type: oauth2
+      description: OAuth 2.0 / OIDC via VideoAmp's Auth0 tenant at https://login.videoamp.com. Verified from https://login.videoamp.com/.well-known/openid-configuration (HTTP 200) and https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp (HTTP 200, RFC 9728). Bearer tokens are presented in the Authorization header.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.videoamp.com/authorize
+          tokenUrl: https://login.videoamp.com/oauth/token
+          refreshUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://login.videoamp.com/oauth/device/code
+          tokenUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+externalDocs:
+  url: https://docs.videoamp.dev
+  description: VideoAmp Public API documentation (Auth0-gated)
+x-evidence:
+  method: derived
+  derived_from: github.com/VideoAmp/cli release v0.148.32 (videoamp_v0.148.32_darwin_arm64.tar.gz)
+  extraction: videoamp --help; videoamp <command> --help
+  fetched: '2026-08-02'
+  operations: 118
+  parameters: 295
+  anonymous_openapi_published: false
+  notes: docs.videoamp.dev returns HTTP 302 to Auth0 for every path; api.videoamp.dev returns 404 for /openapi.json, /swagger.json, /v1/openapi.json, /api-docs, /docs, /redoc.

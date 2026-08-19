@@ -1,0 +1,114 @@
+openapi: 3.2.0
+info:
+  title: VideoAmp Public Reports API
+  version: '2026-07-31'
+  summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
+  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
+
+
+    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
+
+
+    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  contact:
+    name: VideoAmp Support
+    email: support@videoamp.com
+    url: https://help.videoamp.dev
+  termsOfService: https://videoamp.com/terms-of-use/
+servers:
+- url: https://api.videoamp.dev
+  description: Production. The VideoAmp CLI also references `staging` and `preprod` environments (api.staging.videoamp.dev, api.preprod.videoamp.dev), but neither resolves publicly (DNS NXDOMAIN as of 2026-08-02), so they are not listed as callable servers.
+security:
+- videoampOAuth: []
+tags:
+- name: reports
+  description: reports operations.
+paths:
+  /v1alpha/reports/{reportId}:createQuery:
+    post:
+      operationId: report_query_create
+      summary: Create Scoped Query for Report
+      tags:
+      - reports
+      description: 'Execute a query against the report''s semantic model, referencing sources and fields from report_context_search. Why: the data-fetching endpoint — returns a result the client renders inline as a chart or table. When: call AFTER report_context_search so the query is grounded in real entities. How: use exact field paths from the context response; never invent names. Prefer a named view over an ad-hoc aggregation when one matches — views carry visualization annotations that drive rendering. For a chart, apply the rendering annotation (bar_chart, line_chart, currency, big_value, etc.). Pass the returned model file path as modelPath. Do NOT include advertiserId filters — scoping is injected server-side from reportId and cannot be widened. One call renders ONE chart or table: to compare a measure across a categorical dimension (networks, platforms, audiences, conversion groups), put that dimension in one query''s groupBy as the series — do NOT issue one call per value; when a question names two breakdowns, split on at most ONE axis and let the other ride as a groupBy series. Do NOT restate returned rows as a prose/Markdown table, and do NOT hand-compute a derived distributional metric (cumulative share, a threshold like ''frequency where half of conversions land'', running total, median, percentile) by accumulating rows in the reply — express it in the query (e.g. a server-side running-total window), or describe what the distribution shows without re-deriving it. On a validation error, read it: usually an unknown field (re-search with more specific phrasing) or bad syntax near reserved keywords, aggregation placement, or dates — correct and retry. Also inspect render_logs on a successful response: a SEVERITY_ERROR entry means the data is valid but the renderer rejected the chosen chart (e.g. too many dimensions for a bar chart) — do NOT report success; fix the rendering annotation the message describes (reduce dimensions, switch chart type, or tag a series) and retry.'
+      parameters:
+      - name: reportId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: report_id is the UUID of the measurement report the query targets. Server-side, advertiser_id and report_id are bound as Credible filterParams from this UUID — callers cannot widen scope by overriding them in the query body.
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp report_query_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: report_query_create
+  /v1alpha/reports/{reportId}:searchContext:
+    get:
+      operationId: report_context_search
+      summary: Search Report Semantic Context
+      tags:
+      - reports
+      description: 'Retrieve semantic context (dimensions, measures, views, documentation) scoped to a single measurement report, ranked by the user''s natural-language query. Why: The semantic layer describes the report''s metrics and dimensions in natural language and maps them to exact field paths. Calling this first prevents hallucinating field names in a follow-up query. When: Call FIRST whenever the user asks a data question about the report. How: Pass the user''s question verbatim as naturalLanguageQuery — phrase as a complete sentence (e.g. ''reach by audience over the last week''), not keyword fragments. Review the returned entities: each has a name (exact path to use in a query), entityType (DIMENSION / MEASURE / VIEW), description, and relevance. Read source.docs and source.summary to pick the right source, and use source.filterParams to discover which filter keys report_query_create accepts. A returned view is a grain-matched starting point, not a mandate: run it verbatim only when the breakdown the user asked for is one the view actually produces — if the question needs a split the view does not carry (e.g. a per-audience breakdown when the view is scoped to a single audience or the total), build the query against the same source using the fields this response returns, rather than running the bare view and silently answering a narrower question. If ANY concept from the user''s question has no matching entity, tell the user that data isn''t available for this report instead of guessing field names. Then call report_query_create using the exact names from this response. Do NOT pass advertiserId or filter clauses — scoping is enforced server-side from reportId.'
+      parameters:
+      - name: reportId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: report_id is the UUID of the measurement report whose semantic model (dimensions, measures, views) the caller wants ranked against natural_language_query. Used server-side to scope the search to this single report — the LLM never supplies advertiser_id or report_id filters directly.
+      - name: naturalLanguageQuery
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Natural language query from the end user (what the user typed in the chat). Used by the semantic search layer to rank relevant dimensions, measures, and views. Phrase as a complete sentence or question describing the analysis to perform (e.g. "reach by audience segment over the last week").
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: report_context_search
+components:
+  securitySchemes:
+    videoampOAuth:
+      type: oauth2
+      description: OAuth 2.0 / OIDC via VideoAmp's Auth0 tenant at https://login.videoamp.com. Verified from https://login.videoamp.com/.well-known/openid-configuration (HTTP 200) and https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp (HTTP 200, RFC 9728). Bearer tokens are presented in the Authorization header.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.videoamp.com/authorize
+          tokenUrl: https://login.videoamp.com/oauth/token
+          refreshUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://login.videoamp.com/oauth/device/code
+          tokenUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+externalDocs:
+  url: https://docs.videoamp.dev
+  description: VideoAmp Public API documentation (Auth0-gated)
+x-evidence:
+  method: derived
+  derived_from: github.com/VideoAmp/cli release v0.148.32 (videoamp_v0.148.32_darwin_arm64.tar.gz)
+  extraction: videoamp --help; videoamp <command> --help
+  fetched: '2026-08-02'
+  operations: 118
+  parameters: 295
+  anonymous_openapi_published: false
+  notes: docs.videoamp.dev returns HTTP 302 to Auth0 for every path; api.videoamp.dev returns 404 for /openapi.json, /swagger.json, /v1/openapi.json, /api-docs, /docs, /redoc.

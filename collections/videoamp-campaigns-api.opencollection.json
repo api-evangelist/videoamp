@@ -1,0 +1,175 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VideoAmp Public Campaigns API",
+    "version": "2026-07-31"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://login.videoamp.com/authorize",
+      "accessTokenUrl": "https://login.videoamp.com/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "campaigns",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Campaigns",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1beta/campaigns",
+            "params": [
+              {
+                "name": "advertiserIds",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter by one or more advertiser UUIDs. Each UUID is resolved to agency_advertiser_id internally. All must be advertisers the caller has permission to access. Example: ?advertiserIds=650e8400-e29b-41d4-a716-446655440000"
+              },
+              {
+                "name": "createdBy",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter by the user ID who created the campaign. Provide the creator's UUID to retrieve only campaigns created by that user. Obtain user UUIDs from the 'created_by' field on existing campaign resources. Combine with other filters such as 'status' or 'name' for more refined results."
+              },
+              {
+                "name": "ids",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter by campaign UUIDs. Pass multiple values as repeated query params: ?ids=uuid1&ids=uuid2. Use for efficient batch retrieval when you already know which specific campaigns you need. Campaigns not found or not accessible to the caller are silently omitted from results rather than causing an error."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter by campaign name using case-insensitive substring matching on the 'display_name' field. Returns campaigns whose name contains the provided string. Useful for searching when you know part of a campaign name but not its exact ID."
+              },
+              {
+                "name": "orderBy",
+                "value": "",
+                "type": "query",
+                "description": "This field specifies how to order the list results. If no value is provided, the results will be sorted by created_at descending order. Specify the order by providing a comma separated list of 'field_name direction' strings. Omitted direction defaults to asc. Example: 'created_at desc, display_name' Accepted Values: - 'status' - 'display_name' - 'created_at' - 'media_start_date' - 'media_end_date' Accepted Sort: - 'desc' - 'asc'"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Query param pageSize specifies the number of results to include in a page of results. Defaults to 100 if omitted. Maximum value is 200. Use with `pageToken` to paginate through large result sets. Larger values improve throughput for batch workflows; smaller values reduce latency for interactive UIs."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter by campaign lifecycle status. Omit to return campaigns of all statuses. - STATUS_UNSPECIFIED: Proto zero value. Never returned in responses; omit from requests. When this value or no status filter is provided to list, all campaigns are returned. - NEW: Initial state after creation. All fields mutable. Transitions to PLANNING automatically when optimization runs and associates a media plan allocation. - PLANNING: Optimization complete. Configuration locked — only 'display_name' may be updated. Transitions managed by system only."
+              }
+            ]
+          },
+          "docs": "Returns a paginated, filterable list of Campaigns accessible to the caller. Campaigns are the top-level resource in VideoAmp's media planning system, grouping target audiences, an inventory set, and a date range for optimization and reporting.\n\n**Why**: Use to discover and manage campaigns before triggering optimization, building campaign selector UIs, or auditing campaign configurations across your organization.\n\n**When**: Call when building a campaign picker UI, checking status before scheduli"
+        },
+        {
+          "info": {
+            "name": "Create Campaign",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v1beta/campaigns",
+            "params": [
+              {
+                "name": "validateOnly",
+                "value": "",
+                "type": "query",
+                "description": "When set to true, validates the request fields and the caller's permissions without creating a campaign. Returns 200 with a preview of the campaign (excluding `id` and `status`, which are only assigned on actual creation). Defaults to `false`. Use for pre-flight validation in UI forms or API integration testing. (default true)"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new Campaign for media planning optimization. The campaign groups target audiences, an inventory set, creative durations, and a date range into a single planning unit.\n\n**Why**: Set up a new campaign to run reach and frequency optimization against a defined media universe. The campaign is the top-level resource that ties together all planning inputs.\n\n**When**: Call when starting a new media planning effort. Requires valid audience IDs, an inventory set ID, and a date range within a si"
+        },
+        {
+          "info": {
+            "name": "Get Campaign",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1beta/campaigns/:campaignId",
+            "params": [
+              {
+                "name": "campaignId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the Campaign to retrieve. Obtain this value from the 'id' field in campaign creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the campaign does not exist or is not accessible to the caller."
+              }
+            ]
+          },
+          "docs": "Returns the complete Campaign resource for a single known campaign ID. Use this endpoint when you already have the campaign UUID and need to retrieve full details including configuration, status, and metadata.\n\n**Why**: Retrieve a specific campaign directly without filtering through paginated list results. Use to verify campaign status before downstream operations such as plan creation, reach curve generation, or deletion.\n\n**When**: Call when you need to confirm a campaign exists and check its "
+        },
+        {
+          "info": {
+            "name": "Update Campaign",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.videoamp.dev/v1beta/campaigns/:campaignId",
+            "params": [
+              {
+                "name": "campaignId",
+                "value": "",
+                "type": "path",
+                "description": "This field is the unique identifier for the Campaign (UUID)."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint can update a new campaign.If a campaign starts, you can only update its display name."
+        },
+        {
+          "info": {
+            "name": "Delete Campaign",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.videoamp.dev/v1beta/campaigns/:campaignId",
+            "params": [
+              {
+                "name": "campaignId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the Campaign to delete. Obtain this value from the 'id' field in campaign creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the campaign does not exist or is not accessible to the caller."
+              }
+            ]
+          },
+          "docs": "Deletes a Campaign, removing it from all API responses and downstream workflows. This action cannot be undone through the API — there is no undelete operation.\n\n**Why**: Remove campaigns that are no longer needed, were created in error, or have been superseded by a new campaign configuration.\n\n**When**: Call when a campaign is no longer required regardless of its current status (both NEW and PLANNING campaigns can be deleted). Verify the campaign exists and confirm its identity via `GET /v1beta/"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

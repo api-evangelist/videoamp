@@ -1,0 +1,533 @@
+openapi: 3.2.0
+info:
+  title: VideoAmp Public Ad Measurements API
+  version: '2026-07-31'
+  summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
+  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
+
+
+    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
+
+
+    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  contact:
+    name: VideoAmp Support
+    email: support@videoamp.com
+    url: https://help.videoamp.dev
+  termsOfService: https://videoamp.com/terms-of-use/
+servers:
+- url: https://api.videoamp.dev
+  description: Production. The VideoAmp CLI also references `staging` and `preprod` environments (api.staging.videoamp.dev, api.preprod.videoamp.dev), but neither resolves publicly (DNS NXDOMAIN as of 2026-08-02), so they are not listed as callable servers.
+security:
+- videoampOAuth: []
+tags:
+- name: adMeasurements
+  description: adMeasurements operations.
+paths:
+  /v2/adMeasurements:
+    post:
+      operationId: measurement_create
+      summary: Create Measurement report
+      tags:
+      - adMeasurements
+      description: 'Create Measurement report to analyze campaign performance across audiences and data sources. Calculates reach, frequency, impressions, and effectiveness metrics.
+
+
+        **What This Does**: Creates Measurement report configuration defining audiences, data sources, time period, report type. Processes async, delivers results to S3. Supports one-time and recurring.
+
+
+        **Prerequisites**: (1) Ready audiences, (2) Data source access, (3) S3 bucket, (4) CoR, (5) Measurement request type.
+
+
+        **Basic Usage**: Identify audience IDs → Set period → Select `streams` → Choose `type` → Configure sources → POST → Get ID → Poll `GET /v2/adMeasurements/{id}` → Download from S3.
+
+
+        **Recurring**: Basic + unique `external_id` + `delivery_schedule` + `status` active. Auto-generates outputs on schedule.
+
+
+        **Processing**: Returns immediately if successful with general report''s metadata. Async computation (30min-4hrs). Becomes "ready"/"failed". Results as CSV/Parquet to S3.
+
+
+        **Important**: Audiences share the same CoR. Sources accessible. Recurring needs a unique `external_id`. Suspended can''t reactivate. `validate_only=true` for dry-run.
+
+
+        **Idempotency**: NOT supported. Use unique `external_id` for no duplicates. Check existing before creating.
+
+
+        **Content measurement datasource constraints**: Reports whose data sources include a constrained content-measurement datasource type must satisfy that type''s content gates on five categories — a supported audience, the required time shift, a supported Currency of Record (`viewership_type_id`), supported dimension sets, and at least one supported metric type — else a 400 with `MRC_0152`–`MRC_0157` (see the 400 response and the `DataSource.type` field). The supported values for each category are determined at request time and are not enumerated by this API.
+
+
+        **Resources**: https://help.videoamp.dev/en/articles/11988861-create-an-ad-measurement-report | support@videoamp.com.'
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp measurement_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '400':
+          description: Bad Request — invalid or unsupported parameter values.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: measurement_create
+    get:
+      operationId: measurement_list
+      summary: List Measurement reports with filtering and pagination
+      tags:
+      - adMeasurements
+      description: 'Retrieve a paginated list of Measurement reports, with comprehensive filtering and sorting capabilities. Measurement reports analyze advertising campaign effectiveness across specified audiences, data sources, and time periods, producing reach, frequency, and conversion metrics.
+
+
+        **What**: Returns a list of Measurement reports with their current status, configuration details, and metadata. Each Measurement report represents a configured analysis job that calculates advertising performance metrics across linear TV, streaming, digital, and other media.
+
+
+        **Why**: Essential for managing your Measurement request workflow, monitoring analysis progress, tracking historical Measurement reports, and coordinating campaign reporting activities. Use this endpoint to discover completed Measurement reports for result retrieval, monitor processing status, or maintain governance.
+
+
+        **When**: Use this endpoint when you need to:
+
+        - Monitor the status of submitted Measurement requests
+
+        - Retrieve historical Measurement configurations for reference or replication
+
+        - Filter Measurement reports by advertiser, creator, or time period for reporting purposes
+
+        - Implement pagination for large inventories
+
+        - Build Measurement management interfaces or automated workflows
+
+        - Audit Measurement report activity across your organization
+
+
+        **How**: Requires valid authentication token with appropriate permissions. Supports extensive filtering by advertiser, creator, request type, and creation date. Results are automatically scoped to your organization''s accessible Measurement reports. Use pagination tokens for large result sets. Combine with the individual Measurement report retrieval endpoint to access detailed results and output files.
+
+
+        **Related Resources**:
+
+        - `GET /v2/adMeasurements/{id}` - Retrieve specific Measurement report details
+
+        - `POST /v2/adMeasurements` - Create new Measurement reports
+
+        - `DELETE /v2/adMeasurements/{id}` - Delete Measurement reports.'
+      parameters:
+      - name: advertiser_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter Measurement reports belonging to specific advertisers. Supports multiple advertisers. **Format**: UUID v4 **Important**: - This parameter accepts **UUID v4 format only** - For legacy integer advertiser IDs, use the agency_advertiser_id field in the request body instead - UUIDs are case-insensitive but typically lowercase **Multiple Values**: Repeat parameter for multiple advertisers (e.g., `?advertiser_id=uuid1&advertiser_id=uuid2`) **Authorization**: Automatically filtered to advertisers you have access to via IAM permissions **Use Case**: - Client-specific reporting - Multi-advertiser campaign analysis - Agency-level Measurement report aggregation **Example**: `?advertiser_id=2575fa26-9115-4972-be28-eb2e556e2350&advertiser_id=550e8400-e29b-41d4-a716-446655440000`.'
+      - name: created_by
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by Measurement report creator''s user ID. Supports multiple user IDs. **Format**: UUID v4 **Source**: User IDs from IAM system; obtain from user profile or list users endpoint **Multiple Values**: Repeat parameter for multiple creators (e.g., ?created_by=uuid1&created_by=uuid2) **Use Case**: - Audit Measurement reports created by specific users - Filter team member''s Measurement reports - Compliance and governance reporting **Authorization**: Only returns Measurement reports you have permission to access **Example**: `?created_by=550e8400-e29b-41d4-a716-446655440000&created_by=660e8400-e29b-41d4-a716-446655440001`.'
+      - name: creator_name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by Measurement report creator''s display name using fuzzy text search. Supports multiple names. **Matching Behavior**: Case-insensitive partial matching across first name, last name, and full name **Search Strategy**: - Searches ''John'' matches ''John Smith'', ''Johnny Doe'' - Searches ''Smith'' matches ''John Smith'', ''Jane Smith'' - Searches ''John Smith'' matches ''John Smith'' (full name) **Multiple Values**: Repeat parameter for OR logic (e.g., ?creator_name=John%20Smith&creator_name=Jane%20Doe) **Special Characters**: URL-encode spaces **Use Case**: Human-readable search when user IDs are unknown **Performance**: Slightly slower than `created_by` filter due to text search **Example**: `?creator_name=John%20Smith&creator_name=Jane%20Doe`.'
+      - name: eligiblePostProcessesType
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by reports eligible for post-processing. **Available Values**: - LIFT - Reports that meet all eligibility criteria for Linear Lift analysis **Multiple Values**: Repeat parameter for OR logic (e.g., `?eligiblePostProcessesType=LIFT` will return reports eligible for Linear Lift) **Eligibility Criteria**: - Agency has < 5 complete Linear Lift runs this calendar year - Report has AlwaysOnOutcomes feature flag - Report has non-affinity conversion datasource - Latest run is complete and within 30 days - Report has no previous successful Linear Lift runs - Schedule status is complete - Report has linear datasource (first_party_ad_schedule, kantar_commingle, or kantar_commingle_daily) **Performance**: This filter requires an additional API call to RCAPI''s eligibility service. Response time may increase by 500-1000ms depending on agency size. **Note**: This filter checks eligibility at query time. A report''s eligibility status may change based on agency quotas and report state. **Example**: `?eligiblePostProcessesType=LIFT` - LINEAR_LIFT: Deprecated: use LIFT instead. ETL handles LINEAR_LIFT vs DIGITAL_LIFT distinction.'
+      - name: external_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by external campaign or study identifier from your system. **Purpose**: Link VideoAmp Measurement reports to external campaign management systems **Format**: Alphanumeric string (your system''s format) **Uniqueness**: Should be unique per organization but not enforced by API **Use Case**: - Integration with external workflow systems - Cross-platform campaign tracking - Recurring Measurement request identification **Exact Match**: Performs exact string matching (case-sensitive) **Example**: ''?external_id=campaign_rf_q4_2024''.'
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter results to Measurement reports matching this specific request identifier. **Format**: UUID v4 **Source**: Returned by ''POST /v2/adMeasurements'' or found in previous list responses **Use Case**: Direct lookup when you have the exact Measurement report ID **Behavior**: Returns array with single item if found, empty array if not found or not accessible **Performance**: Optimized for single-item retrieval (typically <50ms) **Example**: ''?id=58b97c6b-a5a0-4b21-a421-ab7b401c6c27''.'
+      - name: latestRequestDisplayStatus
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by the display status of the latest request. **Available Values**: - ''Success'' - Completed successfully - ''Failed'' - Failed to complete - ''Processing'' - Currently processing **Example**: ''?latestRequestDisplayStatus=Success'''
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by Measurement report name using substring-based text search. **Matching Behavior**: Case-insensitive partial substring matching **Search Strategy**: Searches within Measurement report ''name'' field **Examples**: - ''?name=q4'' - Matches ''Q4 2024 Campaign'', ''Q4 Brand Study'', etc. - ''?name=brand%20awareness'' - Matches any name containing ''brand awareness'' **Special Characters**: URL-encode spaces and special characters **Performance**: Indexed search, typically returns in <100ms **Combination**: Can be combined with other filters for refined search.'
+      - name: order_by
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Sort field and direction for result ordering. **Supported Fields**: - ''created_at'' - Sort by creation date - ''latest_request_created_at'' - Sort by latest request date **Supported Directions**: - ''asc'' - Ascending order - ''desc'' - Descending order **Default**: ''created_at desc'' if not specified **Syntax**: ''{field_name} {direction}'' (space-separated) **Examples**: - ''?order_by=created_at%20desc'' - Newest first - ''?order_by=created_at%20asc'' - Oldest first'
+      - name: ownership
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by report ownership. **Available Values**: - ''OWNED'' (default) - Reports owned by a business entity the user is explicitly assigned to - ''SHARED'' - Reports shared with the user by another business entity **Default Behavior**: When omitted, defaults to ''OWNED'' and returns only the reports from the business entities the user is explicitly assigned to. **Example**: ''?ownership=SHARED'' - OWNED: Reports owned by a business entity the user is explicitly assigned to (default). - SHARED: Reports shared with the user by another business entity.'
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Number of Measurement reports to return per page. **Valid Range**: 1-100 **Default**: 100 (system-optimized value) **Recommendations**: - Interactive applications: 25-50 for balanced performance - Batch/background operations: 50-100 for efficiency - Mobile applications: 10-25 for reduced bandwidth **Performance**: Larger page sizes increase response time linearly. A page_size of 100 typically returns in 200-500ms depending on result complexity. **Example**: `?page_size=25`.'
+      - name: postProcessesType
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by existing (completed) post-processes. **Available Values**: - ''LIFT'' **Example**: ''?postProcessesType=LIFT'' - LINEAR_LIFT: Deprecated: use LIFT instead. ETL handles LINEAR_LIFT vs DIGITAL_LIFT distinction.'
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by Measurement request type. Each type produces different output formats and metrics. **Available Types**: _For Ad Measurement requests_: - ''ESSENTIALS'': Audience Essentials - ''ADVANCED_RF'': Advanced Reach & Frequency - ''ADVANCED_RF_OUTCOMES'': Advanced Reach & Frequency with Outcomes - ''COMPETITIVE'': Competitive Insights - ''YOUTUBE_URA'': Advanced Reach & Frequency YouTube - ''ADVANCED_RF_SUPPLEMENTAL'': Advanced Reach & Frequency Supplemental - ''ADVANCED_RF_OUTCOMES_SUPPLEMENTAL'': Advanced Reach & Frequency with Outcomes Supplemental - ''TOPLINE_LINEAR'': Topline Linear Focus - ''TOPLINE_LINEAR_OUTCOMES'': Topline Linear Focus With Outcomes _For Content Measurement requests_: - ''PROGRAM'': Program Level Report - ''DAYPART'': Daypart, Custom Daypart, and Network Total Day Report - ''TELECAST'': Telecast Level Report **Use Case**: Filter to specific Measurement methodology for workflow management **Multiple Values**: Not supported; use separate requests for multiple types **Case Sensitivity**: Case-sensitive matching (use exact values) **Example**: ''?type=ADVANCED_RF''.'
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: measurement_list
+  /v2/adMeasurements/trigger:
+    post:
+      operationId: measurement_refresh
+      summary: Trigger delivery of a Measurement report
+      tags:
+      - adMeasurements
+      description: This endpoint will trigger a refresh of an eligible adMeasurement.
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp measurement_refresh --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: measurement_refresh
+  /v2/adMeasurements/{adMeasurement_uuid}/postProcesses:
+    post:
+      operationId: measurement_create_post_process
+      summary: Create post-process analysis
+      tags:
+      - adMeasurements
+      description: 'Creates a new post-processing analysis request for a completed Measurement report that may take up to 30 hours to complete.
+
+
+        **What**: Triggers additional analysis on baseline Measurement results to derive incremental impact insights
+
+
+        **LIFT**: Analyzes the incremental lift effect of linear TV campaigns by comparing exposed versus control audience conversion rates
+
+
+        **Prerequisites**:
+
+        - AdMeasurement must have successfully completed (status=''ready'')
+
+        - Must be an outcomes report type (ADVANCED_RF_OUTCOMES)
+
+        - Must be within 30 days of completion
+
+        - Must have 1-3 conversion groups with at least one non-Affinity
+
+        - Must have linear TV datasource group
+
+        - Conversion groups and audiences must be subsets of baseline report
+
+
+        **Processing**: Request is validated and queued for asynchronous processing. Returns immediately with ''pending'' status.
+
+
+        **Use Case**: Measure incremental impact of linear TV advertising on conversion events
+
+
+        **Response**: Returns post-process details with ''pending'' status. Monitor the AdMeasurement''s existing_post_processes field for completion.'
+      parameters:
+      - name: adMeasurement_uuid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'The UUID of the AdMeasurement (recurring measurement configuration) to create the post-process for. **Format**: UUID v4 **Purpose**: Identifies the baseline Measurement report to perform post-processing analysis on **Use Case**: The post-process will be applied to the latest successful run of this AdMeasurement.'
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp measurement_create_post_process --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: measurement_create_post_process
+    get:
+      operationId: measurement_list_post_processes
+      summary: List post-processes for an AdMeasurement
+      tags:
+      - adMeasurements
+      description: "Retrieves a paginated list of all post-process requests for a specific AdMeasurement.\n\n**What**: Returns all LIFT post-processes associated with the given AdMeasurement UUID\n\n**Use Cases**:\n- View history of all post-process analyses for a Measurement report\n- Monitor status of multiple post-processes\n- Retrieve links to completed post-process outputs\n\n**Response Fields**:\n- `results`: Array of post-process summary items\n  - `id`: Post-process UUID\n  - `status`: Current status (pending, running, complete, failed)\n  - `type`: Always 'linear_lift'\n  - `created_at`: When the post-process was created\n  - `through_date`: Data through date\n  - `outputs`: Result file links (when complete)\n  - `status_info`: Queue position and display status\n- `next_page_token`: Token for retrieving next page\n- `total_size`: Total number of post-processes\n\n**Pagination**:\n- Default page size: 50\n- Maximum page size: 100\n- Results ordered by created_at DESC (newest first)"
+      parameters:
+      - name: adMeasurement_uuid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'UUID of the AdMeasurement (recurring measurement config) to list post-processes for. **Format**: UUID v4'
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: 'Maximum number of post-processes to return per page. **Default**: 50 **Range**: 1-100'
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Page token from a previous ListPostProcesses call. **Purpose**: Used to retrieve the next page of results **Usage**: Pass the ''next_page_token'' from the previous response to get the next page'
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: measurement_list_post_processes
+  /v2/adMeasurements/{adMeasurement_uuid}/postProcesses/{postProcessUuid}:
+    delete:
+      operationId: measurement_delete_post_process
+      summary: Delete a post-process (lift) request
+      tags:
+      - adMeasurements
+      description: Deletes a post-process request under an AdMeasurement without deleting the entire AdMeasurement. The request is marked as deleted but data is retained.
+      parameters:
+      - name: adMeasurement_uuid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'UUID of the AdMeasurement (recurring measurement config). **Format**: UUID v4'
+      - name: postProcessUuid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'UUID of the post-process request. **Format**: UUID v4'
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: measurement_delete_post_process
+    get:
+      operationId: measurement_get_post_process
+      summary: Get post-process request details
+      tags:
+      - adMeasurements
+      description: "Retrieves detailed information about a LIFT post-process request.\n\n**What**: Fetches the current status, configuration, outputs, and queue information for a post-process analysis\n\n**Use Case**: Monitor post-process execution and retrieve results when complete\n\n**Response Fields**:\n- `id`: Post-process request UUID\n- `ad_measurement_id`: Parent AdMeasurement UUID  \n- `status`: Current status (pending, running, complete, failed)\n- `created_at`: When the post-process was created\n- `through_date`: Data through date for the analysis\n- `outputs`: Pre-signed S3 URLs for result files (when complete)\n- `status_info`: Detailed status including queue position and display status\n- `conversion_group_ids`, `audience_ids`, `dimension_set_id`: Configuration\n\n**Status Values**:\n- `pending`: Waiting in queue\n- `running`: Currently processing\n- `complete`: Results available in outputs\n- `failed`: Processing error occurred"
+      parameters:
+      - name: adMeasurement_uuid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'UUID of the AdMeasurement (recurring measurement config). **Format**: UUID v4'
+      - name: postProcessUuid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'UUID of the post-process request. **Format**: UUID v4'
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: measurement_get_post_process
+  /v2/adMeasurements/{adMeasurement_uuid}/postProcesses:requirements:
+    get:
+      operationId: measurement_get_post_process_requirements
+      summary: Get post-process configuration options
+      tags:
+      - adMeasurements
+      description: 'Retrieve available configuration options for post-processing a completed Measurement report.
+
+
+        **What**: Returns the available options (conversion groups, audiences, dimension sets) that can be used to configure a post-process operation for a specific Measurement report.
+
+
+        **Purpose**: Before triggering a post-process operation like LIFT, use this endpoint to discover which configuration options are available based on the baseline Measurement report''s configuration.
+
+
+        **Use Cases**:
+
+        - Present available conversion groups to users when configuring a Linear Lift analysis
+
+        - Show which audiences can be included in post-processing
+
+        - Display dimension set options (e.g., NETWORK) for breakdown analysis
+
+        - Validate that required options are available before attempting to trigger post-processing
+
+
+        **Workflow**:
+
+        1. User selects a completed Measurement report with outcomes
+
+        2. Call this endpoint with the report''s `adMeasurement_uuid` and desired `postProcessType` (e.g., LIFT)
+
+        3. Response contains arrays of available conversion_group_ids, audience_ids, and dimension_set_ids
+
+        4. User selects from these options
+
+        5. Use selected options to trigger the post-process operation
+
+
+        **Requirements**: The Measurement report must be eligible for the requested post-process type. Check `eligible_post_processes` field on the AdMeasurementRequest to verify eligibility before calling this endpoint.'
+      parameters:
+      - name: adMeasurement_uuid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'Unique identifier for the recurring Measurement report. **Format**: UUID v4 **Purpose**: Identifies the baseline Measurement report for which to retrieve post-processing options **Use Case**: Get available configuration options before triggering post-process operations.'
+      - name: postProcessType
+        in: query
+        required: true
+        schema:
+          type: string
+        description: 'Type of post-processing operation to retrieve options for. **Available Values**: ''LIFT'' - Linear Lift analysis **Purpose**: Specifies which post-process options to retrieve. - LINEAR_LIFT: Deprecated: use LIFT instead. ETL handles LINEAR_LIFT vs DIGITAL_LIFT distinction.'
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: measurement_get_post_process_requirements
+  /v2/adMeasurements/{id}:
+    delete:
+      operationId: measurement_delete
+      summary: Delete Measurement report
+      tags:
+      - adMeasurements
+      description: This endpoint will delete a Measurement report.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: This field defines the Measurement request identifier.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: measurement_delete
+    get:
+      operationId: measurement_get
+      summary: Get Measurement report details
+      tags:
+      - adMeasurements
+      description: "Retrieves complete details for a specific Measurement report including configuration, processing status, execution history, and downloadable export links. Essential for monitoring Measurement report processing progress, accessing completed analysis results, and tracking the lifecycle of advertising performance analyses from submission through completion. Enables automated polling workflows that wait for result availability and provides real-time status updates. \n**Use for**: monitoring processing status after creating a Measurement report, checking if asynchronous analysis has completed and results are ready, accessing S3 download links for exports (CSV/Excel/Parquet), retrieving detailed error messages on failures, reviewing historical configurations for audit or replication, displaying execution history for recurring Measurement requests, and or verifying parameters before triggering refresh\n**Requires**: Bearer token authentication with read permissions for the specified Measurement report\n**Typical latency**: Under 100ms for direct ID lookups; recommended polling interval 2-5 minutes during processing (typical completion 30min-4hrs)\n**Returns**: 404 error if ID not found or 403 if insufficient permissions\n**Related**:\n- `POST /v2/adMeasurements` (create, returns ID)\n- `GET /v2/adMeasurements` (list with filtering)\n- `PATCH /v2/adMeasurements/{id}` (update)\n- `DELETE /v2/adMeasurements/{id}` (delete)\n- `POST /v2/adMeasurements/trigger` (manually trigger recurring execution)."
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'Unique identifier for the Measurement report to retrieve. Must be a valid UUID v4 representing an existing Measurement report within your organization''s scope. Auto-generated when created via ''POST /v2/adMeasurements'' and returned in the response ''id'' field. Use this ID to poll for processing status, retrieve completed results with download links, or access historical configurations. Immutable throughout the Measurement report''s lifecycle and persists after analysis completes. Common errors: 404 when ID does not exist or was deleted; 403 when user lacks read permissions based on IAM rules. IDs are globally unique across VideoAmp systems preventing collisions. For optimal performance, cache the ID after creation rather than repeatedly searching via list endpoint. Example workflow: Create Measurement report → Save ID → Poll GET every 2-5 minutes → Download results when status is ''ready''.'
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '403':
+          description: Forbidden — the caller's organization is not permissioned for this resource.
+        '404':
+          description: Not Found — the resource does not exist or is not accessible to the calling organization.
+      x-videoamp-cli-command: measurement_get
+    patch:
+      operationId: measurement_update
+      summary: Update Measurement configuration
+      tags:
+      - adMeasurements
+      description: "Update an existing Measurement configuration. This endpoint allows you to modify specific fields of an Measurement report.\n\n**Updatable Fields**: `name`, `start_date`, `end_date`, `streams`, `currency_of_record`, `audience_ids`, `data_source_group_ids`, `conversion_group_ids`, `rule_ids`, `delivery_schedule`, `export_results`\n\n**Required Field**: `type` must be provided in every request for validation but is not updatable.\n\n**Request Format**: Send a PATCH request with the Measurement report ID in the URL path and the fields to update in the request body. Use `update_mask` query parameter to specify which fields to update.\n\n**Example Payload For Editing Name**:\n```json\n{\n  \"name\": \"pt-test-export false 5\",\n  \"type\": \"ADVANCED_RF\"\n}\n```\n\n**Export Results**: When `export_results` is changed from `false`/`null` to `true`, outputs are automatically generated for the latest successful request. The latest request must be in a succeeded state. Enabling when already enabled has no effect."
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The unique identifier of the Measurement report to update.
+      - name: validate_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: to only validate the request When supplied and set to true, the request will be validated to ensure proper access is provided for all values, attributes, and outputs, along with all required fields being present. The updated object will be returned in full. This field is optional. (default true)
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp measurement_update --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: measurement_update
+components:
+  securitySchemes:
+    videoampOAuth:
+      type: oauth2
+      description: OAuth 2.0 / OIDC via VideoAmp's Auth0 tenant at https://login.videoamp.com. Verified from https://login.videoamp.com/.well-known/openid-configuration (HTTP 200) and https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp (HTTP 200, RFC 9728). Bearer tokens are presented in the Authorization header.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.videoamp.com/authorize
+          tokenUrl: https://login.videoamp.com/oauth/token
+          refreshUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://login.videoamp.com/oauth/device/code
+          tokenUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+externalDocs:
+  url: https://docs.videoamp.dev
+  description: VideoAmp Public API documentation (Auth0-gated)
+x-evidence:
+  method: derived
+  derived_from: github.com/VideoAmp/cli release v0.148.32 (videoamp_v0.148.32_darwin_arm64.tar.gz)
+  extraction: videoamp --help; videoamp <command> --help
+  fetched: '2026-08-02'
+  operations: 118
+  parameters: 295
+  anonymous_openapi_published: false
+  notes: docs.videoamp.dev returns HTTP 302 to Auth0 for every path; api.videoamp.dev returns 404 for /openapi.json, /swagger.json, /v1/openapi.json, /api-docs, /docs, /redoc.

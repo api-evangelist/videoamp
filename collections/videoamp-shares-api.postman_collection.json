@@ -1,0 +1,2406 @@
+{
+  "item": [
+    {
+      "id": "9d434274-02f0-4b74-9276-f9f7dfdebcfa",
+      "name": "shares",
+      "description": {
+        "content": "shares operations.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "682f3d86-563e-4559-98b1-b2922b27bed3",
+          "name": "List Shares",
+          "request": {
+            "name": "List Shares",
+            "description": {
+              "content": "### What\n\nRetrieves a paginated list of resource shares matching filter criteria. Returns share metadata including sharer organization, recipients with permissions, resources with types and names, lifecycle status, and audit trail.\n\n### Why\n\nEnables discovery and monitoring of sharing relationships across organizations. Essential for auditing data access, managing permissions, tracking resource distribution, and compliance. Target users: audience owners sharing their data, users viewing and managing shares created by their organization, platform operations via share management UI, and audience teams.\n\n### When\n\n- Discover all shares created by your organization\n- Filter by kind (e.g., ADVANCED_AUDIENCE) to view all audience shares specifically\n- Validate whether shares are successful or deleted when recipients report access issues\n- Audit resource access across organizational boundaries for QA and compliance\n- Monitor share lifecycle status changes between ACTIVE and DELETED\n- Build share management dashboards and compliance reports\n\nUse GET /v1/shares/{id} for single share details. Use POST /v1/shares to create new shares.\n\n### How\n\nRequires valid JWT authentication. Use pageSize and pageToken for pagination through results. Use q parameter for filtering by kind or createdAt. Returns 400 for invalid params, 403 for auth errors, 500 for server errors.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "shares"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "fetchRecipientAncestorPath",
+                  "value": "<boolean>",
+                  "description": "When true, includes the ancestor_path field for each recipient showing their full position in the organizational hierarchy from root to leaf. This hierarchical path is essential for understanding the sharing scope within complex multi-level organizational structures. Use this to display breadcrumb navigation in UIs, validate sharing permissions at the correct org level, or audit which parent entities have inherited access. Performance note: enabling this adds a lookup per recipient, so omit for large result sets where hierarchy is not needed. (default true)"
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "<string>",
+                  "description": "Order by attribute(s): - createdAt (ASC, DESC) Sort order for results controlling how shares are ordered in the response. Format: 'createdAt ASC' for oldest first or 'createdAt DESC' for newest first. Defaults to createdAt DESC when not specified. Important: changing the order parameter between paginated requests invalidates the pageToken and you must restart from page 1. This ensures consistent ordering across pages. For audit workflows, use ASC to process shares chronologically from oldest to newest. For monitoring dashboards, use DESC to see most recent shares first."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "<string>",
+                  "description": "Order by attribute(s): - createdAt (ASC, DESC) Sort order for results controlling how shares are ordered in the response. Format: 'createdAt ASC' for oldest first or 'createdAt DESC' for newest first. Defaults to createdAt DESC when not specified. Important: changing the order parameter between paginated requests invalidates the pageToken and you must restart from page 1. This ensures consistent ordering across pages. For audit workflows, use ASC to process shares chronologically from oldest to newest. For monitoring dashboards, use DESC to see most recent shares first."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<string>",
+                  "description": "Query param pageSize specifies the number of results to include in a page of results."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageToken",
+                  "value": "<string>",
+                  "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests. - createdAt ISO 8601 formatted string (gt, lt, gte, lte) - kind `string` (eq, in) - resourceId `string` (eq, in) Advanced query filter for attribute-based filtering. Supported attributes: - **kind**: Filter by resource kind. Operators: eq, in. Currently supported: ADVANCED_AUDIENCE. - **createdAt**: Filter by creation date (ISO 8601). Operators: gt, lt, gte, lte. - **resourceId**: Filter by resource id. Operators: eq, in. Use the same id supplied as resource.id in POST /v1/shares (or resources[] in POST /v2/shares). Multiple q parameters are AND'd by default. Prefix with 'or' for OR logic. Examples: - ?q=kind eq ADVANCED_AUDIENCE - ?q=createdAt gt 2025-01-01T00:00:00Z - ?q=resourceId eq 277777 - ?q=resourceId in 277777,277778 - ?q=kind eq ADVANCED_AUDIENCE&q=createdAt gte 2025-01-01"
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "01879d78-fa27-4761-849d-b86326e51bcb",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c55fd871-adfb-4798-a665-518023ec7814",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "61b66ac6-00b8-427d-a9ae-8ff9e39627c0",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "260c4466-1f49-41a8-9ee0-02a1fd63514a",
+              "name": "Forbidden — the caller's organization is not permissioned for this resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "39ca1545-7726-4181-ad38-540c793f1ccc",
+              "name": "Internal Server Error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f5e74bad-a093-4220-a43c-9fa92c1f545d",
+          "name": "Create Share",
+          "request": {
+            "name": "Create Share",
+            "description": {
+              "content": "### What\n\nCreates a share granting a single recipient access to a single audience resource. Returns the complete Share object including recipients, resources, status, and audit trail.\n\n### Why\n\nProvides simple single-recipient, single-resource sharing for straightforward use cases. Returns full share details immediately for verification without requiring an additional GET call. Ideal for simple integrations and UI-driven workflows.\n\n### When\n\n- Share one audience with one recipient and verify details in the response\n- Simple integrations that share one resource at a time\n- UI-driven sharing where user selects one audience and one recipient\n\nFor bulk operations (multiple recipients or resources), use POST /v2/shares instead. Verify consent exists via GET /v1/consents before sharing.\n\n### How\n\nRequires valid JWT authentication. Provide share object with recipient (kind and id), resource (legacy integer identifier), optional name, and optional permissions. Set fetch_recipient_ancestor_path=true to include organizational hierarchy in response. Returns 400 for validation errors, 403 if not authorized, 409 if share already exists.\n\n### Example\n\n```json\n{\n  \"recipient\": {\"id\": \"10\", \"kind\": \"ORGANIZATION\"},\n  \"resource\": {\"id\": \"277777\"},\n  \"name\": \"Share to Partner Org\"\n}\n```\n\n**Notes:**\n- `resource.id`: Use the audience's legacy integer ID (`audienceId` from v1 API, or `legacy_id` from v2 API), not the UUID\n- `recipient.kind`: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, or PRODUCT",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "shares"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "fetchRecipientAncestorPath",
+                  "value": "<boolean>",
+                  "description": "When true, includes the ancestor_path field in the response showing the recipient's full position in the organizational hierarchy. Useful for verifying the share was created at the correct organizational level. (default true)"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "25f24e03-4744-4c81-939a-c89f50f5e794",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "eaa7f3d7-f55c-4d29-84ee-9e2e3d2edd13",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "8471cd89-530d-4772-8bbd-907e367fdbf9",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a7ad17e6-4bee-407a-9302-2a0227775f45",
+              "name": "Forbidden — the caller's organization is not permissioned for this resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b7692bec-fe38-4ffc-a933-316aaac827f6",
+              "name": "Conflict — the request conflicts with the current state of the resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "de80f102-f6b9-47f7-b086-9678a06bdfb7",
+          "name": "Cancel Bulk Audience Revocation (Step 2b: Abort)",
+          "request": {
+            "name": "Cancel Bulk Audience Revocation (Step 2b: Abort)",
+            "description": {
+              "content": "### Workflow\n\nThis is **step 2b** of a 2-step confirmation workflow. Call this after reviewing the summary returned by **step 1**: DELETE /v1/shares/audiences/revoke/recipient/{recipient}, and deciding the revocation should NOT proceed. All shares remain active and recipients retain access.\n\nTo execute the revocation instead, use **step 2a**: POST /v1/shares/audiences/revoke/confirm/{confirmId}.\n\n### What\n\nCancels a pending bulk revocation initiated via DELETE /v1/shares/audiences/revoke/recipient/{recipient}. The shared audiences remain active and recipients retain access. Returns the list of preserved share IDs.\n\n### Why\n\nAfter reviewing the step 1 summary, users may discover the revocation scope is wrong or that it was initiated by mistake. Without an explicit cancel, the only option would be to wait for the 1-hour expiry.\n\n### When\n\n- The step 1 summary shows shares or audiences that should not be revoked\n- The bulk revocation was started by mistake\n- Must be called within 1 hour of initiation and before confirmation\n\n### How\n\nRequires valid JWT authentication. Pass the confirm_id (UUID) from the step 1 response as the path parameter. Only the user who initiated the revocation can cancel it. Expires after 1 hour. Returns the list of share UUIDs that were preserved (remain in ACTIVE status). Returns 404 if the confirm_id does not exist, was already confirmed or canceled, or has expired.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "shares",
+                "audiences",
+                "revoke",
+                "cancel",
+                ":confirmId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "confirmId",
+                  "description": "(Required) UUID of the pending revocation to cancel. Obtained from the confirm_id field in the response of DELETE /v1/shares/audiences/revoke/recipient/{recipient}. Must reference a revocation that has not yet been confirmed or canceled, and must be used within 1 hour of initiation. Only the user who initiated the revocation can use this confirm_id."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "54c4a5f7-8ec2-41c9-b7be-076dbcea087d",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    "audiences",
+                    "revoke",
+                    "cancel",
+                    ":confirmId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "confirmId",
+                      "description": "(Required) UUID of the pending revocation to cancel. Obtained from the confirm_id field in the response of DELETE /v1/shares/audiences/revoke/recipient/{recipient}. Must reference a revocation that has not yet been confirmed or canceled, and must be used within 1 hour of initiation. Only the user who initiated the revocation can use this confirm_id."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2ef4ce56-473b-4229-8bea-eab20e81f781",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    "audiences",
+                    "revoke",
+                    "cancel",
+                    ":confirmId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "confirmId",
+                      "description": "(Required) UUID of the pending revocation to cancel. Obtained from the confirm_id field in the response of DELETE /v1/shares/audiences/revoke/recipient/{recipient}. Must reference a revocation that has not yet been confirmed or canceled, and must be used within 1 hour of initiation. Only the user who initiated the revocation can use this confirm_id."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d49c43bb-2401-4c75-93e3-305e460ea5f2",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    "audiences",
+                    "revoke",
+                    "cancel",
+                    ":confirmId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "confirmId",
+                      "description": "(Required) UUID of the pending revocation to cancel. Obtained from the confirm_id field in the response of DELETE /v1/shares/audiences/revoke/recipient/{recipient}. Must reference a revocation that has not yet been confirmed or canceled, and must be used within 1 hour of initiation. Only the user who initiated the revocation can use this confirm_id."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "150c9d51-9bba-431f-a95b-4b2ace98638f",
+          "name": "Confirm Bulk Audience Revocation (Step 2a: Execute)",
+          "request": {
+            "name": "Confirm Bulk Audience Revocation (Step 2a: Execute)",
+            "description": {
+              "content": "### Workflow\n\nThis is **step 2a** of a 2-step confirmation workflow. Call this after reviewing the summary returned by **step 1**: DELETE /v1/shares/audiences/revoke/recipient/{recipient}. This action is irreversible. Once confirmed, all identified shares are permanently revoked and recipient access is terminated.\n\nTo abort instead, use **step 2b**: POST /v1/shares/audiences/revoke/cancel/{confirmId}.\n\n### What\n\nExecutes a pending bulk revocation initiated via DELETE /v1/shares/audiences/revoke/recipient/{recipient}. Permanently revokes all identified shares, terminating recipient access. Returns per-share results: revoked_shares for successes and errors for failures.\n\n### Why\n\nBulk revocation is irreversible and high-impact. A separate confirmation step lets users review the step 1 impact summary before committing, so shares are never revoked without explicit intent.\n\n### When\n\n- After reviewing the step 1 summary (share_count, share_ids, audience_ids) and deciding to proceed\n- Must be called within 1 hour of initiation (confirm_id expires)\n- Cannot be called after the same confirm_id has been canceled\n\n### How\n\nRequires valid JWT authentication. Pass the confirm_id (UUID) from the step 1 response as the path parameter. Only the user who initiated the revocation can confirm it. Each share is revoked individually; partial success is possible. Check the revoked_shares array for successes and the errors array for failures. Shares that fail can be retried individually via DELETE /v1/shares/{id}. Use POST /v1/shares/audiences/revoke/cancel/{confirmId} to abort instead.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "shares",
+                "audiences",
+                "revoke",
+                "confirm",
+                ":confirmId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "confirmId",
+                  "description": "(Required) UUID of the pending revocation to confirm and execute. Obtained from the confirm_id field in the response of DELETE /v1/shares/audiences/revoke/recipient/{recipient}. Must reference a revocation that has not been confirmed, canceled, or expired (1-hour window). Only the user who initiated the revocation can confirm it."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0839aace-180c-4fc4-b62b-c0b39138ff54",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    "audiences",
+                    "revoke",
+                    "confirm",
+                    ":confirmId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "confirmId",
+                      "description": "(Required) UUID of the pending revocation to confirm and execute. Obtained from the confirm_id field in the response of DELETE /v1/shares/audiences/revoke/recipient/{recipient}. Must reference a revocation that has not been confirmed, canceled, or expired (1-hour window). Only the user who initiated the revocation can confirm it."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f7c573c3-f618-4c3f-ae6b-98d6b514a323",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    "audiences",
+                    "revoke",
+                    "confirm",
+                    ":confirmId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "confirmId",
+                      "description": "(Required) UUID of the pending revocation to confirm and execute. Obtained from the confirm_id field in the response of DELETE /v1/shares/audiences/revoke/recipient/{recipient}. Must reference a revocation that has not been confirmed, canceled, or expired (1-hour window). Only the user who initiated the revocation can confirm it."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8c87a8e4-4d95-4cf8-951d-52eda3224694",
+          "name": "Initiate Bulk Audience Revocation (Step 1 of 2)",
+          "request": {
+            "name": "Initiate Bulk Audience Revocation (Step 1 of 2)",
+            "description": {
+              "content": "### Workflow\n\n**Step 1 of 2.** This endpoint does NOT revoke any shares. You must follow up with:\n- **Step 2a** (execute): POST /v1/shares/audiences/revoke/confirm/{confirmId}\n- **Step 2b** (abort): POST /v1/shares/audiences/revoke/cancel/{confirmId}\n\n### What\n\nInitiates a bulk revocation of all audience shares with a specific recipient. Does NOT immediately revoke access. Returns a confirm_id (expires in 1 hour) and a summary of affected shares (share_count, share_ids, audience_ids) for review.\n\n### Why\n\nRevoking shares individually via DELETE /v1/shares/{id} is impractical at scale. This endpoint handles all shares with a recipient in a single operation. The two-step confirmation workflow prevents accidental bulk access termination.\n\n### When\n\n- End of a partner relationship and need to revoke all shared audiences at once\n- Offboard a recipient organization from all shared data\n- Respond to compliance or security concerns requiring full access termination\n\n### How\n\nRequires valid JWT authentication. Pass the recipient in KIND-ID format (e.g., ORGANIZATION-123) where KIND is ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, or PRODUCT. Obtain valid identifiers from GET /v1/shares or GET /v1/consents.\n\nResponse fields: `confirm_id` (UUID, pass to confirm/cancel within 1 hour), `share_count`, `share_ids`, `audience_ids`. Only the initiating user can confirm or cancel.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "shares",
+                "audiences",
+                "revoke",
+                "recipient",
+                ":recipient"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "recipient",
+                  "description": "(Required) Composite identifier of the recipient to revoke all audience shares with, in the format KIND-ID where KIND is one of ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, or PRODUCT, and ID is the recipient's numeric identifier. Obtain valid recipient identifiers from GET /v1/shares (recipients[].kind and recipients[].id fields) or GET /v1/consents."
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e8ed2a72-0fda-44a9-aa49-3e87121bce02",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    "audiences",
+                    "revoke",
+                    "recipient",
+                    ":recipient"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "recipient",
+                      "description": "(Required) Composite identifier of the recipient to revoke all audience shares with, in the format KIND-ID where KIND is one of ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, or PRODUCT, and ID is the recipient's numeric identifier. Obtain valid recipient identifiers from GET /v1/shares (recipients[].kind and recipients[].id fields) or GET /v1/consents."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7f2a69a1-9465-462a-876b-8b816754f340",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    "audiences",
+                    "revoke",
+                    "recipient",
+                    ":recipient"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "recipient",
+                      "description": "(Required) Composite identifier of the recipient to revoke all audience shares with, in the format KIND-ID where KIND is one of ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, or PRODUCT, and ID is the recipient's numeric identifier. Obtain valid recipient identifiers from GET /v1/shares (recipients[].kind and recipients[].id fields) or GET /v1/consents."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d9796c07-e143-49dd-803f-cf57423030d1",
+          "name": "Revoke Share",
+          "request": {
+            "name": "Revoke Share",
+            "description": {
+              "content": "### What\n\nPermanently revokes a resource share, immediately terminating recipient access to all shared resources.\n\n### Why\n\nEnables resource owners to control shared data by allowing users to terminate access when partnerships conclude, agreements expire, or access is no longer needed. Critical for data governance and compliance. The share record is retained with DELETED status for audit purposes.\n\n### When\n\n- Quickly revoke an incorrect share made by mistake\n- Terminate a partner relationship or data sharing agreement\n- Revoke access when a campaign completes\n- Clean up unwanted shares (e.g., recipient only needs one of multiple shared audiences)\n- Respond to security concerns requiring immediate access termination\n- Remove access for recipients who no longer need shared resources\n\nUse GET /v1/shares to discover shares. Use GET /v1/shares/{id} to verify details before revoking.\n\n### How\n\nRequires valid JWT authentication. Pass share UUID as path parameter. Your organization must own the share. Returns the updated share with status DELETED. Returns 400 for invalid UUID, 403 for insufficient permissions, 404 if share not found or not owned by your organization.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "shares",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "fetchRecipientAncestorPath",
+                  "value": "<boolean>",
+                  "description": "When true, includes the ancestor_path field for each recipient in the response showing their full position in the organizational hierarchy from root to leaf. This hierarchical path is useful for understanding which organizational levels had access before revocation. Use this for audit logging, compliance documentation, or confirming the correct share was revoked. Performance note: enabling this adds a lookup per recipient. (default true)"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) Unique identifier of the share to revoke in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from share creation response, list operations, or UI selection. The share must be owned by your organization to revoke it. Upon successful revocation, the share status changes to DELETED and all recipients immediately lose access to the shared resources. Returns 404 if share doesn't exist or is not owned by your organization."
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c5fafa66-8f6b-4548-8e31-e9e6445b99f8",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Unique identifier of the share to revoke in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from share creation response, list operations, or UI selection. The share must be owned by your organization to revoke it. Upon successful revocation, the share status changes to DELETED and all recipients immediately lose access to the shared resources. Returns 404 if share doesn't exist or is not owned by your organization."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0394216d-adc5-4dde-8245-6186f5ad578f",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Unique identifier of the share to revoke in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from share creation response, list operations, or UI selection. The share must be owned by your organization to revoke it. Upon successful revocation, the share status changes to DELETED and all recipients immediately lose access to the shared resources. Returns 404 if share doesn't exist or is not owned by your organization."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "31f9f6ff-ea38-486f-bec6-67d8861475eb",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Unique identifier of the share to revoke in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from share creation response, list operations, or UI selection. The share must be owned by your organization to revoke it. Upon successful revocation, the share status changes to DELETED and all recipients immediately lose access to the shared resources. Returns 404 if share doesn't exist or is not owned by your organization."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "99ca31f0-93a8-4842-9142-2274b801cd4d",
+              "name": "Forbidden — the caller's organization is not permissioned for this resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Unique identifier of the share to revoke in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from share creation response, list operations, or UI selection. The share must be owned by your organization to revoke it. Upon successful revocation, the share status changes to DELETED and all recipients immediately lose access to the shared resources. Returns 404 if share doesn't exist or is not owned by your organization."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cbc6f080-fa27-43af-ae00-dd2fb90cda64",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Unique identifier of the share to revoke in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from share creation response, list operations, or UI selection. The share must be owned by your organization to revoke it. Upon successful revocation, the share status changes to DELETED and all recipients immediately lose access to the shared resources. Returns 404 if share doesn't exist or is not owned by your organization."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "aacb4cdc-8c0c-4c6b-b457-ebeced4966d8",
+          "name": "Get Share",
+          "request": {
+            "name": "Get Share",
+            "description": {
+              "content": "### What\n\nReturns a share along with its associated resources and recipients.\n\n### Why\n\nEnables retrieval of complete share details for auditing, compliance, and share management. Target users: audience owners sharing their data, users viewing and managing shares created by their organization, platform operations via share management UI, and audience teams.\n\n### When\n\n- Confirm a share was created successfully after creation\n- Validate whether a share is active or deleted when a recipient reports access issues\n- Retrieve complete share details when you have a share ID from list operations or creation\n- Display share metadata in UI including recipients, resources, and permissions\n- Audit share configuration for compliance reporting\n- Troubleshoot sharing issues by examining full share state\n\nUse GET /v1/shares for discovery and bulk retrieval. Use POST /v1/shares to create new shares.\n\n### How\n\nRequires valid JWT authentication. Pass share UUID as path parameter. Set fetch_recipient_ancestor_path=true to include organizational hierarchy for recipients. Returns 400 for invalid UUID, 403 for auth errors, 404 if share not found.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "shares",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "fetchRecipientAncestorPath",
+                  "value": "<boolean>",
+                  "description": "When true, includes the ancestor_path field for each recipient showing their full position in the organizational hierarchy from root to leaf. This hierarchical path is essential for understanding the sharing scope within complex multi-level organizational structures. Use this to display breadcrumb navigation in UIs, validate sharing permissions at the correct org level, or audit which parent entities have inherited access. Performance note: enabling this adds a lookup per recipient, so omit for large result sets where hierarchy is not needed. (default true)"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) Unique identifier for the share to retrieve in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from creation response, list operations, or UI selection. Returns 404 if share doesn't exist, user lacks access, or share is deleted. Use this ID to fetch complete share details including recipients, resources, and audit trail."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d7e492ca-b146-4353-bdbd-01499aad9592",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Unique identifier for the share to retrieve in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from creation response, list operations, or UI selection. Returns 404 if share doesn't exist, user lacks access, or share is deleted. Use this ID to fetch complete share details including recipients, resources, and audit trail."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "270d090f-ffc9-4001-8928-06b887e5ee97",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Unique identifier for the share to retrieve in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from creation response, list operations, or UI selection. Returns 404 if share doesn't exist, user lacks access, or share is deleted. Use this ID to fetch complete share details including recipients, resources, and audit trail."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ab22c170-d4ca-45ab-8d61-6a91d65e41b5",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Unique identifier for the share to retrieve in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from creation response, list operations, or UI selection. Returns 404 if share doesn't exist, user lacks access, or share is deleted. Use this ID to fetch complete share details including recipients, resources, and audit trail."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2e1e0596-e258-418a-949f-38ad16a543c6",
+              "name": "Forbidden — the caller's organization is not permissioned for this resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Unique identifier for the share to retrieve in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from creation response, list operations, or UI selection. Returns 404 if share doesn't exist, user lacks access, or share is deleted. Use this ID to fetch complete share details including recipients, resources, and audit trail."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0403e993-8154-43a1-aa7a-03a6c698493c",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "shares",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Unique identifier for the share to retrieve in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from creation response, list operations, or UI selection. Returns 404 if share doesn't exist, user lacks access, or share is deleted. Use this ID to fetch complete share details including recipients, resources, and audit trail."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9d426661-b8ba-4d20-bd49-322cd4ae6acc",
+          "name": "Bulk Create Shares",
+          "request": {
+            "name": "Bulk Create Shares",
+            "description": {
+              "content": "### What\n\nCreates a new resource share granting one or more recipients access to one or more resources such as audiences. Supports bulk operations with up to 100 recipients and 100 resources per request.\n\n### Why\n\nEnables organizations to securely share data assets with partners, agencies, and advertisers within the VideoAmp ecosystem. Essential for cross-organizational collaboration on audience targeting, campaign planning, and measurement. Consent-based sharing ensures data governance compliance.\n\n### When\n\n- Share audiences with agency partners for campaign activation\n- Grant advertiser access to custom audience segments\n- Distribute measurement audiences to multiple recipients simultaneously\n- Establish data sharing relationships for collaborative analytics\n\nUse POST /v1/shares for single-recipient sharing. Use GET /v1/shares to discover existing shares. Use DELETE /v1/shares/{id} to revoke access.\n\n### How\n\nRequires valid JWT authentication. Provide recipients array with kind and id for each recipient, resources array with legacy integer identifiers, optional name, and optional permissions beyond read access. Pre-approval may be required for certain resource types - contact VideoAmp support for onboarding. Returns share ID for tracking. Returns 400 for validation errors, 403 for unauthorized sharers.\n\n### Example\n\n```json\n{\n  \"recipients\": [{\"id\": \"10\", \"kind\": \"ORGANIZATION\"}],\n  \"resources\": [\"277777\"],\n  \"name\": \"Share to Partner Org\"\n}\n```\n\n**Notes:**\n- `resources`: Use the audience's legacy integer ID (`audienceId` from v1 API, or `legacy_id` from v2 API), not UUIDs\n- `recipients[].kind`: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, or PRODUCT",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "shares"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c43e6e1e-a179-41df-aa75-ee84a34f4d92",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f0a11b60-13a0-41a9-ab08-f15f3409344e",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "19f71c00-8024-432b-8f21-78b2e7f4d144",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5da2af0e-59e6-42e6-b369-6c66afefec23",
+              "name": "Forbidden — the caller's organization is not permissioned for this resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "337b04c8-6034-43f6-8e7f-1e7a1fc6d529",
+          "name": "Bulk Create Shares (UUID Recipients)",
+          "request": {
+            "name": "Bulk Create Shares (UUID Recipients)",
+            "description": {
+              "content": "### What\n\nCreates a new resource share granting one or more recipients access to one or more resources such as audiences. Supports bulk operations with up to 100 recipients and 100 resources per request. Recipients are identified by their UUID.\n\n### Why\n\nEnables organizations to securely share data assets with partners, agencies, and advertisers within the VideoAmp ecosystem using UUID-based recipient identifiers. Essential for cross-organizational collaboration on audience targeting, campaign planning, and measurement.\n\n### When\n\n- Share audiences with agency partners for campaign activation\n- Grant advertiser access to custom audience segments\n- Distribute measurement audiences to multiple recipients simultaneously\n- Establish data sharing relationships for collaborative analytics\n\nUse POST /v2/shares for composite (kind+id) recipient identifiers. Use GET /v1/shares to discover existing shares. Use DELETE /v1/shares/{id} to revoke access.\n\n### How\n\nRequires valid JWT authentication. Provide recipients array with UUID identifiers for each recipient, resources array with legacy integer identifiers, optional name, and optional permissions beyond read access. Returns share ID for tracking. Returns 400 for validation errors, 403 for unauthorized sharers.\n\n### Example\n\n```json\n{\n  \"recipients\": [\"550e8400-e29b-41d4-a716-446655440000\"],\n  \"resources\": [\"277777\"],\n  \"name\": \"Share to Partner Org\"\n}\n```\n\n**Notes:**\n- `recipients`: UUID v4 identifiers for each recipient entity\n- `resources`: Use the audience's legacy integer ID (`audienceId` from v1 API, or `legacy_id` from v2 API), not UUIDs",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v3",
+                "shares"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8d1f4b87-515d-4d66-a5e8-e7373eeb69a2",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v3",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5f162f5d-bac2-4e3e-b83f-4d3d0d323830",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v3",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "66653019-070b-482b-a062-68fac467b64a",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v3",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e05a6ce1-48bd-4eba-be24-49280ab56747",
+              "name": "Forbidden — the caller's organization is not permissioned for this resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v3",
+                    "shares"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.videoamp.dev",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "scope",
+        "value": "openid profile email offline_access"
+      },
+      {
+        "key": "redirect_uri",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "authUrl",
+        "value": "https://login.videoamp.com/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "authorization_code"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "b5b3895a-0e1e-4f64-8b57-c2793edd4935",
+    "name": "VideoAmp Public Shares API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.\n\n**Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI's `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary's own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.\n\n**Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.\n\nContact Support:\n Name: VideoAmp Support\n Email: support@videoamp.com",
+      "type": "text/plain"
+    }
+  }
+}

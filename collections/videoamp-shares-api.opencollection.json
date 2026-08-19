@@ -1,0 +1,235 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VideoAmp Public Shares API",
+    "version": "2026-07-31"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://login.videoamp.com/authorize",
+      "accessTokenUrl": "https://login.videoamp.com/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "shares",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Shares",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1/shares",
+            "params": [
+              {
+                "name": "fetchRecipientAncestorPath",
+                "value": "",
+                "type": "query",
+                "description": "When true, includes the ancestor_path field for each recipient showing their full position in the organizational hierarchy from root to leaf. This hierarchical path is essential for understanding the sharing scope within complex multi-level organizational structures. Use this to display breadcrumb navigation in UIs, validate sharing permissions at the correct org level, or audit which parent entities have inherited access. Performance note: enabling this adds a lookup per recipient, so omit for large result sets where hierarchy is not needed. (default true)"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Order by attribute(s): - createdAt (ASC, DESC) Sort order for results controlling how shares are ordered in the response. Format: 'createdAt ASC' for oldest first or 'createdAt DESC' for newest first. Defaults to createdAt DESC when not specified. Important: changing the order parameter between paginated requests invalidates the pageToken and you must restart from page 1. This ensures consistent ordering across pages. For audit workflows, use ASC to process shares chronologically from oldest to newest. For monitoring dashboards, use DESC to see most recent shares first."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Query param pageSize specifies the number of results to include in a page of results."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests. - createdAt ISO 8601 formatted string (gt, lt, gte, lte) - kind `string` (eq, in) - resourceId `string` (eq, in) Advanced query filter for attribute-based filtering. Supported attributes: - **kind**: Filter by resource kind. Operators: eq, in. Currently supported: ADVANCED_AUDIENCE. - **createdAt**: Filter by creation date (ISO 8601). Operators: gt, lt, gte, lte. - **resourceId**: Filter by resource id. Operators: eq, in. Use the same id supplied as resource.id in POST /v1/shares (or resources[] in POST /v2/shares). Multiple q parameters are AND'd by default. Prefix with 'or' for OR logic. Examples: - ?q=kind eq ADVANCED_AUDIENCE - ?q=createdAt gt 2025-01-01T00:00:00Z - ?q=resourceId eq 277777 - ?q=resourceId in 277777,277778 - ?q=kind eq ADVANCED_AUDIENCE&q=createdAt gte 2025-01-01"
+              }
+            ]
+          },
+          "docs": "### What\n\nRetrieves a paginated list of resource shares matching filter criteria. Returns share metadata including sharer organization, recipients with permissions, resources with types and names, lifecycle status, and audit trail.\n\n### Why\n\nEnables discovery and monitoring of sharing relationships across organizations. Essential for auditing data access, managing permissions, tracking resource distribution, and compliance. Target users: audience owners sharing their data, users viewing and mana"
+        },
+        {
+          "info": {
+            "name": "Create Share",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v1/shares",
+            "params": [
+              {
+                "name": "fetchRecipientAncestorPath",
+                "value": "",
+                "type": "query",
+                "description": "When true, includes the ancestor_path field in the response showing the recipient's full position in the organizational hierarchy. Useful for verifying the share was created at the correct organizational level. (default true)"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### What\n\nCreates a share granting a single recipient access to a single audience resource. Returns the complete Share object including recipients, resources, status, and audit trail.\n\n### Why\n\nProvides simple single-recipient, single-resource sharing for straightforward use cases. Returns full share details immediately for verification without requiring an additional GET call. Ideal for simple integrations and UI-driven workflows.\n\n### When\n\n- Share one audience with one recipient and verify de"
+        },
+        {
+          "info": {
+            "name": "Cancel Bulk Audience Revocation (Step 2b: Abort)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v1/shares/audiences/revoke/cancel/:confirmId",
+            "params": [
+              {
+                "name": "confirmId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the pending revocation to cancel. Obtained from the confirm_id field in the response of DELETE /v1/shares/audiences/revoke/recipient/{recipient}. Must reference a revocation that has not yet been confirmed or canceled, and must be used within 1 hour of initiation. Only the user who initiated the revocation can use this confirm_id."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### Workflow\n\nThis is **step 2b** of a 2-step confirmation workflow. Call this after reviewing the summary returned by **step 1**: DELETE /v1/shares/audiences/revoke/recipient/{recipient}, and deciding the revocation should NOT proceed. All shares remain active and recipients retain access.\n\nTo execute the revocation instead, use **step 2a**: POST /v1/shares/audiences/revoke/confirm/{confirmId}.\n\n### What\n\nCancels a pending bulk revocation initiated via DELETE /v1/shares/audiences/revoke/recipie"
+        },
+        {
+          "info": {
+            "name": "Confirm Bulk Audience Revocation (Step 2a: Execute)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v1/shares/audiences/revoke/confirm/:confirmId",
+            "params": [
+              {
+                "name": "confirmId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the pending revocation to confirm and execute. Obtained from the confirm_id field in the response of DELETE /v1/shares/audiences/revoke/recipient/{recipient}. Must reference a revocation that has not been confirmed, canceled, or expired (1-hour window). Only the user who initiated the revocation can confirm it."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### Workflow\n\nThis is **step 2a** of a 2-step confirmation workflow. Call this after reviewing the summary returned by **step 1**: DELETE /v1/shares/audiences/revoke/recipient/{recipient}. This action is irreversible. Once confirmed, all identified shares are permanently revoked and recipient access is terminated.\n\nTo abort instead, use **step 2b**: POST /v1/shares/audiences/revoke/cancel/{confirmId}.\n\n### What\n\nExecutes a pending bulk revocation initiated via DELETE /v1/shares/audiences/revoke/"
+        },
+        {
+          "info": {
+            "name": "Initiate Bulk Audience Revocation (Step 1 of 2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.videoamp.dev/v1/shares/audiences/revoke/recipient/:recipient",
+            "params": [
+              {
+                "name": "recipient",
+                "value": "",
+                "type": "path",
+                "description": "Composite identifier of the recipient to revoke all audience shares with, in the format KIND-ID where KIND is one of ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, or PRODUCT, and ID is the recipient's numeric identifier. Obtain valid recipient identifiers from GET /v1/shares (recipients[].kind and recipients[].id fields) or GET /v1/consents."
+              }
+            ]
+          },
+          "docs": "### Workflow\n\n**Step 1 of 2.** This endpoint does NOT revoke any shares. You must follow up with:\n- **Step 2a** (execute): POST /v1/shares/audiences/revoke/confirm/{confirmId}\n- **Step 2b** (abort): POST /v1/shares/audiences/revoke/cancel/{confirmId}\n\n### What\n\nInitiates a bulk revocation of all audience shares with a specific recipient. Does NOT immediately revoke access. Returns a confirm_id (expires in 1 hour) and a summary of affected shares (share_count, share_ids, audience_ids) for review."
+        },
+        {
+          "info": {
+            "name": "Get Share",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1/shares/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the share to retrieve in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from creation response, list operations, or UI selection. Returns 404 if share doesn't exist, user lacks access, or share is deleted. Use this ID to fetch complete share details including recipients, resources, and audit trail."
+              },
+              {
+                "name": "fetchRecipientAncestorPath",
+                "value": "",
+                "type": "query",
+                "description": "When true, includes the ancestor_path field for each recipient showing their full position in the organizational hierarchy from root to leaf. This hierarchical path is essential for understanding the sharing scope within complex multi-level organizational structures. Use this to display breadcrumb navigation in UIs, validate sharing permissions at the correct org level, or audit which parent entities have inherited access. Performance note: enabling this adds a lookup per recipient, so omit for large result sets where hierarchy is not needed. (default true)"
+              }
+            ]
+          },
+          "docs": "### What\n\nReturns a share along with its associated resources and recipients.\n\n### Why\n\nEnables retrieval of complete share details for auditing, compliance, and share management. Target users: audience owners sharing their data, users viewing and managing shares created by their organization, platform operations via share management UI, and audience teams.\n\n### When\n\n- Confirm a share was created successfully after creation\n- Validate whether a share is active or deleted when a recipient report"
+        },
+        {
+          "info": {
+            "name": "Revoke Share",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.videoamp.dev/v1/shares/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the share to revoke in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from share creation response, list operations, or UI selection. The share must be owned by your organization to revoke it. Upon successful revocation, the share status changes to DELETED and all recipients immediately lose access to the shared resources. Returns 404 if share doesn't exist or is not owned by your organization."
+              },
+              {
+                "name": "fetchRecipientAncestorPath",
+                "value": "",
+                "type": "query",
+                "description": "When true, includes the ancestor_path field for each recipient in the response showing their full position in the organizational hierarchy from root to leaf. This hierarchical path is useful for understanding which organizational levels had access before revocation. Use this for audit logging, compliance documentation, or confirming the correct share was revoked. Performance note: enabling this adds a lookup per recipient. (default true)"
+              }
+            ]
+          },
+          "docs": "### What\n\nPermanently revokes a resource share, immediately terminating recipient access to all shared resources.\n\n### Why\n\nEnables resource owners to control shared data by allowing users to terminate access when partnerships conclude, agreements expire, or access is no longer needed. Critical for data governance and compliance. The share record is retained with DELETED status for audit purposes.\n\n### When\n\n- Quickly revoke an incorrect share made by mistake\n- Terminate a partner relationship o"
+        },
+        {
+          "info": {
+            "name": "Bulk Create Shares",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v2/shares",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### What\n\nCreates a new resource share granting one or more recipients access to one or more resources such as audiences. Supports bulk operations with up to 100 recipients and 100 resources per request.\n\n### Why\n\nEnables organizations to securely share data assets with partners, agencies, and advertisers within the VideoAmp ecosystem. Essential for cross-organizational collaboration on audience targeting, campaign planning, and measurement. Consent-based sharing ensures data governance complian"
+        },
+        {
+          "info": {
+            "name": "Bulk Create Shares (UUID Recipients)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v3/shares",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### What\n\nCreates a new resource share granting one or more recipients access to one or more resources such as audiences. Supports bulk operations with up to 100 recipients and 100 resources per request. Recipients are identified by their UUID.\n\n### Why\n\nEnables organizations to securely share data assets with partners, agencies, and advertisers within the VideoAmp ecosystem using UUID-based recipient identifiers. Essential for cross-organizational collaboration on audience targeting, campaign p"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

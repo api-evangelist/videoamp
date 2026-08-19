@@ -1,0 +1,254 @@
+openapi: 3.2.0
+info:
+  title: VideoAmp Public Campaigns API
+  version: '2026-07-31'
+  summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
+  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
+
+
+    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
+
+
+    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  contact:
+    name: VideoAmp Support
+    email: support@videoamp.com
+    url: https://help.videoamp.dev
+  termsOfService: https://videoamp.com/terms-of-use/
+servers:
+- url: https://api.videoamp.dev
+  description: Production. The VideoAmp CLI also references `staging` and `preprod` environments (api.staging.videoamp.dev, api.preprod.videoamp.dev), but neither resolves publicly (DNS NXDOMAIN as of 2026-08-02), so they are not listed as callable servers.
+security:
+- videoampOAuth: []
+tags:
+- name: campaigns
+  description: campaigns operations.
+paths:
+  /v1beta/campaigns:
+    post:
+      operationId: campaign_create
+      summary: Create Campaign
+      tags:
+      - campaigns
+      description: 'Creates a new Campaign for media planning optimization. The campaign groups target audiences, an inventory set, creative durations, and a date range into a single planning unit.
+
+
+        **Why**: Set up a new campaign to run reach and frequency optimization against a defined media universe. The campaign is the top-level resource that ties together all planning inputs.
+
+
+        **When**: Call when starting a new media planning effort. Requires valid audience IDs, an inventory set ID, and a date range within a single calendar quarter spanning at least 7 days. Use `validate_only=true` to pre-validate inputs without creating.
+
+
+        **How**: Submit a Campaign object in the request body. Returns 201 with the created campaign including the server-assigned `id` (UUID) and `status` (NEW). Store the returned `id` for use in subsequent `GET /v1beta/campaigns/{campaign_id}`, `PATCH /v1beta/campaigns/{campaign_id}`, and `DELETE /v1beta/campaigns/{campaign_id}` operations.'
+      parameters:
+      - name: validateOnly
+        in: query
+        required: false
+        schema:
+          type: string
+        description: When set to true, validates the request fields and the caller's permissions without creating a campaign. Returns 200 with a preview of the campaign (excluding `id` and `status`, which are only assigned on actual creation). Defaults to `false`. Use for pre-flight validation in UI forms or API integration testing. (default true)
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp campaign_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: campaign_create
+    get:
+      operationId: campaign_list
+      summary: List Campaigns
+      tags:
+      - campaigns
+      description: 'Returns a paginated, filterable list of Campaigns accessible to the caller. Campaigns are the top-level resource in VideoAmp''s media planning system, grouping target audiences, an inventory set, and a date range for optimization and reporting.
+
+
+        **Why**: Use to discover and manage campaigns before triggering optimization, building campaign selector UIs, or auditing campaign configurations across your organization.
+
+
+        **When**: Call when building a campaign picker UI, checking status before scheduling planning, batch-fetching specific campaigns by ID, or paginating through all campaigns in your organization.
+
+
+        **How**: All parameters are optional. Narrow results using `status`, `name`, `createdBy`, or `ids` filters. Sort with `orderBy`. Paginate with `pageSize` and `pageToken`. The `total_size` field reflects all matching campaigns across all pages.'
+      parameters:
+      - name: advertiserIds
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Optional filter by one or more advertiser UUIDs. Each UUID is resolved to agency_advertiser_id internally. All must be advertisers the caller has permission to access. Example: ?advertiserIds=650e8400-e29b-41d4-a716-446655440000'
+      - name: createdBy
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Optional filter by the user ID who created the campaign. Provide the creator's UUID to retrieve only campaigns created by that user. Obtain user UUIDs from the 'created_by' field on existing campaign resources. Combine with other filters such as 'status' or 'name' for more refined results.
+      - name: ids
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Optional filter by campaign UUIDs. Pass multiple values as repeated query params: ?ids=uuid1&ids=uuid2. Use for efficient batch retrieval when you already know which specific campaigns you need. Campaigns not found or not accessible to the caller are silently omitted from results rather than causing an error.'
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Optional filter by campaign name using case-insensitive substring matching on the 'display_name' field. Returns campaigns whose name contains the provided string. Useful for searching when you know part of a campaign name but not its exact ID.
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'This field specifies how to order the list results. If no value is provided, the results will be sorted by created_at descending order. Specify the order by providing a comma separated list of ''field_name direction'' strings. Omitted direction defaults to asc. Example: ''created_at desc, display_name'' Accepted Values: - ''status'' - ''display_name'' - ''created_at'' - ''media_start_date'' - ''media_end_date'' Accepted Sort: - ''desc'' - ''asc'''
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results. Defaults to 100 if omitted. Maximum value is 200. Use with `pageToken` to paginate through large result sets. Larger values improve throughput for batch workflows; smaller values reduce latency for interactive UIs.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Optional filter by campaign lifecycle status. Omit to return campaigns of all statuses. - STATUS_UNSPECIFIED: Proto zero value. Never returned in responses; omit from requests. When this value or no status filter is provided to list, all campaigns are returned. - NEW: Initial state after creation. All fields mutable. Transitions to PLANNING automatically when optimization runs and associates a media plan allocation. - PLANNING: Optimization complete. Configuration locked — only ''display_name'' may be updated. Transitions managed by system only.'
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: campaign_list
+  /v1beta/campaigns/{campaignId}:
+    delete:
+      operationId: campaign_delete
+      summary: Delete Campaign
+      tags:
+      - campaigns
+      description: 'Deletes a Campaign, removing it from all API responses and downstream workflows. This action cannot be undone through the API — there is no undelete operation.
+
+
+        **Why**: Remove campaigns that are no longer needed, were created in error, or have been superseded by a new campaign configuration.
+
+
+        **When**: Call when a campaign is no longer required regardless of its current status (both NEW and PLANNING campaigns can be deleted). Verify the campaign exists and confirm its identity via `GET /v1beta/campaigns/{campaign_id}` before deleting.
+
+
+        **How**: Supply the campaign UUID as the `campaign_id` path parameter. Returns 204 with an empty body on success. Returns 404 if the campaign does not exist or is not accessible to the caller.'
+      parameters:
+      - name: campaignId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the Campaign to delete. Obtain this value from the 'id' field in campaign creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the campaign does not exist or is not accessible to the caller.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '404':
+          description: Not Found — the resource does not exist or is not accessible to the calling organization.
+      x-videoamp-cli-command: campaign_delete
+    get:
+      operationId: campaign_get
+      summary: Get Campaign
+      tags:
+      - campaigns
+      description: 'Returns the complete Campaign resource for a single known campaign ID. Use this endpoint when you already have the campaign UUID and need to retrieve full details including configuration, status, and metadata.
+
+
+        **Why**: Retrieve a specific campaign directly without filtering through paginated list results. Use to verify campaign status before downstream operations such as plan creation, reach curve generation, or deletion.
+
+
+        **When**: Call when you need to confirm a campaign exists and check its current state before operating on it, display full campaign details in a UI, or refresh a cached campaign record.
+
+
+        **How**: Supply the campaign UUID as the `campaign_id` path parameter. The response includes all campaign fields. Returns 404 if the campaign does not exist or is not accessible to the caller.'
+      parameters:
+      - name: campaignId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the Campaign to retrieve. Obtain this value from the 'id' field in campaign creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the campaign does not exist or is not accessible to the caller.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '404':
+          description: Not Found — the resource does not exist or is not accessible to the calling organization.
+      x-videoamp-cli-command: campaign_get
+    patch:
+      operationId: campaign_update
+      summary: Update Campaign
+      tags:
+      - campaigns
+      description: This endpoint can update a new campaign.If a campaign starts, you can only update its display name.
+      parameters:
+      - name: campaignId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: This field is the unique identifier for the Campaign (UUID).
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp campaign_update --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: campaign_update
+components:
+  securitySchemes:
+    videoampOAuth:
+      type: oauth2
+      description: OAuth 2.0 / OIDC via VideoAmp's Auth0 tenant at https://login.videoamp.com. Verified from https://login.videoamp.com/.well-known/openid-configuration (HTTP 200) and https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp (HTTP 200, RFC 9728). Bearer tokens are presented in the Authorization header.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.videoamp.com/authorize
+          tokenUrl: https://login.videoamp.com/oauth/token
+          refreshUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://login.videoamp.com/oauth/device/code
+          tokenUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+externalDocs:
+  url: https://docs.videoamp.dev
+  description: VideoAmp Public API documentation (Auth0-gated)
+x-evidence:
+  method: derived
+  derived_from: github.com/VideoAmp/cli release v0.148.32 (videoamp_v0.148.32_darwin_arm64.tar.gz)
+  extraction: videoamp --help; videoamp <command> --help
+  fetched: '2026-08-02'
+  operations: 118
+  parameters: 295
+  anonymous_openapi_published: false
+  notes: docs.videoamp.dev returns HTTP 302 to Auth0 for every path; api.videoamp.dev returns 404 for /openapi.json, /swagger.json, /v1/openapi.json, /api-docs, /docs, /redoc.

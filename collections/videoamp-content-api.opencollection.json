@@ -1,0 +1,307 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VideoAmp Public Content API",
+    "version": "2026-07-31"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://login.videoamp.com/authorize",
+      "accessTokenUrl": "https://login.videoamp.com/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "content",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Episodes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/external/v1/content/episodes",
+            "params": [
+              {
+                "name": "currencyOfRecord",
+                "value": "",
+                "type": "query",
+                "description": "Viewershiptype id as a filter."
+              },
+              {
+                "name": "episodeIds",
+                "value": "",
+                "type": "query",
+                "description": "A list of episodes to filter the results to."
+              },
+              {
+                "name": "networkId",
+                "value": "",
+                "type": "query",
+                "description": "To filter programs to those that are aired on a given network."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Query param pageSize specifies the number of results to include in a page of results. The maximum value is 1000; values above 1000 will be coerced to 1000."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+              },
+              {
+                "name": "programId",
+                "value": "",
+                "type": "query",
+                "description": "To filter episodes to those that belong to a particular series."
+              }
+            ]
+          },
+          "docs": "Retrieve a filtered list of TV episodes with associated metadata. Use this endpoint to discover available episode inventory for content measurement campaigns, build episode selection interfaces, or perform bulk analysis of programming content. Supports filtering by network, program, and currency of record to match specific measurement requirements."
+        },
+        {
+          "info": {
+            "name": "Get Episode",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/external/v1/content/episodes/:episodeId",
+            "params": [
+              {
+                "name": "episodeId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Episode."
+              }
+            ]
+          },
+          "docs": "Retrieve detailed metadata for a specific TV episode by ID. Use this endpoint to access episode-specific information needed for content measurement, advertising campaign planning, or media inventory analysis. Essential for workflows that require episode-level granularity in viewership reporting."
+        },
+        {
+          "info": {
+            "name": "List Network MediaGroups",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/external/v1/content/media-groups",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "A search string for matching against the network media group name."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Query param pageSize specifies the number of results to include in a page of results."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+              }
+            ]
+          },
+          "docs": "Return a list of network media groups with metadata available to query networks."
+        },
+        {
+          "info": {
+            "name": "List Metric and Dimension Types",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/external/v1/content/metric-type-compatibility-matrix"
+          },
+          "docs": "Return the compatibility matrix of supported metrics and dimensions for content measurement requests. Use this endpoint before creating content metrics to validate your measurement configuration and discover available combinations. Essential for building dynamic UI forms or validating programmatic measurement requests."
+        },
+        {
+          "info": {
+            "name": "Create Metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/external/v1/content/metrics",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Initiates an asynchronous content metric request that returns a universally unique identifier (uuid). The Get Content Metrics Request endpoint can be polled to obtain the status of the async request and, once complete, the output location in the client's configured S3 bucket."
+        },
+        {
+          "info": {
+            "name": "Get Metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/external/v1/content/metrics/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Given a valid content metrics uuid, returns the status of the request and, if complete, the s3 location of the output CSV file."
+        },
+        {
+          "info": {
+            "name": "List Networks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/external/v1/content/networks",
+            "params": [
+              {
+                "name": "currencyOfRecord",
+                "value": "",
+                "type": "query",
+                "description": "Viewershiptype id as a filter."
+              },
+              {
+                "name": "mediaGroupName",
+                "value": "",
+                "type": "query",
+                "description": "A Media group name to use as filter."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Search strings for matching against the primary name of the underlying object. This is a case insensitive simple text search using fuzzy matching logic."
+              },
+              {
+                "name": "networkIds",
+                "value": "",
+                "type": "query",
+                "description": "A list of network ids to filter the results to, if its empty return all the networks."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Query param pageSize specifies the number of results to include in a page of results. The maximum value is 1000; values above 1000 will be coerced to 1000."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+              }
+            ]
+          },
+          "docs": "Returns a list of networks with metadata available for use."
+        },
+        {
+          "info": {
+            "name": "Get Network",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/external/v1/content/networks/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns the network details provided an id."
+        },
+        {
+          "info": {
+            "name": "List Programs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/external/v1/content/programs",
+            "params": [
+              {
+                "name": "currencyOfRecord",
+                "value": "",
+                "type": "query",
+                "description": "Viewershiptype id as a filter."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "A search string for matching against the primary name of the underlying object. This is a case insensitive simple text search using fuzzy matching logic on NAME column."
+              },
+              {
+                "name": "networkId",
+                "value": "",
+                "type": "query",
+                "description": "Network to filter to."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Query param pageSize specifies the number of results to include in a page of results. The maximum value is 1000; values above 1000 will be coerced to 1000."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+              },
+              {
+                "name": "programIds",
+                "value": "",
+                "type": "query",
+                "description": "A list of programs to filter against."
+              }
+            ]
+          },
+          "docs": "Returns a list of programs with metadata available for use."
+        },
+        {
+          "info": {
+            "name": "Get Program",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/external/v1/content/programs/:programId",
+            "params": [
+              {
+                "name": "programId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns the program details provided an id."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

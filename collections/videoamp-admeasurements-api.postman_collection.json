@@ -1,0 +1,2083 @@
+{
+  "item": [
+    {
+      "id": "41fa4881-7529-4cda-b9f0-717d05b9de84",
+      "name": "adMeasurements",
+      "description": {
+        "content": "adMeasurements operations.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "501ab496-87ee-44cf-93c5-fda9dfb1b0e4",
+          "name": "Create Measurement report",
+          "request": {
+            "name": "Create Measurement report",
+            "description": {
+              "content": "Create Measurement report to analyze campaign performance across audiences and data sources. Calculates reach, frequency, impressions, and effectiveness metrics.\n\n**What This Does**: Creates Measurement report configuration defining audiences, data sources, time period, report type. Processes async, delivers results to S3. Supports one-time and recurring.\n\n**Prerequisites**: (1) Ready audiences, (2) Data source access, (3) S3 bucket, (4) CoR, (5) Measurement request type.\n\n**Basic Usage**: Identify audience IDs → Set period → Select `streams` → Choose `type` → Configure sources → POST → Get ID → Poll `GET /v2/adMeasurements/{id}` → Download from S3.\n\n**Recurring**: Basic + unique `external_id` + `delivery_schedule` + `status` active. Auto-generates outputs on schedule.\n\n**Processing**: Returns immediately if successful with general report's metadata. Async computation (30min-4hrs). Becomes \"ready\"/\"failed\". Results as CSV/Parquet to S3.\n\n**Important**: Audiences share the same CoR. Sources accessible. Recurring needs a unique `external_id`. Suspended can't reactivate. `validate_only=true` for dry-run.\n\n**Idempotency**: NOT supported. Use unique `external_id` for no duplicates. Check existing before creating.\n\n**Content measurement datasource constraints**: Reports whose data sources include a constrained content-measurement datasource type must satisfy that type's content gates on five categories — a supported audience, the required time shift, a supported Currency of Record (`viewership_type_id`), supported dimension sets, and at least one supported metric type — else a 400 with `MRC_0152`–`MRC_0157` (see the 400 response and the `DataSource.type` field). The supported values for each category are determined at request time and are not enumerated by this API.\n\n**Resources**: https://help.videoamp.dev/en/articles/11988861-create-an-ad-measurement-report | support@videoamp.com.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "adMeasurements"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "27249cf9-d983-4bd6-89a9-b9fe393fbe4c",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f5f0fcce-3369-42d6-8e39-1c8057b18019",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5904b6ac-4a5a-4530-aef0-7c402bf64366",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b8ea96e5-0e99-4c88-ac9c-94a70c2f4622",
+          "name": "List Measurement reports with filtering and pagination",
+          "request": {
+            "name": "List Measurement reports with filtering and pagination",
+            "description": {
+              "content": "Retrieve a paginated list of Measurement reports, with comprehensive filtering and sorting capabilities. Measurement reports analyze advertising campaign effectiveness across specified audiences, data sources, and time periods, producing reach, frequency, and conversion metrics.\n\n**What**: Returns a list of Measurement reports with their current status, configuration details, and metadata. Each Measurement report represents a configured analysis job that calculates advertising performance metrics across linear TV, streaming, digital, and other media.\n\n**Why**: Essential for managing your Measurement request workflow, monitoring analysis progress, tracking historical Measurement reports, and coordinating campaign reporting activities. Use this endpoint to discover completed Measurement reports for result retrieval, monitor processing status, or maintain governance.\n\n**When**: Use this endpoint when you need to:\n- Monitor the status of submitted Measurement requests\n- Retrieve historical Measurement configurations for reference or replication\n- Filter Measurement reports by advertiser, creator, or time period for reporting purposes\n- Implement pagination for large inventories\n- Build Measurement management interfaces or automated workflows\n- Audit Measurement report activity across your organization\n\n**How**: Requires valid authentication token with appropriate permissions. Supports extensive filtering by advertiser, creator, request type, and creation date. Results are automatically scoped to your organization's accessible Measurement reports. Use pagination tokens for large result sets. Combine with the individual Measurement report retrieval endpoint to access detailed results and output files.\n\n**Related Resources**:\n- `GET /v2/adMeasurements/{id}` - Retrieve specific Measurement report details\n- `POST /v2/adMeasurements` - Create new Measurement reports\n- `DELETE /v2/adMeasurements/{id}` - Delete Measurement reports.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "adMeasurements"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "advertiser_id",
+                  "value": "<string>",
+                  "description": "Filter Measurement reports belonging to specific advertisers. Supports multiple advertisers. **Format**: UUID v4 **Important**: - This parameter accepts **UUID v4 format only** - For legacy integer advertiser IDs, use the agency_advertiser_id field in the request body instead - UUIDs are case-insensitive but typically lowercase **Multiple Values**: Repeat parameter for multiple advertisers (e.g., `?advertiser_id=uuid1&advertiser_id=uuid2`) **Authorization**: Automatically filtered to advertisers you have access to via IAM permissions **Use Case**: - Client-specific reporting - Multi-advertiser campaign analysis - Agency-level Measurement report aggregation **Example**: `?advertiser_id=2575fa26-9115-4972-be28-eb2e556e2350&advertiser_id=550e8400-e29b-41d4-a716-446655440000`."
+                },
+                {
+                  "disabled": false,
+                  "key": "created_by",
+                  "value": "<string>",
+                  "description": "Filter by Measurement report creator's user ID. Supports multiple user IDs. **Format**: UUID v4 **Source**: User IDs from IAM system; obtain from user profile or list users endpoint **Multiple Values**: Repeat parameter for multiple creators (e.g., ?created_by=uuid1&created_by=uuid2) **Use Case**: - Audit Measurement reports created by specific users - Filter team member's Measurement reports - Compliance and governance reporting **Authorization**: Only returns Measurement reports you have permission to access **Example**: `?created_by=550e8400-e29b-41d4-a716-446655440000&created_by=660e8400-e29b-41d4-a716-446655440001`."
+                },
+                {
+                  "disabled": false,
+                  "key": "creator_name",
+                  "value": "<string>",
+                  "description": "Filter by Measurement report creator's display name using fuzzy text search. Supports multiple names. **Matching Behavior**: Case-insensitive partial matching across first name, last name, and full name **Search Strategy**: - Searches 'John' matches 'John Smith', 'Johnny Doe' - Searches 'Smith' matches 'John Smith', 'Jane Smith' - Searches 'John Smith' matches 'John Smith' (full name) **Multiple Values**: Repeat parameter for OR logic (e.g., ?creator_name=John%20Smith&creator_name=Jane%20Doe) **Special Characters**: URL-encode spaces **Use Case**: Human-readable search when user IDs are unknown **Performance**: Slightly slower than `created_by` filter due to text search **Example**: `?creator_name=John%20Smith&creator_name=Jane%20Doe`."
+                },
+                {
+                  "disabled": false,
+                  "key": "eligiblePostProcessesType",
+                  "value": "<string>",
+                  "description": "Filter by reports eligible for post-processing. **Available Values**: - LIFT - Reports that meet all eligibility criteria for Linear Lift analysis **Multiple Values**: Repeat parameter for OR logic (e.g., `?eligiblePostProcessesType=LIFT` will return reports eligible for Linear Lift) **Eligibility Criteria**: - Agency has < 5 complete Linear Lift runs this calendar year - Report has AlwaysOnOutcomes feature flag - Report has non-affinity conversion datasource - Latest run is complete and within 30 days - Report has no previous successful Linear Lift runs - Schedule status is complete - Report has linear datasource (first_party_ad_schedule, kantar_commingle, or kantar_commingle_daily) **Performance**: This filter requires an additional API call to RCAPI's eligibility service. Response time may increase by 500-1000ms depending on agency size. **Note**: This filter checks eligibility at query time. A report's eligibility status may change based on agency quotas and report state. **Example**: `?eligiblePostProcessesType=LIFT` - LINEAR_LIFT: Deprecated: use LIFT instead. ETL handles LINEAR_LIFT vs DIGITAL_LIFT distinction."
+                },
+                {
+                  "disabled": false,
+                  "key": "external_id",
+                  "value": "<string>",
+                  "description": "Filter by external campaign or study identifier from your system. **Purpose**: Link VideoAmp Measurement reports to external campaign management systems **Format**: Alphanumeric string (your system's format) **Uniqueness**: Should be unique per organization but not enforced by API **Use Case**: - Integration with external workflow systems - Cross-platform campaign tracking - Recurring Measurement request identification **Exact Match**: Performs exact string matching (case-sensitive) **Example**: '?external_id=campaign_rf_q4_2024'."
+                },
+                {
+                  "disabled": false,
+                  "key": "id",
+                  "value": "<string>",
+                  "description": "Filter results to Measurement reports matching this specific request identifier. **Format**: UUID v4 **Source**: Returned by 'POST /v2/adMeasurements' or found in previous list responses **Use Case**: Direct lookup when you have the exact Measurement report ID **Behavior**: Returns array with single item if found, empty array if not found or not accessible **Performance**: Optimized for single-item retrieval (typically <50ms) **Example**: '?id=58b97c6b-a5a0-4b21-a421-ab7b401c6c27'."
+                },
+                {
+                  "disabled": false,
+                  "key": "latestRequestDisplayStatus",
+                  "value": "<string>",
+                  "description": "Filter by the display status of the latest request. **Available Values**: - 'Success' - Completed successfully - 'Failed' - Failed to complete - 'Processing' - Currently processing **Example**: '?latestRequestDisplayStatus=Success'"
+                },
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>",
+                  "description": "Filter by Measurement report name using substring-based text search. **Matching Behavior**: Case-insensitive partial substring matching **Search Strategy**: Searches within Measurement report 'name' field **Examples**: - '?name=q4' - Matches 'Q4 2024 Campaign', 'Q4 Brand Study', etc. - '?name=brand%20awareness' - Matches any name containing 'brand awareness' **Special Characters**: URL-encode spaces and special characters **Performance**: Indexed search, typically returns in <100ms **Combination**: Can be combined with other filters for refined search."
+                },
+                {
+                  "disabled": false,
+                  "key": "order_by",
+                  "value": "<string>",
+                  "description": "Sort field and direction for result ordering. **Supported Fields**: - 'created_at' - Sort by creation date - 'latest_request_created_at' - Sort by latest request date **Supported Directions**: - 'asc' - Ascending order - 'desc' - Descending order **Default**: 'created_at desc' if not specified **Syntax**: '{field_name} {direction}' (space-separated) **Examples**: - '?order_by=created_at%20desc' - Newest first - '?order_by=created_at%20asc' - Oldest first"
+                },
+                {
+                  "disabled": false,
+                  "key": "ownership",
+                  "value": "<string>",
+                  "description": "Filter by report ownership. **Available Values**: - 'OWNED' (default) - Reports owned by a business entity the user is explicitly assigned to - 'SHARED' - Reports shared with the user by another business entity **Default Behavior**: When omitted, defaults to 'OWNED' and returns only the reports from the business entities the user is explicitly assigned to. **Example**: '?ownership=SHARED' - OWNED: Reports owned by a business entity the user is explicitly assigned to (default). - SHARED: Reports shared with the user by another business entity."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageToken",
+                  "value": "<string>",
+                  "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "<string>",
+                  "description": "Number of Measurement reports to return per page. **Valid Range**: 1-100 **Default**: 100 (system-optimized value) **Recommendations**: - Interactive applications: 25-50 for balanced performance - Batch/background operations: 50-100 for efficiency - Mobile applications: 10-25 for reduced bandwidth **Performance**: Larger page sizes increase response time linearly. A page_size of 100 typically returns in 200-500ms depending on result complexity. **Example**: `?page_size=25`."
+                },
+                {
+                  "disabled": false,
+                  "key": "postProcessesType",
+                  "value": "<string>",
+                  "description": "Filter by existing (completed) post-processes. **Available Values**: - 'LIFT' **Example**: '?postProcessesType=LIFT' - LINEAR_LIFT: Deprecated: use LIFT instead. ETL handles LINEAR_LIFT vs DIGITAL_LIFT distinction."
+                },
+                {
+                  "disabled": false,
+                  "key": "type",
+                  "value": "<string>",
+                  "description": "Filter by Measurement request type. Each type produces different output formats and metrics. **Available Types**: _For Ad Measurement requests_: - 'ESSENTIALS': Audience Essentials - 'ADVANCED_RF': Advanced Reach & Frequency - 'ADVANCED_RF_OUTCOMES': Advanced Reach & Frequency with Outcomes - 'COMPETITIVE': Competitive Insights - 'YOUTUBE_URA': Advanced Reach & Frequency YouTube - 'ADVANCED_RF_SUPPLEMENTAL': Advanced Reach & Frequency Supplemental - 'ADVANCED_RF_OUTCOMES_SUPPLEMENTAL': Advanced Reach & Frequency with Outcomes Supplemental - 'TOPLINE_LINEAR': Topline Linear Focus - 'TOPLINE_LINEAR_OUTCOMES': Topline Linear Focus With Outcomes _For Content Measurement requests_: - 'PROGRAM': Program Level Report - 'DAYPART': Daypart, Custom Daypart, and Network Total Day Report - 'TELECAST': Telecast Level Report **Use Case**: Filter to specific Measurement methodology for workflow management **Multiple Values**: Not supported; use separate requests for multiple types **Case Sensitivity**: Case-sensitive matching (use exact values) **Example**: '?type=ADVANCED_RF'."
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6b1c5cbd-aba6-4e0c-9b2a-9c2b6827b0b1",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "advertiser_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "created_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "creator_name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "eligiblePostProcessesType",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "external_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "latestRequestDisplayStatus",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "order_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ownership",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "postProcessesType",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2e203064-980b-40bb-892a-44f5fdc1b7a8",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "advertiser_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "created_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "creator_name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "eligiblePostProcessesType",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "external_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "latestRequestDisplayStatus",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "order_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ownership",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "postProcessesType",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d19301e2-50d2-4e80-b7bb-6de6258b81e1",
+          "name": "Trigger delivery of a Measurement report",
+          "request": {
+            "name": "Trigger delivery of a Measurement report",
+            "description": {
+              "content": "This endpoint will trigger a refresh of an eligible adMeasurement.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "adMeasurements",
+                "trigger"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7854dc95-d597-4c15-a99c-b88a22819040",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    "trigger"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c46dd0aa-7136-4f9a-9b4c-e2fd5641396e",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    "trigger"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "759075fc-4667-4da7-a00a-c0dac18e6cba",
+          "name": "Create post-process analysis",
+          "request": {
+            "name": "Create post-process analysis",
+            "description": {
+              "content": "Creates a new post-processing analysis request for a completed Measurement report that may take up to 30 hours to complete.\n\n**What**: Triggers additional analysis on baseline Measurement results to derive incremental impact insights\n\n**LIFT**: Analyzes the incremental lift effect of linear TV campaigns by comparing exposed versus control audience conversion rates\n\n**Prerequisites**:\n- AdMeasurement must have successfully completed (status='ready')\n- Must be an outcomes report type (ADVANCED_RF_OUTCOMES)\n- Must be within 30 days of completion\n- Must have 1-3 conversion groups with at least one non-Affinity\n- Must have linear TV datasource group\n- Conversion groups and audiences must be subsets of baseline report\n\n**Processing**: Request is validated and queued for asynchronous processing. Returns immediately with 'pending' status.\n\n**Use Case**: Measure incremental impact of linear TV advertising on conversion events\n\n**Response**: Returns post-process details with 'pending' status. Monitor the AdMeasurement's existing_post_processes field for completion.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "adMeasurements",
+                ":adMeasurement_uuid",
+                "postProcesses"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "adMeasurement_uuid",
+                  "description": "(Required) The UUID of the AdMeasurement (recurring measurement configuration) to create the post-process for. **Format**: UUID v4 **Purpose**: Identifies the baseline Measurement report to perform post-processing analysis on **Use Case**: The post-process will be applied to the latest successful run of this AdMeasurement."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "885cf9c0-1c81-408d-8745-7d876022df8f",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":adMeasurement_uuid",
+                    "postProcesses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "adMeasurement_uuid",
+                      "description": "(Required) The UUID of the AdMeasurement (recurring measurement configuration) to create the post-process for. **Format**: UUID v4 **Purpose**: Identifies the baseline Measurement report to perform post-processing analysis on **Use Case**: The post-process will be applied to the latest successful run of this AdMeasurement."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c2433891-906f-4a23-aa92-c5c80e1fbae5",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":adMeasurement_uuid",
+                    "postProcesses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "adMeasurement_uuid",
+                      "description": "(Required) The UUID of the AdMeasurement (recurring measurement configuration) to create the post-process for. **Format**: UUID v4 **Purpose**: Identifies the baseline Measurement report to perform post-processing analysis on **Use Case**: The post-process will be applied to the latest successful run of this AdMeasurement."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e54e6652-1583-46d1-b2e7-3849109a3438",
+          "name": "List post-processes for an AdMeasurement",
+          "request": {
+            "name": "List post-processes for an AdMeasurement",
+            "description": {
+              "content": "Retrieves a paginated list of all post-process requests for a specific AdMeasurement.\n\n**What**: Returns all LIFT post-processes associated with the given AdMeasurement UUID\n\n**Use Cases**:\n- View history of all post-process analyses for a Measurement report\n- Monitor status of multiple post-processes\n- Retrieve links to completed post-process outputs\n\n**Response Fields**:\n- `results`: Array of post-process summary items\n  - `id`: Post-process UUID\n  - `status`: Current status (pending, running, complete, failed)\n  - `type`: Always 'linear_lift'\n  - `created_at`: When the post-process was created\n  - `through_date`: Data through date\n  - `outputs`: Result file links (when complete)\n  - `status_info`: Queue position and display status\n- `next_page_token`: Token for retrieving next page\n- `total_size`: Total number of post-processes\n\n**Pagination**:\n- Default page size: 50\n- Maximum page size: 100\n- Results ordered by created_at DESC (newest first)",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "adMeasurements",
+                ":adMeasurement_uuid",
+                "postProcesses"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "<integer>",
+                  "description": "Maximum number of post-processes to return per page. **Default**: 50 **Range**: 1-100"
+                },
+                {
+                  "disabled": false,
+                  "key": "page_token",
+                  "value": "<string>",
+                  "description": "Page token from a previous ListPostProcesses call. **Purpose**: Used to retrieve the next page of results **Usage**: Pass the 'next_page_token' from the previous response to get the next page"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "adMeasurement_uuid",
+                  "description": "(Required) UUID of the AdMeasurement (recurring measurement config) to list post-processes for. **Format**: UUID v4"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8666c5f3-4d7a-4b64-98ab-339b1a1d5e8f",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":adMeasurement_uuid",
+                    "postProcesses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page_size",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "adMeasurement_uuid",
+                      "description": "(Required) UUID of the AdMeasurement (recurring measurement config) to list post-processes for. **Format**: UUID v4"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f71e7496-07d8-4f02-aab9-343a9a6e786d",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":adMeasurement_uuid",
+                    "postProcesses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page_size",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "adMeasurement_uuid",
+                      "description": "(Required) UUID of the AdMeasurement (recurring measurement config) to list post-processes for. **Format**: UUID v4"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "73b9ad57-0f08-450e-9c4f-18f6dcb7329b",
+          "name": "Delete a post-process (lift) request",
+          "request": {
+            "name": "Delete a post-process (lift) request",
+            "description": {
+              "content": "Deletes a post-process request under an AdMeasurement without deleting the entire AdMeasurement. The request is marked as deleted but data is retained.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "adMeasurements",
+                ":adMeasurement_uuid",
+                "postProcesses",
+                ":postProcessUuid"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "adMeasurement_uuid",
+                  "description": "(Required) UUID of the AdMeasurement (recurring measurement config). **Format**: UUID v4"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "postProcessUuid",
+                  "description": "(Required) UUID of the post-process request. **Format**: UUID v4"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "35887993-fcb7-488f-aa35-7d5f5d3af1a2",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":adMeasurement_uuid",
+                    "postProcesses",
+                    ":postProcessUuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "adMeasurement_uuid",
+                      "description": "(Required) UUID of the AdMeasurement (recurring measurement config). **Format**: UUID v4"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "postProcessUuid",
+                      "description": "(Required) UUID of the post-process request. **Format**: UUID v4"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3b20ea7d-6b35-47fc-9acc-1ee39b37854c",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":adMeasurement_uuid",
+                    "postProcesses",
+                    ":postProcessUuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "adMeasurement_uuid",
+                      "description": "(Required) UUID of the AdMeasurement (recurring measurement config). **Format**: UUID v4"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "postProcessUuid",
+                      "description": "(Required) UUID of the post-process request. **Format**: UUID v4"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6d24c2e6-4f0e-4b0f-ae8b-b06a3404ca92",
+          "name": "Get post-process request details",
+          "request": {
+            "name": "Get post-process request details",
+            "description": {
+              "content": "Retrieves detailed information about a LIFT post-process request.\n\n**What**: Fetches the current status, configuration, outputs, and queue information for a post-process analysis\n\n**Use Case**: Monitor post-process execution and retrieve results when complete\n\n**Response Fields**:\n- `id`: Post-process request UUID\n- `ad_measurement_id`: Parent AdMeasurement UUID  \n- `status`: Current status (pending, running, complete, failed)\n- `created_at`: When the post-process was created\n- `through_date`: Data through date for the analysis\n- `outputs`: Pre-signed S3 URLs for result files (when complete)\n- `status_info`: Detailed status including queue position and display status\n- `conversion_group_ids`, `audience_ids`, `dimension_set_id`: Configuration\n\n**Status Values**:\n- `pending`: Waiting in queue\n- `running`: Currently processing\n- `complete`: Results available in outputs\n- `failed`: Processing error occurred",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "adMeasurements",
+                ":adMeasurement_uuid",
+                "postProcesses",
+                ":postProcessUuid"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "adMeasurement_uuid",
+                  "description": "(Required) UUID of the AdMeasurement (recurring measurement config). **Format**: UUID v4"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "postProcessUuid",
+                  "description": "(Required) UUID of the post-process request. **Format**: UUID v4"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f7d82d65-f81c-4f3c-a424-e7940668243a",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":adMeasurement_uuid",
+                    "postProcesses",
+                    ":postProcessUuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "adMeasurement_uuid",
+                      "description": "(Required) UUID of the AdMeasurement (recurring measurement config). **Format**: UUID v4"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "postProcessUuid",
+                      "description": "(Required) UUID of the post-process request. **Format**: UUID v4"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a005832f-9a2c-4129-bf02-b413c6e61f0c",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":adMeasurement_uuid",
+                    "postProcesses",
+                    ":postProcessUuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "adMeasurement_uuid",
+                      "description": "(Required) UUID of the AdMeasurement (recurring measurement config). **Format**: UUID v4"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "postProcessUuid",
+                      "description": "(Required) UUID of the post-process request. **Format**: UUID v4"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2d3c7f91-72be-4f08-8f0d-032876dfcec0",
+          "name": "Get post-process configuration options",
+          "request": {
+            "name": "Get post-process configuration options",
+            "description": {
+              "content": "Retrieve available configuration options for post-processing a completed Measurement report.\n\n**What**: Returns the available options (conversion groups, audiences, dimension sets) that can be used to configure a post-process operation for a specific Measurement report.\n\n**Purpose**: Before triggering a post-process operation like LIFT, use this endpoint to discover which configuration options are available based on the baseline Measurement report's configuration.\n\n**Use Cases**:\n- Present available conversion groups to users when configuring a Linear Lift analysis\n- Show which audiences can be included in post-processing\n- Display dimension set options (e.g., NETWORK) for breakdown analysis\n- Validate that required options are available before attempting to trigger post-processing\n\n**Workflow**:\n1. User selects a completed Measurement report with outcomes\n2. Call this endpoint with the report's `adMeasurement_uuid` and desired `postProcessType` (e.g., LIFT)\n3. Response contains arrays of available conversion_group_ids, audience_ids, and dimension_set_ids\n4. User selects from these options\n5. Use selected options to trigger the post-process operation\n\n**Requirements**: The Measurement report must be eligible for the requested post-process type. Check `eligible_post_processes` field on the AdMeasurementRequest to verify eligibility before calling this endpoint.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "adMeasurements",
+                ":adMeasurement_uuid",
+                "postProcesses:requirements"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "postProcessType",
+                  "value": "<string>",
+                  "description": "(Required) Type of post-processing operation to retrieve options for. **Available Values**: 'LIFT' - Linear Lift analysis **Purpose**: Specifies which post-process options to retrieve. - LINEAR_LIFT: Deprecated: use LIFT instead. ETL handles LINEAR_LIFT vs DIGITAL_LIFT distinction."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "adMeasurement_uuid",
+                  "description": "(Required) Unique identifier for the recurring Measurement report. **Format**: UUID v4 **Purpose**: Identifies the baseline Measurement report for which to retrieve post-processing options **Use Case**: Get available configuration options before triggering post-process operations."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f0b16f42-39e2-4336-a9ca-14733963adb6",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":adMeasurement_uuid",
+                    "postProcesses:requirements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "postProcessType",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "adMeasurement_uuid",
+                      "description": "(Required) Unique identifier for the recurring Measurement report. **Format**: UUID v4 **Purpose**: Identifies the baseline Measurement report for which to retrieve post-processing options **Use Case**: Get available configuration options before triggering post-process operations."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "fab2d8ea-9857-444d-9cf0-a479bc556b74",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":adMeasurement_uuid",
+                    "postProcesses:requirements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "postProcessType",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "adMeasurement_uuid",
+                      "description": "(Required) Unique identifier for the recurring Measurement report. **Format**: UUID v4 **Purpose**: Identifies the baseline Measurement report for which to retrieve post-processing options **Use Case**: Get available configuration options before triggering post-process operations."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b563e89a-8d99-4e9e-a6be-bb2faca233c4",
+          "name": "Delete Measurement report",
+          "request": {
+            "name": "Delete Measurement report",
+            "description": {
+              "content": "This endpoint will delete a Measurement report.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "adMeasurements",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) This field defines the Measurement request identifier."
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6a95e5da-61d0-4955-9d1e-9b866a5df534",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) This field defines the Measurement request identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cfbc8bef-1d8b-4827-a975-29f64cbd6479",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) This field defines the Measurement request identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "98c66629-6cb3-4067-a2eb-dd3ef48ef54c",
+          "name": "Get Measurement report details",
+          "request": {
+            "name": "Get Measurement report details",
+            "description": {
+              "content": "Retrieves complete details for a specific Measurement report including configuration, processing status, execution history, and downloadable export links. Essential for monitoring Measurement report processing progress, accessing completed analysis results, and tracking the lifecycle of advertising performance analyses from submission through completion. Enables automated polling workflows that wait for result availability and provides real-time status updates. \n**Use for**: monitoring processing status after creating a Measurement report, checking if asynchronous analysis has completed and results are ready, accessing S3 download links for exports (CSV/Excel/Parquet), retrieving detailed error messages on failures, reviewing historical configurations for audit or replication, displaying execution history for recurring Measurement requests, and or verifying parameters before triggering refresh\n**Requires**: Bearer token authentication with read permissions for the specified Measurement report\n**Typical latency**: Under 100ms for direct ID lookups; recommended polling interval 2-5 minutes during processing (typical completion 30min-4hrs)\n**Returns**: 404 error if ID not found or 403 if insufficient permissions\n**Related**:\n- `POST /v2/adMeasurements` (create, returns ID)\n- `GET /v2/adMeasurements` (list with filtering)\n- `PATCH /v2/adMeasurements/{id}` (update)\n- `DELETE /v2/adMeasurements/{id}` (delete)\n- `POST /v2/adMeasurements/trigger` (manually trigger recurring execution).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "adMeasurements",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) Unique identifier for the Measurement report to retrieve. Must be a valid UUID v4 representing an existing Measurement report within your organization's scope. Auto-generated when created via 'POST /v2/adMeasurements' and returned in the response 'id' field. Use this ID to poll for processing status, retrieve completed results with download links, or access historical configurations. Immutable throughout the Measurement report's lifecycle and persists after analysis completes. Common errors: 404 when ID does not exist or was deleted; 403 when user lacks read permissions based on IAM rules. IDs are globally unique across VideoAmp systems preventing collisions. For optimal performance, cache the ID after creation rather than repeatedly searching via list endpoint. Example workflow: Create Measurement report → Save ID → Poll GET every 2-5 minutes → Download results when status is 'ready'."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ff763281-c54c-4fb1-a1af-aa6f9f5c2a8e",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Unique identifier for the Measurement report to retrieve. Must be a valid UUID v4 representing an existing Measurement report within your organization's scope. Auto-generated when created via 'POST /v2/adMeasurements' and returned in the response 'id' field. Use this ID to poll for processing status, retrieve completed results with download links, or access historical configurations. Immutable throughout the Measurement report's lifecycle and persists after analysis completes. Common errors: 404 when ID does not exist or was deleted; 403 when user lacks read permissions based on IAM rules. IDs are globally unique across VideoAmp systems preventing collisions. For optimal performance, cache the ID after creation rather than repeatedly searching via list endpoint. Example workflow: Create Measurement report → Save ID → Poll GET every 2-5 minutes → Download results when status is 'ready'."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "96455930-65bd-4c2e-b75d-09e2c9953923",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Unique identifier for the Measurement report to retrieve. Must be a valid UUID v4 representing an existing Measurement report within your organization's scope. Auto-generated when created via 'POST /v2/adMeasurements' and returned in the response 'id' field. Use this ID to poll for processing status, retrieve completed results with download links, or access historical configurations. Immutable throughout the Measurement report's lifecycle and persists after analysis completes. Common errors: 404 when ID does not exist or was deleted; 403 when user lacks read permissions based on IAM rules. IDs are globally unique across VideoAmp systems preventing collisions. For optimal performance, cache the ID after creation rather than repeatedly searching via list endpoint. Example workflow: Create Measurement report → Save ID → Poll GET every 2-5 minutes → Download results when status is 'ready'."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "77ecd839-ddd0-42d3-9147-ad2f593a3d31",
+              "name": "Forbidden — the caller's organization is not permissioned for this resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Unique identifier for the Measurement report to retrieve. Must be a valid UUID v4 representing an existing Measurement report within your organization's scope. Auto-generated when created via 'POST /v2/adMeasurements' and returned in the response 'id' field. Use this ID to poll for processing status, retrieve completed results with download links, or access historical configurations. Immutable throughout the Measurement report's lifecycle and persists after analysis completes. Common errors: 404 when ID does not exist or was deleted; 403 when user lacks read permissions based on IAM rules. IDs are globally unique across VideoAmp systems preventing collisions. For optimal performance, cache the ID after creation rather than repeatedly searching via list endpoint. Example workflow: Create Measurement report → Save ID → Poll GET every 2-5 minutes → Download results when status is 'ready'."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ac8a7d06-0ee8-45d7-a511-e3b9ee275857",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Unique identifier for the Measurement report to retrieve. Must be a valid UUID v4 representing an existing Measurement report within your organization's scope. Auto-generated when created via 'POST /v2/adMeasurements' and returned in the response 'id' field. Use this ID to poll for processing status, retrieve completed results with download links, or access historical configurations. Immutable throughout the Measurement report's lifecycle and persists after analysis completes. Common errors: 404 when ID does not exist or was deleted; 403 when user lacks read permissions based on IAM rules. IDs are globally unique across VideoAmp systems preventing collisions. For optimal performance, cache the ID after creation rather than repeatedly searching via list endpoint. Example workflow: Create Measurement report → Save ID → Poll GET every 2-5 minutes → Download results when status is 'ready'."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "64d7a45f-1ba6-4c19-a37a-04640ebb853e",
+          "name": "Update Measurement configuration",
+          "request": {
+            "name": "Update Measurement configuration",
+            "description": {
+              "content": "Update an existing Measurement configuration. This endpoint allows you to modify specific fields of an Measurement report.\n\n**Updatable Fields**: `name`, `start_date`, `end_date`, `streams`, `currency_of_record`, `audience_ids`, `data_source_group_ids`, `conversion_group_ids`, `rule_ids`, `delivery_schedule`, `export_results`\n\n**Required Field**: `type` must be provided in every request for validation but is not updatable.\n\n**Request Format**: Send a PATCH request with the Measurement report ID in the URL path and the fields to update in the request body. Use `update_mask` query parameter to specify which fields to update.\n\n**Example Payload For Editing Name**:\n```json\n{\n  \"name\": \"pt-test-export false 5\",\n  \"type\": \"ADVANCED_RF\"\n}\n```\n\n**Export Results**: When `export_results` is changed from `false`/`null` to `true`, outputs are automatically generated for the latest successful request. The latest request must be in a succeeded state. Enabling when already enabled has no effect.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "adMeasurements",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "validate_only",
+                  "value": "<boolean>",
+                  "description": "to only validate the request When supplied and set to true, the request will be validated to ensure proper access is provided for all values, attributes, and outputs, along with all required fields being present. The updated object will be returned in full. This field is optional. (default true)"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) The unique identifier of the Measurement report to update."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "a091077e-8840-4672-82c4-0acbe369e0d6",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "validate_only",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The unique identifier of the Measurement report to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cbff47c1-be7d-4b5d-807e-5abadf81de10",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "adMeasurements",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "validate_only",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The unique identifier of the Measurement report to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.videoamp.dev",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "scope",
+        "value": "openid profile email offline_access"
+      },
+      {
+        "key": "redirect_uri",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "authUrl",
+        "value": "https://login.videoamp.com/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "authorization_code"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "c64aab95-4127-45eb-afaf-c45c78461027",
+    "name": "VideoAmp Public Ad Measurements API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.\n\n**Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI's `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary's own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.\n\n**Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.\n\nContact Support:\n Name: VideoAmp Support\n Email: support@videoamp.com",
+      "type": "text/plain"
+    }
+  }
+}

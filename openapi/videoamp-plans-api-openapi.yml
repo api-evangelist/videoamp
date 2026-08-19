@@ -1,0 +1,351 @@
+openapi: 3.2.0
+info:
+  title: VideoAmp Public Plans API
+  version: '2026-07-31'
+  summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
+  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
+
+
+    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
+
+
+    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  contact:
+    name: VideoAmp Support
+    email: support@videoamp.com
+    url: https://help.videoamp.dev
+  termsOfService: https://videoamp.com/terms-of-use/
+servers:
+- url: https://api.videoamp.dev
+  description: Production. The VideoAmp CLI also references `staging` and `preprod` environments (api.staging.videoamp.dev, api.preprod.videoamp.dev), but neither resolves publicly (DNS NXDOMAIN as of 2026-08-02), so they are not listed as callable servers.
+security:
+- videoampOAuth: []
+tags:
+- name: plans
+  description: plans operations.
+paths:
+  /v1beta/plans:
+    post:
+      operationId: plan_create
+      summary: Create Plan
+      tags:
+      - plans
+      description: 'Creates a new media plan optimization scenario. The plan defines a budget allocation strategy across inventory titles and constraints to maximize reach, impressions, or audience concentration for a campaign.
+
+
+        **Why**: Run reach and frequency optimization against a campaign''s inventory set. Plans are the core output of the media planning workflow, producing optimized budget allocations. Use `OBJECTIVE_FORECAST_ONLY` to skip optimization and forecast reach, impressions, and frequency directly from a fixed unit allocation — useful for secondary-read use cases where the buy has already been committed in another currency.
+
+
+        **When**: Call after creating a campaign with valid audiences and an inventory set. Requires a campaign ID, a budget, and rates (via rate card or overrides). Use `validate_only=true` to pre-validate inputs without triggering optimization.
+
+
+        **How**: Submit the plan configuration in the request body. Returns 201 with the created plan including server-assigned `id` and initial `status` (QUEUED). The plan processes asynchronously — poll `GET /v1beta/plans/{plan_id}` to check status (QUEUED → PROCESSING → READY or FAILED).
+
+
+        **Forecast-only workflow** (skip optimization, forecast from fixed units):
+
+        1. Set `primary_objective.objective_type` to `OBJECTIVE_FORECAST_ONLY`. Set `budget` to `"0"`.
+
+        2. Add one `FIXED_INVESTMENT_UNITS` constraint per title: `constraint_type: FIXED_INVESTMENT_UNITS`, `operator: EQUAL`, `goal: "<unit_count>"`, `creative_duration_seconds`, and `title_filters` with `title_filter_type: ID`.
+
+        3. Omit `target_budget`, saturation rules, and frequency rules — all are rejected with HTTP 400 when combined with `OBJECTIVE_FORECAST_ONLY`.
+
+        4. Do not combine `OBJECTIVE_FORECAST_ONLY` with any `OBJECTIVE_MAXIMIZE_*` objective on the same plan.
+
+        5. Poll `GET /v1beta/plans/{plan_id}` until `status` is `READY`, then download results from the `output` URL.'
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp plan_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '400':
+          description: Bad Request — invalid or unsupported parameter values.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: plan_create
+    get:
+      operationId: plan_list
+      summary: List Plans
+      tags:
+      - plans
+      description: 'Returns a paginated, filterable list of Plans accessible to the caller. Plans represent optimization scenarios that allocate budget across campaigns and inventory titles.
+
+
+        **Why**: Discover and manage plans across your organization. Use to find completed plans for result retrieval, monitor processing status, or audit plan configurations.
+
+
+        **When**: Call when building a plan management UI, checking optimization status across multiple plans, or filtering plans by status, creator, or campaign.
+
+
+        **How**: All parameters are optional. Narrow results using `statuses`, `displayNames`, `createdBy`, `campaignIds`, or `inventorySetIds` filters. Sort with `orderBy` (defaults to `created_at desc`). Paginate with `pageSize` and `pageToken`. The `total_size` field reflects all matching plans across all pages.'
+      parameters:
+      - name: campaignIds
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Optional filter by campaign UUID. Returns plans that include the specified campaigns. Pass multiple values as repeated query params for OR logic.
+      - name: createdBy
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Optional filter by the user ID who created the plan. Provide creator UUIDs to retrieve only plans created by those users. Pass multiple values as repeated query params for OR logic.
+      - name: displayNames
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Optional filter by plan name using case-insensitive substring matching on the display_name field. Returns plans whose name contains the provided string. Pass multiple values as repeated query params for OR logic.
+      - name: ids
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Optional filter by plan UUIDs. Pass multiple values as repeated query params: ?ids=uuid1&ids=uuid2. Use for efficient batch retrieval when you already know which specific plans you need. Plans not found or not accessible to the caller are silently omitted from results rather than causing an error.'
+      - name: inventorySetIds
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Optional filter by inventory set UUID. Returns plans associated with the specified inventory sets. Pass multiple values as repeated query params for OR logic.
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'This field specifies how to order the list results. If no value is provided, the results will be sorted by created_at descending order. Specify the order by providing a comma separated list of ''field_name direction'' strings. Omitted direction defaults to asc. Example: ''created_at desc, display_name'' Accepted Values: - ''status'' - ''failure_msg'' - ''display_name'' - ''inventory_set_id'' - ''budget'' - ''minimum_investment'' - ''created_at'' - ''created_by'' Accepted Sort: - ''desc'' - ''asc'''
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results. Defaults to 100 when omitted. Maximum value is 1000.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      - name: statuses
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Optional filter by plan processing status. Use to find completed plans (READY), in-progress plans (PROCESSING/QUEUED), or failed plans (FAILED). Pass multiple values for OR logic. - STATUS_UNSPECIFIED: Status is unspecified. Default proto3 zero value. Do not use in client logic. - QUEUED: The plan has been created and its required data dependencies are being resolved. Transitions to PROCESSING once all required data is available. - PROCESSING: The plan optimization is actively running. Processing time varies based on plan complexity (number of titles, constraints, and audience combinations). - READY: The plan optimization completed successfully. Results are available via the output field which contains a presigned S3 URL for downloading the optimized allocation. - FAILED: The plan optimization failed. Check `failure_msg` for a human-readable error message and `status_info` for structured error details (code, status, diagnostics). Common causes include invalid inventory data, insufficient rates, or optimizer errors. Fix the configuration and create a new plan to retry. - DRAFT: The plan has been created and allows further modification'
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: plan_list
+  /v1beta/plans/{planId}:
+    delete:
+      operationId: plan_delete
+      summary: Delete Plan
+      tags:
+      - plans
+      description: 'Deletes a Plan, removing it from all API responses. This action cannot be undone through the API — there is no undelete operation.
+
+
+        **Why**: Remove plans that are no longer needed, were created in error, or have been superseded by a new optimization scenario.
+
+
+        **When**: Call when a plan is no longer required regardless of its current status (QUEUED, PROCESSING, READY, and FAILED plans can all be deleted). Verify the plan exists via `GET /v1beta/plans/{plan_id}` before deleting.
+
+
+        **How**: Supply the plan UUID as the `plan_id` path parameter. Returns 204 with an empty body on success. Returns 404 if the plan does not exist or is not accessible. In-flight optimization may continue briefly after deletion but will not produce results.'
+      parameters:
+      - name: planId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the Plan to delete. Obtain this value from the 'id' field in plan creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the plan does not exist or is not accessible to the caller.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '404':
+          description: Not Found — the resource does not exist or is not accessible to the calling organization.
+      x-videoamp-cli-command: plan_delete
+    get:
+      operationId: plan_get
+      summary: Get Plan
+      tags:
+      - plans
+      description: 'Returns the complete Plan resource for a single known plan ID. Use this endpoint when you already have the plan UUID and need to retrieve full details including status, output, and configuration.
+
+
+        **Why**: Retrieve plan details to check optimization status, access results (presigned URL when READY), or review the plan configuration. Essential for polling async plan processing.
+
+
+        **When**: Call after creating a plan to poll for completion (QUEUED → PROCESSING → READY/FAILED). Also use to retrieve a specific plan''s configuration or download optimized results.
+
+
+        **How**: Supply the plan UUID as the `plan_id` path parameter. When status is READY, the response includes an `output` field with a presigned S3 URL for downloading results. Returns 404 if the plan does not exist or is not accessible.'
+      parameters:
+      - name: planId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the Plan to retrieve. Obtain this value from the 'id' field in plan creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the plan does not exist or is not accessible to the caller.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '404':
+          description: Not Found — the resource does not exist or is not accessible to the calling organization.
+      x-videoamp-cli-command: plan_get
+  /v2beta/plans:
+    post:
+      operationId: plan_draft_create
+      summary: Create Plan (Draft)
+      tags:
+      - plans
+      description: 'Starts the draft branch of the planning workflow by creating a media plan in DRAFT status for a campaign. The draft captures the budget-allocation strategy — budget, constraints, objectives, filters, and rates — so it can be refined before optimization.
+
+
+        **Why**: A media plan can be produced two ways — submitted complete and sent straight to optimization, or built incrementally through draft → edit → approve. This endpoint begins the incremental path: create the draft now, refine it, and approve it when ready. Rates are not required while the plan is a draft.
+
+
+        **When**: First step of the draft workflow. Call with a campaign_id and display_name; refine the draft with PATCH /v2beta/plans/{plan_id}, then submit it with POST /v2beta/plans/{plan_id}:approve.
+
+
+        **How**: Submit the plan configuration in the request body. Returns 201 with the created Plan including server-assigned `id` and `status` = DRAFT. The inventory_set_id, audiences, and creative durations are derived from the campaign.'
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp plan_draft_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: plan_draft_create
+  /v2beta/plans/{planId}:
+    patch:
+      operationId: draft_plan_update
+      summary: Patch Plan (Draft)
+      tags:
+      - plans
+      description: 'Refines a DRAFT media plan in the draft branch of the planning workflow. Send only the fields you want to change; omitted fields keep their current values.
+
+
+        **Why**: Lets planners iterate on a draft — adjust budget, constraints, objectives, filters, or rate card / overrides — between creating it and approving it for optimization.
+
+
+        **When**: While the plan is still in DRAFT status, after it is created and before it is approved.
+
+
+        **How**: Supply the plan UUID as `plan_id`. Merge semantics: a field omitted (null) is left unchanged; an explicit empty array `[]` clears that collection (e.g. remove all constraints); an empty string for `rate_card_id` detaches the rate card. Returns 200 with the updated Plan.'
+      parameters:
+      - name: planId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique identifier for the Plan in UUID v4 format. Auto-generated on creation and immutable thereafter. Use this ID in subsequent get and delete operations. Store this value after creation to poll for optimization status.
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp draft_plan_update --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: draft_plan_update
+  /v2beta/plans/{planId}:approve:
+    post:
+      operationId: draft_plan_approve
+      summary: Approve Plan
+      tags:
+      - plans
+      description: 'Approves a DRAFT media plan, completing the draft branch of the planning workflow: it runs full cross-field validation and, on success, submits the plan for asynchronous optimization.
+
+
+        **Why**: The commit step of the draft → edit → approve path. Approval transitions the plan from DRAFT to QUEUED and runs the same optimization a directly-submitted plan would, producing the allocated media plan.
+
+
+        **When**: After the draft is fully configured. The plan MUST be in DRAFT status. Rates are required at this step — provide a rate card and/or rate overrides covering the plan''s titles.
+
+
+        **How**: Supply the plan UUID as `plan_id`. Returns 201 with the Plan in status QUEUED; poll the plan (GET /v1beta/plans/{plan_id}) to track QUEUED → PROCESSING → READY/FAILED. Submitting an identical plan within one hour is rejected with 409.'
+      parameters:
+      - name: planId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique identifier for the Plan in UUID v4 format. Auto-generated on creation and immutable thereafter. Use this ID in subsequent get and delete operations. Store this value after creation to poll for optimization status.
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp draft_plan_approve --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '409':
+          description: Conflict — the request conflicts with the current state of the resource.
+      x-videoamp-cli-command: draft_plan_approve
+components:
+  securitySchemes:
+    videoampOAuth:
+      type: oauth2
+      description: OAuth 2.0 / OIDC via VideoAmp's Auth0 tenant at https://login.videoamp.com. Verified from https://login.videoamp.com/.well-known/openid-configuration (HTTP 200) and https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp (HTTP 200, RFC 9728). Bearer tokens are presented in the Authorization header.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.videoamp.com/authorize
+          tokenUrl: https://login.videoamp.com/oauth/token
+          refreshUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://login.videoamp.com/oauth/device/code
+          tokenUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+externalDocs:
+  url: https://docs.videoamp.dev
+  description: VideoAmp Public API documentation (Auth0-gated)
+x-evidence:
+  method: derived
+  derived_from: github.com/VideoAmp/cli release v0.148.32 (videoamp_v0.148.32_darwin_arm64.tar.gz)
+  extraction: videoamp --help; videoamp <command> --help
+  fetched: '2026-08-02'
+  operations: 118
+  parameters: 295
+  anonymous_openapi_published: false
+  notes: docs.videoamp.dev returns HTTP 302 to Auth0 for every path; api.videoamp.dev returns 404 for /openapi.json, /swagger.json, /v1/openapi.json, /api-docs, /docs, /redoc.

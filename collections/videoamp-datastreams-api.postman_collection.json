@@ -1,0 +1,4532 @@
+{
+  "item": [
+    {
+      "id": "647dac65-05ad-4021-8a1e-b3e7e25c3aa0",
+      "name": "dataStreams",
+      "description": {
+        "content": "dataStreams operations.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "37bf0ca3-c14b-4e93-a66b-ec542d28c9ad",
+          "name": "Create Data Stream",
+          "request": {
+            "name": "Create Data Stream",
+            "description": {
+              "content": "### What\n\nCreates a new Data Stream resource in `DRAFT` status. The server populates `id`, `org_id`, `advertiser_name`, `status`, `created_by`, `updated_by`, `created_at`, and `updated_at`; client-supplied values for those output-only fields are ignored.\n\n### Why\n\nData Streams register external feeds for ingestion into VideoAmp's measurement pipeline. The `DRAFT` state lets a user describe the stream before it is configured for delivery.\n\n### When\n\nThe first call in the intake flow — see Lifecycle below for the full sequence.\n\n### How\n\nThe caller must hold an entitlement on the supplied `advertiser_id`; otherwise the create returns 404 to avoid leaking advertiser existence. Required fields: `advertiser_id`, `name` (1-255 chars), `type`. Optional: `description` (≤ 4096 chars). `name` must be unique among the advertiser's Data Streams; a duplicate returns 409. A stream is scoped to exactly one `advertiser_id`; advertiser names inside the delivered file are descriptive only and do not change this.\n\n### Lifecycle\n\nCreate only registers metadata — it does **not** deliver or ingest data. The stream becomes consumable after this ordered sequence, each step advancing `status` (paths relative to the stream):\n\n1. Create this stream (**this call**) → `DRAFT`.\n2. `PUT .../deliveryConfig` with `method: FILE_UPLOAD`.\n3. `POST .../deliveryConfig:approve` → `AWAITING_DELIVERY`.\n4. `POST .../deliveryConfig:createUploadUrl`, then `PUT` the file — or send the user to `{{.DashboardUrl}}/data/data-streams/upload/{dataStreamId}` to do it themselves.\n5. `POST .../deliveryInspections` → `AWAITING_APPROVAL`.\n6. `PUT .../schemaMapping` — bind delivered columns to canonical fields.\n7. `POST .../schemaMapping:approve` → `PROVISIONING`, then `PROVISIONED`.\n\n### Related operations\n\n- `GET /v1alpha/dataStreams/{dataStreamId}` — retrieve a Data Stream by id.\n- `PUT /v1alpha/dataStreams/{dataStreamId}/deliveryConfig` — next step: configure how files are delivered.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7dd87083-d2dc-4ae1-adbc-6f772ea9f09a",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "55f4968d-a142-4155-ba04-6067213dc819",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5bb3554a-e131-435e-b6c7-f7fafc7c8334",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "53ce2faf-288d-459e-80f0-401aca960635",
+              "name": "Conflict — the request conflicts with the current state of the resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "44c290bf-3776-49d3-878d-2b247a9a4c83",
+          "name": "List Data Streams",
+          "request": {
+            "name": "List Data Streams",
+            "description": {
+              "content": "### What\n\nReturns a paginated, filterable list of Data Stream resources the caller is entitled to read.\n\n### Why\n\nUse this to power Data Stream list views, dashboards, and bulk-management workflows. Results are scoped to the caller's accessible advertisers (across the holdco/agency/advertiser hierarchy), so the same call can be issued by a holdco-tier user (sees every reachable advertiser's rows) or an advertiser-tier user (sees their advertiser's rows).\n\n### When\n\nAny time after at least one `CreateDataStream`. Empty result sets are returned as `{ \"results\": [], \"total_size\": 0 }` rather than 404 — a caller with no accessible advertisers gets an empty page, not an error.\n\n### How\n\nFilters are AND-combined; repeated `status` and `advertiser_id` values are OR-combined within their respective fields. `name` and `advertiser_name` are case-insensitive substring matches. Pagination uses an opaque `page_token`: the response's `next_page_token` is empty on the final page. Filter parameters must remain identical across pages of the same listing — changing any filter value requires a fresh request without `page_token`.\n\n### Related operations\n\n- `GET /v1alpha/dataStreams/{dataStreamId}` — retrieve a single Data Stream.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "advertiserId",
+                  "value": "<string>",
+                  "description": "Filter by advertiser UUID. Repeat to match multiple advertisers. Each value must be a UUID v4 within the caller's accessible advertiser scope; advertisers outside that scope are rejected with InvalidArgument."
+                },
+                {
+                  "disabled": false,
+                  "key": "advertiserName",
+                  "value": "<string>",
+                  "description": "Case-insensitive substring filter on the Data Stream's denormalized 'advertiser_name'. Useful for holdco/agency callers narrowing within their access scope by advertiser display name."
+                },
+                {
+                  "disabled": false,
+                  "key": "ingestionStatus",
+                  "value": "<string>",
+                  "description": "Filter by ingestion health. Repeat to match multiple values (e.g. ?ingestionStatus=HEALTHY&ingestionStatus=DEGRADED). ANDs with the `status` filter, so callers can narrow provisioned streams by ingestion outcome. When omitted, ingestion health is not filtered. - DATA_STREAM_INGESTION_STATUS_UNSPECIFIED: Default unspecified value. - NONE: No ingestion has occurred yet. Default for a newly created Data Stream. - HEALTHY: The most recent ingestion succeeded. - DEGRADED: One or more recent ingestions failed, but a prior ingestion succeeded. - FAILING: No ingestion has ever succeeded, or failures have continued for a sustained consecutive streak."
+                },
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>",
+                  "description": "Case-insensitive substring filter on Data Stream 'name'. Matches anywhere in the value (no leading/trailing wildcards required)."
+                },
+                {
+                  "disabled": false,
+                  "key": "orderBy",
+                  "value": "<string>",
+                  "description": "Sort order applied before pagination. Format: '<field>' for ascending or '<field> desc' for descending. Supported fields: 'created_at', 'updated_at', 'name', 'status'. Defaults to 'updated_at desc' when omitted. Results carry an additional stable tiebreaker so paging is deterministic."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<string>",
+                  "description": "Query param pageSize specifies the number of results to include in a page of results. Defaults to 50 if not specified. Maximum allowed value is 200."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageToken",
+                  "value": "<string>",
+                  "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>",
+                  "description": "Filter by Data Stream status. Repeat to match multiple statuses (e.g. ?status=DRAFT&status=AWAITING_DELIVERY). When omitted, Data Streams of every status are returned. - DATA_STREAM_STATUS_UNSPECIFIED: Default unspecified value. - DRAFT: Data Stream has been created but delivery configuration or file upload is not yet complete. - AWAITING_DELIVERY: Configuration is set and the Data Stream is awaiting an initial file delivery. - AWAITING_APPROVAL: First successful delivery inspection has completed; the schema mapping is awaiting approval. - PROVISIONING: Schema mapping has been approved; the Data Stream is being provisioned into downstream systems. - PROVISIONED: Ingestion pipeline has acknowledged the provisioning job — the end of the intake/ingestion path. Reached from PROVISIONING."
+                },
+                {
+                  "disabled": false,
+                  "key": "type",
+                  "value": "<string>",
+                  "description": "Filter by Data Stream type. Repeat to match multiple types. Supported values: AD_SCHEDULES. - DATA_STREAM_TYPE_UNSPECIFIED: Default unspecified value; rejected at create time. - AD_SCHEDULES: Provider-supplied planned or delivered ad schedule with flight, placement, and inventory metadata."
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "901ea843-7417-41ca-a7cf-e5eb4ca592de",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "advertiserId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "advertiserName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ingestionStatus",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d83780c4-31a8-4051-a529-681c2333fe97",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "advertiserId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "advertiserName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ingestionStatus",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a5b0f69e-19ac-4f7b-9e99-2e3bbcd4738f",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "advertiserId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "advertiserName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ingestionStatus",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f82291e3-e96d-4eed-b1a6-d6fc7ee6b444",
+          "name": "Get Data Stream",
+          "request": {
+            "name": "Get Data Stream",
+            "description": {
+              "content": "### What\n\nRetrieves a complete Data Stream configuration by `data_stream_id`, including metadata (`name`, `description`, `type`), lifecycle state (`status`), advertiser (`advertiser_id`, `advertiser_name`), and audit timestamps (`created_at`, `updated_at`) and audit users (`created_by`, `updated_by`).\n\n### Why\n\nUse this to validate intake state, display details in UI, or audit configuration.\n\n### When\n\nAfter `CreateDataStream` and at any point in the resource's lifecycle.\n\n### How\n\nReturns 404 if the Data Stream does not exist OR is outside the caller's access scope (existence is not leaked across organizations).\n\n### Related operations\n\n- `POST /v1alpha/dataStreams` — create a new Data Stream.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) UUID v4 of the Data Stream to retrieve. Obtained from the response of 'POST /v1alpha/dataStreams'. Returns 404 if the id does not exist OR exists outside the caller's organization/advertiser access scope (existence is not leaked across organizations)."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "41acc7bd-ae19-4b76-81bc-6e0cff007ce4",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the Data Stream to retrieve. Obtained from the response of 'POST /v1alpha/dataStreams'. Returns 404 if the id does not exist OR exists outside the caller's organization/advertiser access scope (existence is not leaked across organizations)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "debdaca9-5465-408e-84c6-9e48f842904a",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the Data Stream to retrieve. Obtained from the response of 'POST /v1alpha/dataStreams'. Returns 404 if the id does not exist OR exists outside the caller's organization/advertiser access scope (existence is not leaked across organizations)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "394e7d41-5327-472e-9f52-199c85492bf3",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the Data Stream to retrieve. Obtained from the response of 'POST /v1alpha/dataStreams'. Returns 404 if the id does not exist OR exists outside the caller's organization/advertiser access scope (existence is not leaked across organizations)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6fe4a1d2-aa80-4334-bc02-0e82ffcf7303",
+          "name": "Update Data Stream",
+          "request": {
+            "name": "Update Data Stream",
+            "description": {
+              "content": "### What\n\nPartial-merge update of a Data Stream's editable fields: `name` and `description`. Sending an empty string is interpreted as \"leave the stored value unchanged\". Output-only fields (`id`, `org_id`, `advertiser_id`, `advertiser_name`, `type`, `status`, audit users + timestamps) cannot be modified through this endpoint.\n\n### Why\n\nLets a caller correct a Data Stream's user-visible metadata without re-reading the full resource first. PATCH semantics keep client integrations simple and avoid clobbering fields the caller did not intend to touch.\n\n### When\n\nAny time after `CreateDataStream`.\n\n### How\n\nAuthorization: the caller must hold `datamanagement.data_stream.write` on the row's advertiser. Cross-advertiser writes return 404 (matching Get's existence-protection). Renaming to a `name` already used by another Data Stream under the same advertiser returns 409.\n\n### Related operations\n\n- `GET /v1alpha/dataStreams/{dataStreamId}` — retrieve the resulting Data Stream.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) UUID v4 of the Data Stream to update. Path parameter only — any value supplied in the body is ignored."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "aa902931-636c-4424-b4bb-0337eda63493",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the Data Stream to update. Path parameter only — any value supplied in the body is ignored."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0fd68ab6-feea-4016-a9af-0b02c56e7ab5",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the Data Stream to update. Path parameter only — any value supplied in the body is ignored."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "765376fe-c946-4b7c-be6d-a5ce036bc9e8",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the Data Stream to update. Path parameter only — any value supplied in the body is ignored."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b03425e8-c4df-4164-aa60-375d94c41062",
+              "name": "Conflict — the request conflicts with the current state of the resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the Data Stream to update. Path parameter only — any value supplied in the body is ignored."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "dcb9059b-c485-446e-8dcf-b48b399254c0",
+          "name": "Get Delivery Config",
+          "request": {
+            "name": "Get Delivery Config",
+            "description": {
+              "content": "### What\n\nRetrieves the DeliveryConfig for a DataStream, including the delivery `method`, lifecycle `status`, and audit timestamps.\n\n### Why\n\nUse this to inspect the current delivery configuration and determine whether to call `:approve` or adjust the method first.\n\n### When\n\nAfter `PUT /deliveryConfig` and at any point in the resource's lifecycle.\n\n### How\n\nReturns 404 if the parent DataStream does not exist within the caller's access scope, or if no DeliveryConfig has been created for it. Existence of the DataStream is not leaked across organizations.\n\n### Related operations\n\n- `PUT /v1alpha/dataStreams/{dataStreamId}/deliveryConfig` — create or update the DeliveryConfig.\n- `POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:approve` — approve the DeliveryConfig.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId",
+                "deliveryConfig"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream does not exist within the caller's access scope, or if no DeliveryConfig has been created for it."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b16026c4-f36c-4976-b4bc-d424decbc89e",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream does not exist within the caller's access scope, or if no DeliveryConfig has been created for it."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3223abfc-63ef-4efd-9263-d7661c5a48a9",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream does not exist within the caller's access scope, or if no DeliveryConfig has been created for it."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a6869e24-4449-4db3-a5dc-17819bb6e110",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream does not exist within the caller's access scope, or if no DeliveryConfig has been created for it."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bb0188c1-ff3a-4f1c-9b95-e804decb7d9a",
+          "name": "Upsert Delivery Config",
+          "request": {
+            "name": "Upsert Delivery Config",
+            "description": {
+              "content": "### What\n\nCreates or replaces the DeliveryConfig for a DataStream. Idempotent for `DRAFT` configs: a second PUT with the same method is a no-op; a PUT with a different method updates it. Output-only fields (`id`, `data_stream_id`, `status`) supplied in the body are ignored.\n\n### Why\n\nLets a caller configure or reconfigure the delivery method before committing to delivery. Separating configuration (this endpoint) from commitment (`:approve`) means a user can change their mind without reprovisioning infrastructure.\n\n### When\n\nAfter `CreateDataStream`. The DeliveryConfig need not exist yet — this call creates it if absent. Returns 400 if a DeliveryConfig exists and its `status` is `APPROVED`.\n\n### How\n\nThe caller must have write access on the parent DataStream's advertiser. The parent DataStream must exist within the caller's access scope; otherwise 404 is returned. The only required field is `method`; unsupported values return 400.\n\n### Related operations\n\n- `GET /v1alpha/dataStreams/{dataStreamId}/deliveryConfig` — retrieve the current DeliveryConfig.\n- `POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:approve` — lock the method and provision delivery infrastructure.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId",
+                "deliveryConfig"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f3441f2e-5074-4eb7-bc7e-ff932b97f94c",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "8273e385-4cd0-4a4d-857b-9454e80bc9f2",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "811164a1-0a1c-4c63-b73a-1b26addf68c9",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "38ed1f5e-34db-47cd-97be-e64be782e17d",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e0d0341f-f27e-4750-9008-59479a672c9a",
+          "name": "Approve Delivery Config",
+          "request": {
+            "name": "Approve Delivery Config",
+            "description": {
+              "content": "### What\n\nCommits the delivery configuration: locks the delivery method, provisions S3 infrastructure for the DataStream, runs S3 access probes, and advances the parent DataStream status to `AWAITING_DELIVERY`. Returns the updated DeliveryConfig with `status: APPROVED`.\n\n### Why\n\nSeparating configuration (PUT) from commitment (this action) lets callers change the delivery method freely before locking in. Once approved, the DataStream is ready to receive data.\n\n### When\n\nAfter `PUT /deliveryConfig` has set the desired method and the caller is ready to begin delivery. The DeliveryConfig must be in `DRAFT`; returns 400 if already `APPROVED`.\n\n### How\n\nThe caller must have write access on the parent DataStream's advertiser. On success the DeliveryConfig transitions to `APPROVED` and the parent DataStream transitions to `AWAITING_DELIVERY`. S3 infrastructure provisioning and probe failures are returned as 500; contact VideoAmp Support if this occurs.\n\n### Related operations\n\n- `PUT /v1alpha/dataStreams/{dataStreamId}/deliveryConfig` — configure the delivery method before approving.\n- `POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:confirmAccess` — run a read-only connectivity diagnostic.\n- `POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:createUploadUrl` — obtain a pre-signed upload URL after approval.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId",
+                "deliveryConfig:approve"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is already APPROVED."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "74d3dc20-4f16-49aa-b602-a8df06a14758",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is already APPROVED."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4a30f729-88d4-44a3-8a4d-89c98b3da1d1",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is already APPROVED."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3991251a-7927-49c8-bb2c-ba78cdb7a385",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is already APPROVED."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "998c557d-a9b1-4796-add8-6979a28abc1b",
+              "name": "Internal Server Error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is already APPROVED."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cc777616-c08a-449f-aca9-6e5bff36678a",
+          "name": "Confirm Delivery Config Access",
+          "request": {
+            "name": "Confirm Delivery Config Access",
+            "description": {
+              "content": "### What\n\nRuns a read-only connectivity diagnostic against the DataStream's delivery destination. No state is changed. Returns `accessible: true` when probes pass and `accessible: false` with a diagnostic `message` when they fail.\n\n### Why\n\nProvides a connectivity check that can be run at any point the config has sufficient information to probe — optionally before `:approve` or as a post-approve re-diagnostic when delivery problems are suspected.\n\n### When\n\nWhenever the DeliveryConfig has sufficient configuration to identify the delivery destination. Returns `400 FailedPrecondition` if the config does not yet have enough information to perform a connectivity check. Connectivity failures are reflected in the response payload (`accessible: false`), not as error status codes.\n\n### How\n\nThe caller must have read access on the parent DataStream's advertiser. Connectivity failures are reflected in the response payload (`accessible: false`) rather than error status codes — the request itself succeeded even when the destination is unreachable.\n\n### Related operations\n\n- `POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:approve` — the state-changing commitment that also validates connectivity as part of approval.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId",
+                "deliveryConfig:confirmAccess"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4c3a9606-bfc3-4d34-a034-edf0b329962b",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:confirmAccess"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9e2357ea-914c-4b38-8a7b-41d8f654ae25",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:confirmAccess"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "639e5a83-8366-47b3-b7c0-2e9250b9ad65",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:confirmAccess"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "988a63b3-9fbd-4f20-b644-afbb890524e4",
+          "name": "Create Upload URL",
+          "request": {
+            "name": "Create Upload URL",
+            "description": {
+              "content": "### What\n\nGenerates a time-limited upload URL for delivering a data file to the DataStream's delivery destination. Returns the URL and its expiration timestamp. Each call generates a new URL; previous URLs are not invalidated.\n\n### Why\n\nThe upload URL allows the caller to deliver files directly to the delivery destination without routing data through the API server, supporting large file transfers efficiently.\n\n### When\n\nAfter `:approve` has succeeded (DeliveryConfig `status` must be `APPROVED`). Returns 400 if the DeliveryConfig is still `DRAFT`. Obtain a fresh URL for each file upload — do not cache or reuse URLs.\n\n### How\n\nThe caller must have write access on the parent DataStream's advertiser. Supply the original `filename` of the file being uploaded — it identifies the file at the delivery destination. The returned `upload_url` accepts a single HTTP PUT with the raw file bytes as the request body. The URL expires at `expires_at`; requests after that time will be rejected. Uploading with the same `filename` twice overwrites the previous file; use distinct filenames to retain multiple uploads.\n\n### For coding agents\n\nIf the caller can't perform the PUT itself, send the user to `{{.DashboardUrl}}/data/data-streams/upload/{dataStreamId}` instead — a VideoAmp-hosted page where they pick and upload the file directly, no API calls required on their end (they must already be a VideoAmp user; an unauthenticated visit prompts a normal login first). That page only performs the upload — poll `GET .../deliveryConfig:listUploadedFiles` afterward and call `POST .../deliveryInspections` yourself once the file lands.\n\n### Related operations\n\n- `POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:approve` — required before this endpoint can be called.\n- `POST /v1alpha/dataStreams/{dataStreamId}/deliveryInspections` — next step: after the file is uploaded, inspect the delivered file(s).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId",
+                "deliveryConfig:createUploadUrl"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is not yet APPROVED."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6d63d71e-3a2b-4938-b4ac-00e8f39e0a31",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:createUploadUrl"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is not yet APPROVED."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d7a32b24-5d84-4564-b9d2-d37d5266742d",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:createUploadUrl"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is not yet APPROVED."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b0e07064-dee0-434c-acc7-c0bc5e207a94",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:createUploadUrl"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is not yet APPROVED."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c15574cd-9a58-4bb8-b5b1-c632ffda7daf",
+          "name": "Delete Uploaded File",
+          "request": {
+            "name": "Delete Uploaded File",
+            "description": {
+              "content": "### What\n\nRemoves a previously uploaded file from the DataStream's delivery bucket. Returns 204 on success.\n\n### Why\n\nAllows a caller to remove an incorrect or superseded file before triggering inspection, avoiding a failed inspection run.\n\n### When\n\nWhile the parent DataStream is in `AWAITING_DELIVERY`. Returns 400 if the DeliveryConfig is not `APPROVED`, or if the DataStream is not in `AWAITING_DELIVERY`. Returns 404 if the specified file does not exist in the bucket.\n\n### How\n\nThe caller must have write access on the parent DataStream's advertiser. Supply the exact filename used at upload time. After deletion the file is permanently removed; obtain a new upload URL via `:createUploadUrl` to re-upload.\n\n### Related operations\n\n- `POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:createUploadUrl` — obtain a new upload URL after deleting a file.\n- `GET /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:listUploadedFiles` — list files currently in the bucket.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId",
+                "deliveryConfig:deleteUploadedFile"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "df22092c-c473-4095-a114-690d353cdd82",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:deleteUploadedFile"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2e916668-513a-4d7a-8bcc-71117a8d803b",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:deleteUploadedFile"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d7c62ca9-946b-481f-9faa-4c933456915b",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:deleteUploadedFile"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0ad4f621-b67e-4bc6-83dc-5060d9bb7e42",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:deleteUploadedFile"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c1c86da7-8533-4a06-947a-53ceaef9875c",
+          "name": "List Uploaded Files",
+          "request": {
+            "name": "List Uploaded Files",
+            "description": {
+              "content": "### What\n\nReturns metadata for all files currently in the DataStream's delivery bucket. Returns an empty list if no files have been uploaded.\n\n### Why\n\nAllows a caller to verify which files are present before triggering inspection, and to surface existing files when returning to the delivery step.\n\n### When\n\nAfter `:approve` has succeeded (DeliveryConfig `status` must be `APPROVED`). Returns 400 if the DeliveryConfig is still `DRAFT`.\n\n### How\n\nThe caller must have read access on the parent DataStream's advertiser. Files are returned in undefined order; there is no pagination in this endpoint.\n\n### Related operations\n\n- `POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:createUploadUrl` — upload a new file.\n- `POST /v1alpha/dataStreams/{dataStreamId}/deliveryConfig:deleteUploadedFile` — remove a specific file.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId",
+                "deliveryConfig:listUploadedFiles"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is not yet APPROVED."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "990b7fef-bbc0-43ef-952e-f4009d64a6b2",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:listUploadedFiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is not yet APPROVED."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "091001c4-8a23-419b-8e1f-116348e2b28d",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:listUploadedFiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is not yet APPROVED."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5e7a3a69-f843-4c8d-bd89-1be07f86dad9",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryConfig:listUploadedFiles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is not yet APPROVED."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fca682ce-6578-4e1c-9e86-69eec092b8b5",
+          "name": "Create Delivery Inspection",
+          "request": {
+            "name": "Create Delivery Inspection",
+            "description": {
+              "content": "### What\n\nTriggers a delivery inspection for the DataStream. All files at the DataStream's delivery prefix are listed and inspected synchronously. Returns `200` with the full `DeliveryInspection` result — the same shape as `GetDeliveryInspection`.\n\n### Why\n\nInspection detects each file's format and extracts column names and sample values, which drive the schema-mapping step. On first success the parent DataStream transitions from `AWAITING_DELIVERY` to `AWAITING_APPROVAL`.\n\n### When\n\nAfter files have been uploaded via the pre-signed URL from `:createUploadUrl`. The DataStream's `deliveryConfig.status` must be `APPROVED`. Returns `409` if another inspection is already in progress.\n\n### How\n\nThe caller must have write access on the parent DataStream's advertiser. Inspection may complete synchronously or asynchronously — check `status` in the response. If `status` is `PENDING`, the inspection is still running; poll `GetDeliveryInspection` until `status` is `SUCCEEDED` or `FAILED`. A terminal status in the response means the inspection completed synchronously.\n\n### Related operations\n\n- `GET /v1alpha/dataStreams/{dataStreamId}/deliveryInspections/{inspectionId}` — retrieve inspection-level metadata.\n- `GET /v1alpha/dataStreams/{dataStreamId}/deliveryInspections/{inspectionId}/files` — retrieve per-file results.\n- `GET /v1alpha/dataStreams/{dataStreamId}/deliveryInspections` — list all inspections.\n- `PUT /v1alpha/dataStreams/{dataStreamId}/schemaMapping` — next step: map the detected columns to canonical fields.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId",
+                "deliveryInspections"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) UUID v4 of the DataStream to inspect. Returns 404 if the DataStream does not exist within the caller's access scope."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4a25f3d2-9cea-4d35-ba10-bbf86ad3af12",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryInspections"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the DataStream to inspect. Returns 404 if the DataStream does not exist within the caller's access scope."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f182d35b-9bfa-4b66-a5f5-a605ebf7efef",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryInspections"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the DataStream to inspect. Returns 404 if the DataStream does not exist within the caller's access scope."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "37ea202a-8300-462b-bbbc-6ea5deb250a7",
+              "name": "Conflict — the request conflicts with the current state of the resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryInspections"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the DataStream to inspect. Returns 404 if the DataStream does not exist within the caller's access scope."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b90d7c5c-c0d7-4a3a-8cb5-aec0029331a8",
+          "name": "List Delivery Inspections",
+          "request": {
+            "name": "List Delivery Inspections",
+            "description": {
+              "content": "### What\n\nReturns a paginated list of delivery inspections for a DataStream, ordered by `inspected_at` descending (most recent first). Each result is the full `DeliveryInspection` object — the same shape as `GetDeliveryInspection`.\n\n### Why\n\nProvides a history of all inspections for a DataStream. Results are sorted by `inspected_at` descending — call with `page_size=1` to retrieve the most recent inspection without a follow-up `GET`.\n\n### When\n\nAt any point after `CreateDeliveryInspection` has been called at least once.\n\n### How\n\nThe caller must have read access on the parent DataStream's advertiser. Paginate using `page_token` from the previous response's `next_page_token`.\n\n### Related operations\n\n- `POST /v1alpha/dataStreams/{dataStreamId}/deliveryInspections` — trigger a new inspection.\n- `GET /v1alpha/dataStreams/{dataStreamId}/deliveryInspections/{inspectionId}` — retrieve full inspection metadata for a specific inspection.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId",
+                "deliveryInspections"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<string>",
+                  "description": "Query param pageSize specifies the number of results to include in a page of results. Defaults to 25 if not specified. Maximum allowed value is 100."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageToken",
+                  "value": "<string>",
+                  "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) UUID v4 of the DataStream whose inspections to list."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "af6ceb65-3f97-444a-a16c-0229006d9a6f",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryInspections"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the DataStream whose inspections to list."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4cbc343c-eaee-4d98-9490-72ece63030ad",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryInspections"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the DataStream whose inspections to list."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ab48f6b6-a806-485e-81dc-8d3b86a98b45",
+          "name": "Get Delivery Inspection",
+          "request": {
+            "name": "Get Delivery Inspection",
+            "description": {
+              "content": "### What\n\nReturns inspection-level metadata for a single delivery inspection: `id`, `status`, `inspected_at`, and any inspection-level `errors`. Per-file detail is not included.\n\n### Why\n\nProvides the outcome of an inspection and any inspection-level error detail (e.g. no files found at the prefix). Use the returned `id` to fetch per-file results via `ListDeliveryInspectionFiles`.\n\n### When\n\nAfter `CreateDeliveryInspection` returns, use the `id` field on the `DeliveryInspection` response. Or use an `id` from `ListDeliveryInspections`.\n\n### How\n\nThe caller must have read access on the parent DataStream's advertiser. Returns 404 if the inspection or DataStream does not exist within the caller's access scope.\n\n### Related operations\n\n- `GET /v1alpha/dataStreams/{dataStreamId}/deliveryInspections/{inspectionId}/files` — retrieve per-file results.\n- `GET /v1alpha/dataStreams/{dataStreamId}/deliveryInspections` — list all inspections.\n- `PUT /v1alpha/dataStreams/{dataStreamId}/schemaMapping` — next step: once inspection succeeds, map the detected columns to canonical fields.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId",
+                "deliveryInspections",
+                ":inspectionId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) UUID v4 of the parent DataStream."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "inspectionId",
+                  "description": "(Required) UUID v4 of the inspection to retrieve."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "115ff1af-b101-454f-833d-cec327da07a4",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryInspections",
+                    ":inspectionId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "inspectionId",
+                      "description": "(Required) UUID v4 of the inspection to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "40d8e2bd-1248-4f12-869c-f7103de7d20d",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryInspections",
+                    ":inspectionId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "inspectionId",
+                      "description": "(Required) UUID v4 of the inspection to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "10a02087-e1e8-42f8-a1ca-4399f7aad53a",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryInspections",
+                    ":inspectionId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "inspectionId",
+                      "description": "(Required) UUID v4 of the inspection to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "434bbeb3-8e9d-4c8b-acd3-26f4e8bba606",
+          "name": "List Delivery Inspection Files",
+          "request": {
+            "name": "List Delivery Inspection Files",
+            "description": {
+              "content": "### What\n\nReturns a paginated list of per-file results for a delivery inspection. Each result includes the filename, detected format, columns detected in that file, and any file-level errors. `columns[].samples` holds up to 3 distinct non-empty values for non-redacted columns (empty if none were sampled); a column whose samples matched a known PII-shaped pattern has `columns[].redacted` set to `true` and never carries samples.\n\n### Why\n\nPer-file results expose the column names and sample values collected during inspection. Callers use this data to drive the schema-mapping step. Column samples help users identify which source column maps to which target field.\n\n### When\n\nAfter `GetDeliveryInspection` returns `status: SUCCEEDED` or `status: FAILED`. File rows exist for all files attempted, including files with errors.\n\n### How\n\nThe caller must have read access on the parent DataStream's advertiser. Paginate using `page_token` from the previous response's `next_page_token`.\n\n### Related operations\n\n- `GET /v1alpha/dataStreams/{dataStreamId}/deliveryInspections/{inspectionId}` — retrieve inspection-level metadata and errors.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId",
+                "deliveryInspections",
+                ":inspectionId",
+                "files"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<string>",
+                  "description": "Query param pageSize specifies the number of results to include in a page of results. Defaults to 25 if not specified. Maximum allowed value is 100."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageToken",
+                  "value": "<string>",
+                  "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) UUID v4 of the parent DataStream."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "inspectionId",
+                  "description": "(Required) UUID v4 of the inspection whose file results to list."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a0e1202f-590a-4d6c-bd22-f981db6a077f",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryInspections",
+                    ":inspectionId",
+                    "files"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "inspectionId",
+                      "description": "(Required) UUID v4 of the inspection whose file results to list."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "54a64acf-79aa-4829-a212-baa57fb7b391",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "deliveryInspections",
+                    ":inspectionId",
+                    "files"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "inspectionId",
+                      "description": "(Required) UUID v4 of the inspection whose file results to list."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9cf741f0-77db-4bca-bcca-b8deb2547e32",
+          "name": "List Ingestions",
+          "request": {
+            "name": "List Ingestions",
+            "description": {
+              "content": "### What\n\nReturns a paginated list of ingestion runs for a DataStream, ordered newest-first by `completed_at`. Each run summarises the outcome of one or more files processed by the backend.\n\n### Why\n\nAllows clients to audit ingestion history, confirm data was received and processed, and identify failed runs that need attention.\n\n### When\n\nCall after a DataStream has been provisioned. Results appear as backends complete ingestion runs and notify Data Management. A DataStream in `PROVISIONING` may have no results yet.\n\n### How\n\nFilter by `data_stream_id`. Paginate using `page_token` from the previous response. Check `status` on each result — `FAILED` runs have errors retrievable via `GET /v1alpha/dataStreams/{data_stream_id}/ingestions/{ingestion_id}/errors`.\n\n### Related operations\n\n- `GET /v1alpha/dataStreams/{data_stream_id}/ingestions/{ingestion_id}/errors` — retrieve errors for a specific ingestion run.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId",
+                "ingestions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<string>",
+                  "description": "Query param pageSize specifies the number of results to include in a page of results. Defaults to 50 if not specified. Maximum allowed value is 200."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageToken",
+                  "value": "<string>",
+                  "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) The DataStream to list ingestions for. Required. UUID v4."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d0cd7158-124f-421d-963f-ac42606c0140",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "ingestions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) The DataStream to list ingestions for. Required. UUID v4."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "75b0c27b-bf5d-43f2-8020-b7f73c767484",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "ingestions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) The DataStream to list ingestions for. Required. UUID v4."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "35b9f391-3de5-4090-b419-0cff80e250fe",
+          "name": "Get Schema Mapping",
+          "request": {
+            "name": "Get Schema Mapping",
+            "description": {
+              "content": "### What\n\nRetrieves the SchemaMapping for a DataStream, including its lifecycle `status` and the full set of `column_bindings`.\n\n### Why\n\nUse this to inspect the current bindings and decide whether to edit them (PUT) or approve the mapping.\n\n### When\n\nAfter the SchemaMapping has been created, at any point in its lifecycle.\n\n### How\n\nThe caller must have read access on the parent DataStream's advertiser. Returns 404 if the parent DataStream does not exist within the caller's access scope, or if no SchemaMapping has been created for it. Existence of the DataStream is not leaked across organizations.\n\n### Related operations\n\n- `PUT /v1alpha/dataStreams/{dataStreamId}/schemaMapping` — create or replace the SchemaMapping.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId",
+                "schemaMapping"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream does not exist within the caller's access scope, or if no SchemaMapping has been created for it."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4151f7c3-1f92-44fe-98bd-463517e00b3f",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "schemaMapping"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream does not exist within the caller's access scope, or if no SchemaMapping has been created for it."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "1dbe9555-89e8-4857-a477-17f1f4efe307",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "schemaMapping"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream does not exist within the caller's access scope, or if no SchemaMapping has been created for it."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "278bfd11-21b2-4cf5-a191-5d96dbb2d8fe",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "schemaMapping"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Returns 404 if the DataStream does not exist within the caller's access scope, or if no SchemaMapping has been created for it."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7d9af068-fa12-42f4-8044-f11b8cf62209",
+          "name": "Upsert Schema Mapping",
+          "request": {
+            "name": "Upsert Schema Mapping",
+            "description": {
+              "content": "### What\n\nCreates or replaces the SchemaMapping for a DataStream, binding the raw columns discovered in delivered files onto VideoAmp's canonical schema fields. Idempotent: the first PUT creates the mapping with `status: DRAFT`; a subsequent PUT replaces its `column_bindings` wholesale (omitting a binding removes it — this is not a partial merge). Output-only fields (`id`, `data_stream_id`, `status`) supplied in the body are ignored.\n\n### Why\n\nThe mapping tells VideoAmp how to interpret each delivered column. Separating configuration (this endpoint) from commitment (`:approve`) lets a user refine the bindings before locking them in.\n\n### When\n\nAfter a delivery has been inspected and the parent DataStream has advanced to `AWAITING_APPROVAL`. The first PUT creates the mapping; later PUTs edit it while `status` is `DRAFT`. Returns `400` (`FailedPrecondition`) if the DataStream is not `AWAITING_APPROVAL` — it has not been inspected yet, or the mapping is already approved.\n\n### How\n\nThe caller must have write access on the parent DataStream's advertiser. Each binding's `raw_columns` must be non-empty, unique within the binding, and drawn from the columns discovered in the latest delivery inspection; otherwise 400 is returned naming the offending column. The parent DataStream must exist within the caller's access scope, otherwise 404 is returned.\n\n### Related operations\n\n- `GET /v1alpha/dataStreams/{dataStreamId}/schemaMapping` — retrieve the current SchemaMapping.\n- `POST /v1alpha/dataStreams/{dataStreamId}/schemaMapping:approve` — next step: lock the mapping and start ingestion.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId",
+                "schemaMapping"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "e099ee03-5265-45f0-92a7-5128c41fb125",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "schemaMapping"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a8bfd3ef-dbdc-4284-847b-f258b595e4ee",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "schemaMapping"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "708a6d5f-fb73-4b9c-b111-da9a7fc85419",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "schemaMapping"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f1c9cbb8-a7ba-4061-a984-4b0d4e2e15cd",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "schemaMapping"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "150c45d7-451e-4f51-a3b0-39f87767a1e4",
+          "name": "Approve Schema Mapping",
+          "request": {
+            "name": "Approve Schema Mapping",
+            "description": {
+              "content": "### What\n\nApproves the SchemaMapping for a DataStream. This is an irreversible gate: it locks the column bindings (`status` becomes `APPROVED`), triggers downstream ingestion of the delivered files, and advances the parent DataStream through `PROVISIONING` toward `PROVISIONED`.\n\n### Why\n\nApproval is the commitment step that separates configuring the mapping (`PUT .../schemaMapping`) from acting on it. Once approved, the bindings are frozen and the delivered data is handed to the ingestion pipeline.\n\n### When\n\nAfter the column bindings have been configured and the parent DataStream is `AWAITING_APPROVAL`. The call is idempotent: if a previous attempt locked the mapping but did not finish advancing the DataStream, calling `:approve` again re-triggers ingestion and completes the transition. Returns `400` (`FailedPrecondition`) if the DataStream is not in `AWAITING_APPROVAL` — either it has not yet been inspected, or it has already advanced past approval — or if no successful delivery inspection exists, or if any required canonical field is left unmapped. Returns `404` if the DataStream is `AWAITING_APPROVAL` but no SchemaMapping has been created for it yet.\n\n### How\n\nThe caller must have write access on the parent DataStream's advertiser. The mapping must already exist, a successful delivery inspection must be present (it supplies the file list for ingestion), and the delivery configuration must be approved. Every canonical field marked required for the DataStream's type must be bound; otherwise `400` is returned naming the missing fields.\n\n### Related operations\n\n- `PUT /v1alpha/dataStreams/{dataStreamId}/schemaMapping` — configure the bindings before approving.\n- `GET /v1alpha/dataStreams/{dataStreamId}/schemaMapping` — retrieve the current SchemaMapping.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreams",
+                ":dataStreamId",
+                "schemaMapping:approve"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamId",
+                  "description": "(Required) UUID v4 of the parent DataStream. Path parameter only — the request has no body fields."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6d29ca80-8587-420c-9958-359c48ec2494",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "schemaMapping:approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Path parameter only — the request has no body fields."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4dcfd4cb-6801-48ee-9730-14bcfb264a6c",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "schemaMapping:approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Path parameter only — the request has no body fields."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "581d1fa4-b5ec-4bcd-8e8f-63725cbeef31",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "schemaMapping:approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Path parameter only — the request has no body fields."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "07003522-fd97-4294-906a-8fe33b267e89",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreams",
+                    ":dataStreamId",
+                    "schemaMapping:approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamId",
+                      "description": "(Required) UUID v4 of the parent DataStream. Path parameter only — the request has no body fields."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.videoamp.dev",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "scope",
+        "value": "openid profile email offline_access"
+      },
+      {
+        "key": "redirect_uri",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "authUrl",
+        "value": "https://login.videoamp.com/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "authorization_code"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "41070646-daba-4f0b-9289-6846134b7ef2",
+    "name": "VideoAmp Public Data Streams API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.\n\n**Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI's `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary's own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.\n\n**Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.\n\nContact Support:\n Name: VideoAmp Support\n Email: support@videoamp.com",
+      "type": "text/plain"
+    }
+  }
+}

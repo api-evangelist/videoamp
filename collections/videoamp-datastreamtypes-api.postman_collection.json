@@ -1,0 +1,304 @@
+{
+  "item": [
+    {
+      "id": "1728491d-d05f-41a5-bfd9-124d1c3ed455",
+      "name": "dataStreamTypes",
+      "description": {
+        "content": "dataStreamTypes operations.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "eaeeb454-83b3-4bac-8e3c-5d28689bee86",
+          "name": "List Data Stream Types",
+          "request": {
+            "name": "List Data Stream Types",
+            "description": {
+              "content": "### What\n\nReturns the catalog of supported Data Stream types. Each entry includes `name` (the kebab-case URL identifier), `enum_value` (the `dataStream.type` enum form), `display_name` (a human-readable label), and `description` (long-form prose tuned for LLM retrieval). The canonical `fields` schema is omitted — call `GET /dataStreamTypes/{dataStreamTypeName}` to retrieve it.\n\n### Why\n\nLets agents and UIs enumerate the types VideoAmp ingests. The list response is rich enough for an agent to reason about which type a provider feed belongs to without a second round trip per entry; UIs that only need a picker can read just the `name` and `display_name` fields they care about.\n\n### When\n\nBefore creating a new Data Stream — agents use this to choose a `type`; UIs use it to populate the type selector.\n\n### How\n\nAuthorization: any authenticated caller.\n\n### Related operations\n\n- `GET /v1alpha/dataStreamTypes/{dataStreamTypeName}` — retrieve the full definition for one type, including the canonical `fields` schema.\n- `POST /v1alpha/dataStreams` — create a new Data Stream; pass one of these `enum_value`s as `dataStream.type`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreamTypes"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4bc2b21f-ac22-4fba-bc71-a9cc544a17d2",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreamTypes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5676ca56-2c72-42b1-93c9-029536dfef9e",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreamTypes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cec6ec45-600e-4f47-b9ba-02e15e089989",
+          "name": "Get Data Stream Type",
+          "request": {
+            "name": "Get Data Stream Type",
+            "description": {
+              "content": "### What\n\nReturns the canonical definition of a single Data Stream type — display metadata (`name`, `enum_value`, `display_name`, `description`) and the canonical `fields` schema (each with `name`, `description`, `type`, `required`, `examples`, `aliases`).\n\n### Why\n\nMapping agents and onboarding UIs use this to learn the field set a provider feed must satisfy. Required fields gate transitioning the parent Data Stream to `PROVISIONING`.\n\n### When\n\nAfter picking a `type` from the list endpoint — fetch the full definition once to drive the schema-mapping flow.\n\n### How\n\nAuthorization: any authenticated caller.\n\n### Related operations\n\n- `GET /v1alpha/dataStreamTypes` — enumerate available types.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1alpha",
+                "dataStreamTypes",
+                ":dataStreamTypeName"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dataStreamTypeName",
+                  "description": "(Required) Kebab-case identifier for the type. Obtainable from 'GET /dataStreamTypes' (each entry's 'name')."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d4004cfb-3963-4e22-b8f8-fe90dba95fad",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreamTypes",
+                    ":dataStreamTypeName"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamTypeName",
+                      "description": "(Required) Kebab-case identifier for the type. Obtainable from 'GET /dataStreamTypes' (each entry's 'name')."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d031b9d7-7d81-4405-bce1-d47f709e7643",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1alpha",
+                    "dataStreamTypes",
+                    ":dataStreamTypeName"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dataStreamTypeName",
+                      "description": "(Required) Kebab-case identifier for the type. Obtainable from 'GET /dataStreamTypes' (each entry's 'name')."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.videoamp.dev",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "scope",
+        "value": "openid profile email offline_access"
+      },
+      {
+        "key": "redirect_uri",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "authUrl",
+        "value": "https://login.videoamp.com/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "authorization_code"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "293e7406-37a8-4793-af89-d4c3fe349198",
+    "name": "VideoAmp Public Data Stream Types API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.\n\n**Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI's `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary's own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.\n\n**Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.\n\nContact Support:\n Name: VideoAmp Support\n Email: support@videoamp.com",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,3084 @@
+{
+  "item": [
+    {
+      "id": "e9d8eaac-be8f-41ac-9bfa-1c2449265942",
+      "name": "audiences",
+      "description": {
+        "content": "audiences operations.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "13a1a841-92d2-4dae-adbe-cf275efce2f3",
+          "name": "Create Audience",
+          "request": {
+            "name": "Create Audience",
+            "description": {
+              "content": "This endpoint triggers the create audience process. To use the creation endpoint, the current holding company must be onboarded, please contact Videoamp support for more information. To see a full list of response messages please view our [help page](https://help.videoamp.dev/en/articles/9415579-audience-service-error-codes-messages).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "audiences"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "validateOnly",
+                  "value": "<string>",
+                  "description": "This field validates the required fields and the requesting user's permissions. An audience resource will not be created when this field is set to true. This field is optional and defaults to `false`. (default true)"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b13b1c14-534b-4004-b197-0ac6ad572f57",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "validateOnly",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "537cd245-f06b-4521-b856-40d2d45f18ae",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "validateOnly",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8b38eb48-4179-42c9-a82f-b11d66ad8e8f",
+          "name": "List Audiences",
+          "request": {
+            "name": "List Audiences",
+            "description": {
+              "content": "This endpoint returns a list of the audiences accessible to the user. The list can be filtered and sorted. To see a full list of response messages please view our [help page](https://help.videoamp.dev/en/articles/9415579-audience-service-error-codes-messages).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "audiences"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "audienceIds",
+                  "value": "<string>",
+                  "description": "Query param audience_ids returns only matching audiences for given valid audience legacy ids. The values in this field must be valid numeric ids."
+                },
+                {
+                  "disabled": false,
+                  "key": "audienceUuids",
+                  "value": "<string>",
+                  "description": "Query param audience_uuids returns only matching audiences for given valid audience uuids. The values in this field must be valid UUIDs."
+                },
+                {
+                  "disabled": false,
+                  "key": "cadences",
+                  "value": "<string>",
+                  "description": "Query param cadences returns only the audiences with refresh cadence in the provided list. Accepted Values: - `one_time` - `weekly` - `monthly` - `quarterly`"
+                },
+                {
+                  "disabled": false,
+                  "key": "currencyOfRecord",
+                  "value": "<string>",
+                  "description": "Query param 'currencyOfRecord' refers to the data and methodologies used for VideoAmp currency guarantees within a given broadcast year. If not provided, 'demo' audiences default to VideoAmp's latest currency of record. 'advance' audiences from all currency of record will be returned."
+                },
+                {
+                  "disabled": false,
+                  "key": "filteredAgencyAdvertiserIds",
+                  "value": "<string>",
+                  "description": "Query param filteredAgencyAdvertiserIds returns only the audiences these agency advertisers have access to."
+                },
+                {
+                  "disabled": false,
+                  "key": "filteredAgencyIds",
+                  "value": "<string>",
+                  "description": "Query param filteredAgencyIds returns only the audiences these agencies have access to."
+                },
+                {
+                  "disabled": false,
+                  "key": "level",
+                  "value": "<string>",
+                  "description": "Query param 'level' filters the audiences by level. This filter only applies to demographic audiences (i.e. 'type=demo') as advanced audiences are all household level. If unset, the default is to return all audiences. - LEVEL_UNSPECIFIED: Unspecified level - HOUSEHOLD: Household based audience - PERSON: Person based audience"
+                },
+                {
+                  "disabled": false,
+                  "key": "orderBy",
+                  "value": "<string>",
+                  "description": "Query param 'orderBy' specifies the order of the results. This field is case sensitive. Accepted Values: - 'desc(createdAt)' - (Default) - 'asc(createdAt)' - 'desc(name)' - 'asc(name)'"
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<string>",
+                  "description": "Query param pageSize specifies the number of results to include in a page of results."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageToken",
+                  "value": "<string>",
+                  "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+                },
+                {
+                  "disabled": false,
+                  "key": "query",
+                  "value": "<string>",
+                  "description": "Query param 'query' filters the audiences by name, description, id or uuid. This field is case insensitive."
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>",
+                  "description": "Query param 'status' filters the audiences by status. This field is case insensitive. Accepted Values: - 'ready' - Ready to use - 'failed' - Failed to create Audience - 'processing' - Audience is being created - 'draft' - Audience to be created"
+                },
+                {
+                  "disabled": false,
+                  "key": "type",
+                  "value": "<string>",
+                  "description": "Query param 'type' filters the audiences by type. Accepted Values: - 'advanced' - Returns the combination of 'owned' and 'shared' audiences - 'demo' - Returns VideoAmp's global demographic audiences - 'shared' - Returns audiences that are shared to this organization - 'owned' - Returns only audiences that are created within this organization - 'exposure' - Returns exposure audiences - 'content' - Returns content audiences - 'user_provided' - Returns user provided audiences - 'composite' - Returns composite audiences If no type filter is specified, all audiences will be returned."
+                },
+                {
+                  "disabled": false,
+                  "key": "useCases",
+                  "value": "<string>",
+                  "description": "Query param useCases filters the audiences by use cases. If multiple use cases are provided, the result will contain audiences with at least one of the provided use cases. This field is case insensitive. Accepted Values: - `measurement` - Returns audiences that can be used for ad measurement - `activation` - Returns audiences that can be used for activation - `content` - Returns audiences that can be used for content measurement"
+                },
+                {
+                  "disabled": false,
+                  "key": "year",
+                  "value": "<string>",
+                  "description": "Query param 'year' filters the audiences by broadcast year. This filter retrieves demographic audiences with metrics for the given broadcast year. Accepted Values: - '2020' - '2099'"
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "713188e4-5720-4125-a878-c9cf57d9483c",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "audienceIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "audienceUuids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "cadences",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "currencyOfRecord",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filteredAgencyAdvertiserIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filteredAgencyIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "level",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "query",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "useCases",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "year",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "10377955-0bb4-4b31-8b68-618dfffaf383",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "audienceIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "audienceUuids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "cadences",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "currencyOfRecord",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filteredAgencyAdvertiserIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filteredAgencyIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "level",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "query",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "useCases",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "year",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e5ead2e1-ad23-476a-92a1-c3301010ca31",
+          "name": "List Statuses",
+          "request": {
+            "name": "List Statuses",
+            "description": {
+              "content": "This endpoint returns a list of audience creation statuses. The list can be filtered and sorted. To see a full list of response messages please view our [help page](https://help.videoamp.dev/en/articles/9415579-audience-service-error-codes-messages).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "audiences",
+                "status"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "orderBy",
+                  "value": "<string>",
+                  "description": "Query param 'orderBy' specifies the order of the results. This field is case sensitive. Accepted Values: - 'desc(createdAt)' - (Default) - 'asc(createdAt)' - 'desc(name)' - 'asc(name)'"
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<string>",
+                  "description": "Query param pageSize specifies the number of results to include in a page of results."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageToken",
+                  "value": "<string>",
+                  "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+                },
+                {
+                  "disabled": false,
+                  "key": "requestId",
+                  "value": "<string>",
+                  "description": "Query param requestIds filters the audiences by request id. This field is synonymous with the Audience's UUID."
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>",
+                  "description": "Query param 'status' filters the audiences by status. This field is case insensitive. Accepted Values: - 'ready' - Ready to use - 'failed' - Failed to create Audience - 'processing' - Audience is being created - 'draft' - Audience to be created"
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0707817d-a3f7-4dac-85d1-42c8f71d3114",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "requestId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a35ffaf8-e4ec-4064-af52-5c61b1cd62a8",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "requestId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a876a74d-4124-4fd6-8f2a-e46fefb78935",
+          "name": "Create Export",
+          "request": {
+            "name": "Create Export",
+            "description": {
+              "content": "Creates a new export of the audience to a downstream destination.\n\n**Why**: Push audience members to a destination. Each export is owned by the calling organization and runs on a one-time or recurring cadence.\n\n**When**: Returns `201` with the created `Export` (`status=QUEUED`). The audience may be in any status — the export materializes once its data is available. Check `audience_export_get` to monitor progress until `status` reaches `READY` or `FAILED`.\n\n**Discovering valid export types**: Not every type is valid for every audience. The v2 `Audience` exposes `available_export_types`, listing the types eligible for that audience (based on classification, use cases, ownership, and onboarding). **Call `audience_get` (or `audience_list`) v2 first** and pick `exportType` from that list. Empty for SYSTEM audiences and audiences with no eligible use cases (cannot be exported).\n\n**Prerequisites**:\n- Calling organization onboarded for the chosen `exportType`. Onboarding populates `available_export_types`; contact VideoAmp Support if empty for an expected destination.\n- For `LIVERAMP`: submit a [HelpDesk Ticket](https://help.videoamp.dev/en/articles/10609936-submit-a-help-desk-ticket) with the audience name and your LiveRamp destination account ID/name — the API call alone does not finalize the sync.\n\n**How**: `audienceId` accepts the audience's UUID or legacy integer (no `-` wildcard — a concrete audience is required). Request body is the `Export` object; see its `export` field for per-type required sub-fields and the `exportType`↔`*ExportTypeSpecification` matching rule.\n\n**Pre-flight validation**: Set `validate_only=true` to verify request shape and permissions without creating a resource. On success the response is the validated `Export`; errors return `400` with `field_violations`.\n\n**Scope**: The created export is owned by the calling organization; `owner.type` must be `ORGANIZATION` (or `HOLDING_COMPANY`) and `owner.id` must be the calling organization's id.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "audiences",
+                ":audienceId",
+                "exports"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "validateOnly",
+                  "value": "<string>",
+                  "description": "This field validates the required fields and the requesting user's permissions. An export resource will not be created when this field is set to true. This field is optional and defaults to `false`. (default true)"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "audienceId",
+                  "description": "(Required) Audience identifier the export will be created against. **Accepted formats** (all map to the same audience resource): - UUID (string) — **use this**. Matches 'audience.audienceUUId' (v1) or 'audience.id' (v2). - Legacy integer (string-encoded) — backwards compatibility only. Matches 'audience.audienceId' (v1) or 'audience.legacy_id' (v2). Use UUID for new integrations. Returns '404' if the audience does not exist or is not accessible to the calling organization."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "01461457-4ca0-4cdf-9b15-ffa766c2a6f7",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences",
+                    ":audienceId",
+                    "exports"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "validateOnly",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "audienceId",
+                      "description": "(Required) Audience identifier the export will be created against. **Accepted formats** (all map to the same audience resource): - UUID (string) — **use this**. Matches 'audience.audienceUUId' (v1) or 'audience.id' (v2). - Legacy integer (string-encoded) — backwards compatibility only. Matches 'audience.audienceId' (v1) or 'audience.legacy_id' (v2). Use UUID for new integrations. Returns '404' if the audience does not exist or is not accessible to the calling organization."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "aa5f36a2-1b8a-49fb-b617-f1dad2ea59bc",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences",
+                    ":audienceId",
+                    "exports"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "validateOnly",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "audienceId",
+                      "description": "(Required) Audience identifier the export will be created against. **Accepted formats** (all map to the same audience resource): - UUID (string) — **use this**. Matches 'audience.audienceUUId' (v1) or 'audience.id' (v2). - Legacy integer (string-encoded) — backwards compatibility only. Matches 'audience.audienceId' (v1) or 'audience.legacy_id' (v2). Use UUID for new integrations. Returns '404' if the audience does not exist or is not accessible to the calling organization."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "236e0493-a235-40e1-a6bc-ec2d64c2b050",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences",
+                    ":audienceId",
+                    "exports"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "validateOnly",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "audienceId",
+                      "description": "(Required) Audience identifier the export will be created against. **Accepted formats** (all map to the same audience resource): - UUID (string) — **use this**. Matches 'audience.audienceUUId' (v1) or 'audience.id' (v2). - Legacy integer (string-encoded) — backwards compatibility only. Matches 'audience.audienceId' (v1) or 'audience.legacy_id' (v2). Use UUID for new integrations. Returns '404' if the audience does not exist or is not accessible to the calling organization."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c41ec4d7-fe91-4906-8fdb-06d8e16860d9",
+          "name": "List Exports",
+          "request": {
+            "name": "List Exports",
+            "description": {
+              "content": "Returns the paginated list of exports configured for the given audience.\n\n**Why**: Discover all delivery destinations and runs for an audience. Use this endpoint to monitor recurring export pipelines, audit which destinations have received the audience, and confirm whether a previous export reached `READY` before triggering downstream activation.\n\n**When**: Call after `POST /v1/audiences/{audienceId}/exports` to poll the per-export `status` until it reaches a terminal state (`READY` or `FAILED`). Also use to enumerate existing exports before creating a new one to avoid duplicates. When the specific export id is already known, use `GET /v1/audiences/{audienceId}/exports/{id}` instead of paging through this list.\n\n**How**: The `audienceId` path segment accepts a UUID, a legacy integer, or `-` (wildcard for all audiences in the caller's organization). Page with `pageSize` (max `3000`, default `20`) and `pageToken`. Sort with the `sorts` query parameter using `+field` / `-field` syntax. **Filtering by status, exportType, or other attributes is not currently supported** — perform any post-filtering client-side on the returned `results`.\n\n**Scope**: Results are automatically scoped to the caller's organization; only exports owned by your organization are returned. There is no parameter to widen this scope.\n\n**Status lifecycle**: Each returned `Export.status` advances `QUEUED` → `PROCESSING` → `READY` or `FAILED`. `READY` and `FAILED` are terminal; `QUEUED` and `PROCESSING` are non-terminal and indicate work is ongoing. Do not treat `PROCESSING` as a terminal state.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "audiences",
+                ":audienceId",
+                "exports"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<string>",
+                  "description": "Query param pageSize specifies the number of results to include in a page of results. Defaults to `20` when omitted. Maximum allowed value is `3000` — values above this return `400` with a `page_size` field violation. Pair with `pageToken` to iterate through large result sets."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageToken",
+                  "value": "<string>",
+                  "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+                },
+                {
+                  "disabled": false,
+                  "key": "sorts",
+                  "value": "<string>",
+                  "description": "Sort order for the result list. Specify each sort key as <direction><field_name> with **no space** between them — e.g., `-created_at`. Whitespace is stripped before parsing, so `+ created_at` and `+created_at` are treated identically. **Field names are case sensitive.** Default when omitted: `-created_at` (newest first). **Sortable fields:** - `created_at` — when the export was created - `audience_id` — audience integer id - `export_type` — destination type (`CUSTOM_S3`, `LIVERAMP`, etc.) - `status` — execution status **Direction prefixes:** - `+` ascending (also the default if no prefix is supplied) - `-` descending **Multiple keys:** repeat the query parameter to compose ordering, e.g. `?sorts=-status&sorts=+created_at`. Keys are applied in the order received. **Note:** unlike v2 endpoints (which use `orderBy=created_at desc` syntax), this endpoint uses prefix notation. Do not mix the two."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "audienceId",
+                  "description": "(Required) Audience identifier whose exports to list. **Accepted formats** (all map to the same audience resource): - UUID (string) — **use this**. Matches 'audience.audienceUUId' (v1) or 'audience.id' (v2). - Legacy integer (string-encoded) — backwards compatibility only. Matches 'audience.audienceId' (v1) or 'audience.legacy_id' (v2). Use UUID for new integrations. - '-' (single dash) — wildcard. Returns exports across all audiences accessible to the calling organization. Use to enumerate exports without first knowing the audience id. An unknown audience id returns '200' with an empty 'results' array (not '404'). Malformed values that are neither UUID, integer, nor '-' return '400' with a 'field_violations' entry."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f1a73653-0fef-4375-add9-81403212ad83",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences",
+                    ":audienceId",
+                    "exports"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorts",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "audienceId",
+                      "description": "(Required) Audience identifier whose exports to list. **Accepted formats** (all map to the same audience resource): - UUID (string) — **use this**. Matches 'audience.audienceUUId' (v1) or 'audience.id' (v2). - Legacy integer (string-encoded) — backwards compatibility only. Matches 'audience.audienceId' (v1) or 'audience.legacy_id' (v2). Use UUID for new integrations. - '-' (single dash) — wildcard. Returns exports across all audiences accessible to the calling organization. Use to enumerate exports without first knowing the audience id. An unknown audience id returns '200' with an empty 'results' array (not '404'). Malformed values that are neither UUID, integer, nor '-' return '400' with a 'field_violations' entry."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c8ce90c0-2765-4822-977a-db4dfd788022",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences",
+                    ":audienceId",
+                    "exports"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sorts",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "audienceId",
+                      "description": "(Required) Audience identifier whose exports to list. **Accepted formats** (all map to the same audience resource): - UUID (string) — **use this**. Matches 'audience.audienceUUId' (v1) or 'audience.id' (v2). - Legacy integer (string-encoded) — backwards compatibility only. Matches 'audience.audienceId' (v1) or 'audience.legacy_id' (v2). Use UUID for new integrations. - '-' (single dash) — wildcard. Returns exports across all audiences accessible to the calling organization. Use to enumerate exports without first knowing the audience id. An unknown audience id returns '200' with an empty 'results' array (not '404'). Malformed values that are neither UUID, integer, nor '-' return '400' with a 'field_violations' entry."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "dcc270a9-6a39-40b1-9be4-d1b0c3622e78",
+          "name": "Get Export",
+          "request": {
+            "name": "Get Export",
+            "description": {
+              "content": "Returns the full details of a single export, identified by its UUID and audience.\n\n**Why**: Retrieve the current state of one export — its execution `status`, the destination-specific spec object, and any per-destination metadata populated once the run reaches `READY`.\n\n**When**: This is the canonical endpoint for **checking export status**. After `audience_export_create` returns the new export's `id`, check this endpoint to monitor progress until `status` is `READY` or `FAILED` (both terminal). For recurring exports, call this between scheduled runs to inspect the most recent delivery's metadata. Use this over `audience_export_list` when the specific export `id` is already known.\n\n**How**: Pass the export `id` (UUID) and `audienceId` (UUID, legacy integer, or `-` wildcard for \"any audience accessible based on the caller's organization context\"). When `audienceId` is concrete, it must reference the same audience that owns the export — a mismatch returns `404`.\n\n**Scope**: Returns only exports created by the calling organization.\n\n**Status lifecycle**: `QUEUED` → `PROCESSING` → `READY` or `FAILED`. `READY` and `FAILED` are terminal for one-time exports; recurring exports cycle back to `QUEUED` on each scheduled run.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "audiences",
+                ":audienceId",
+                "exports",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "audienceId",
+                  "description": "(Required) Audience identifier of the export to retrieve. **Accepted formats**: - UUID (string) — **use this**. Matches 'audience.audienceUUId' (v1) or 'audience.id' (v2). - Legacy integer (string-encoded) — backwards compatibility only. Matches 'audience.audienceId' (v1) or 'audience.legacy_id' (v2). Use UUID for new integrations. - '-' (single dash) — wildcard for \"any audience in the calling organization\". Useful when the export 'id' is known but the audience is not. The server enforces calling-organization scope regardless of which form you use. When a concrete identifier is supplied, it must reference the same audience that owns the export 'id'; mismatch returns '404'."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) The export's unique identifier (UUID). Obtain from the response of 'audience_export_create' (the 'id' field) or from a previous 'audience_export_list' page. The supplied 'id' must belong to the audience referenced by 'audienceId'. If the export exists but its audience differs, the endpoint returns '404' (the relationship is enforced server-side). Malformed values return '400'."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "aaf4b69e-60e4-4f1d-a748-77af456cad93",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences",
+                    ":audienceId",
+                    "exports",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "audienceId",
+                      "description": "(Required) Audience identifier of the export to retrieve. **Accepted formats**: - UUID (string) — **use this**. Matches 'audience.audienceUUId' (v1) or 'audience.id' (v2). - Legacy integer (string-encoded) — backwards compatibility only. Matches 'audience.audienceId' (v1) or 'audience.legacy_id' (v2). Use UUID for new integrations. - '-' (single dash) — wildcard for \"any audience in the calling organization\". Useful when the export 'id' is known but the audience is not. The server enforces calling-organization scope regardless of which form you use. When a concrete identifier is supplied, it must reference the same audience that owns the export 'id'; mismatch returns '404'."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The export's unique identifier (UUID). Obtain from the response of 'audience_export_create' (the 'id' field) or from a previous 'audience_export_list' page. The supplied 'id' must belong to the audience referenced by 'audienceId'. If the export exists but its audience differs, the endpoint returns '404' (the relationship is enforced server-side). Malformed values return '400'."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5dba3e4d-e1f3-49ad-9d30-f4b5067d02c1",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences",
+                    ":audienceId",
+                    "exports",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "audienceId",
+                      "description": "(Required) Audience identifier of the export to retrieve. **Accepted formats**: - UUID (string) — **use this**. Matches 'audience.audienceUUId' (v1) or 'audience.id' (v2). - Legacy integer (string-encoded) — backwards compatibility only. Matches 'audience.audienceId' (v1) or 'audience.legacy_id' (v2). Use UUID for new integrations. - '-' (single dash) — wildcard for \"any audience in the calling organization\". Useful when the export 'id' is known but the audience is not. The server enforces calling-organization scope regardless of which form you use. When a concrete identifier is supplied, it must reference the same audience that owns the export 'id'; mismatch returns '404'."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The export's unique identifier (UUID). Obtain from the response of 'audience_export_create' (the 'id' field) or from a previous 'audience_export_list' page. The supplied 'id' must belong to the audience referenced by 'audienceId'. If the export exists but its audience differs, the endpoint returns '404' (the relationship is enforced server-side). Malformed values return '400'."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a636baa1-2858-46bd-9c38-3a22730c49c0",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences",
+                    ":audienceId",
+                    "exports",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "audienceId",
+                      "description": "(Required) Audience identifier of the export to retrieve. **Accepted formats**: - UUID (string) — **use this**. Matches 'audience.audienceUUId' (v1) or 'audience.id' (v2). - Legacy integer (string-encoded) — backwards compatibility only. Matches 'audience.audienceId' (v1) or 'audience.legacy_id' (v2). Use UUID for new integrations. - '-' (single dash) — wildcard for \"any audience in the calling organization\". Useful when the export 'id' is known but the audience is not. The server enforces calling-organization scope regardless of which form you use. When a concrete identifier is supplied, it must reference the same audience that owns the export 'id'; mismatch returns '404'."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The export's unique identifier (UUID). Obtain from the response of 'audience_export_create' (the 'id' field) or from a previous 'audience_export_list' page. The supplied 'id' must belong to the audience referenced by 'audienceId'. If the export exists but its audience differs, the endpoint returns '404' (the relationship is enforced server-side). Malformed values return '400'."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0c9fa303-a1cb-42e8-9ba8-417afe6b9a19",
+          "name": "Get Audience",
+          "request": {
+            "name": "Get Audience",
+            "description": {
+              "content": "This endpoint returns the requested audience and it's details. To see a full list of response messages please view our [help page](https://help.videoamp.dev/en/articles/9415579-audience-service-error-codes-messages).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "audiences",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) The Audience's UUID or id (int64)."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ae5d7f03-5571-4488-8dc1-dfc16d638abd",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The Audience's UUID or id (int64)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "31c0d340-8898-4aca-9f01-1a0f7e9160db",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The Audience's UUID or id (int64)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9ef21bda-b923-4dc3-ae2c-3fcf0bdc5954",
+          "name": "Batch Get Audiences",
+          "request": {
+            "name": "Batch Get Audiences",
+            "description": {
+              "content": "This endpoint returns the requested audiences and their details. To see a full list of response messages please view our [help page](https://help.videoamp.dev/en/articles/9415579-audience-service-error-codes-messages).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "audiences:batchGet"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "ids",
+                  "value": "<string>",
+                  "description": "(Required) The UUIDs or legacy integer Ids of the audiences to retrieve. Must be all UUIDs or all legacy integer Ids. A maximum of 100 audiences can be retrieved in a batch."
+                },
+                {
+                  "disabled": false,
+                  "key": "ids",
+                  "value": "<string>",
+                  "description": "(Required) The UUIDs or legacy integer Ids of the audiences to retrieve. Must be all UUIDs or all legacy integer Ids. A maximum of 100 audiences can be retrieved in a batch."
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2307f4a5-585e-43db-9905-b11ce136b1a4",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences:batchGet"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "389a48db-2b7e-4206-b541-f27ef63dca04",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences:batchGet"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "770013f9-006b-45df-8c5d-7623658ba287",
+          "name": "Look Up Id Types",
+          "request": {
+            "name": "Look Up Id Types",
+            "description": {
+              "content": "Returns all identifier types supported for audience ingestion and export within the authenticated organization. Each entry includes the type name, description, and ingestible/exportable flags.\n\n### Why\n\nOrganizations are provisioned with a specific set of ID types based on their data partnerships. This is the authoritative reference for valid types in your org — preventing failures from passing unsupported values to audience creation or export.\n\n### When\n\nCall this endpoint when you need to:\n- Populate a UI dropdown for ID type selection\n- Validate ID type strings client-side before submission\n- Determine which types support export before triggering an export job\n\n**Do NOT use:** Before every audience creation or export — cache the response instead.\n\n**Next Steps:** Cache the response. Use `name` as the `type` value in `DataSources` for `POST /v2/audiences` (recommended) or `POST /v1/audiences`. Filter by `ingestible` or `exportable` flags for the relevant operation.\n\n### How\n\nNo parameters required. Response is scoped to the authenticated organization. This list changes infrequently — cache for session duration. No endpoint-specific rate limits beyond platform defaults.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "audiences:lookUpIdTypes"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "7bce49ed-d2f4-431b-99a4-12bd92cf182d",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences:lookUpIdTypes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e40b8b90-8df8-4959-b972-bcec36de793f",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "audiences:lookUpIdTypes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9bba044b-3bc1-490a-94d6-8f2772ff1a7a",
+          "name": "Create Audience",
+          "request": {
+            "name": "Create Audience",
+            "description": {
+              "content": "Creates a new audience resource and queues it for processing. Returns the created Audience object with `status=QUEUED`. **Status lifecycle**: `QUEUED` → `PROCESSING` → `READY` (success) or `FAILED` (error). `READY` and `FAILED` are terminal; `QUEUED` and `PROCESSING` are non-terminal. Processing typically takes 10–20 minutes for common audience types; large or complex audiences (e.g., `COMPOSITE`, `USER_PROVIDED` with high identity-match volume) may take longer. Do not treat `PROCESSING` as a terminal state.\n\n**Why**: The primary entry point for creating any audience type in the VideoAmp platform. Supports all audience classifications: EXPOSURE, CONTENT, CUSTOM_DEMOGRAPHIC, USER_PROVIDED, COMPOSITE, and MODELED. Use `validate_only=true` to test a request without creating the audience (REST callers: pass as query parameter `?validateOnly=true`).\n\n**When**: Call when you need to build a new audience for measurement or export. Classification-specific pre-conditions: **CUSTOM_DEMOGRAPHIC** — discover valid field identifiers via GET /v2/audiences/lookupDemographicFilterFields, then values via GET /v2/audiences/lookupDemographicFilterValues. **USER_PROVIDED** — confirm valid `id_types` values with your VideoAmp representative (account-specific; no v2 discovery endpoint available). **COMPOSITE** — ensure all component audiences have `status=READY` before calling. **MODELED** — the seed audience must be `READY` and an eligible seed type (see `origin_audience`).\n\n**How**: Set `classification` and the matching definition object, plus `currency_of_record`. The response `id` (UUID) is used to check status and reference the audience in downstream APIs. Only `READY` audiences are eligible for measurement; exports accept audiences in any status. Related: GET /v2/audiences/{id} (check status), GET /v2/audiences (list), GET /v2/audiences/lookupDemographicFilterFields (discover CUSTOM_DEMOGRAPHIC fields).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "audiences"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "validateOnly",
+                  "value": "<string>",
+                  "description": "When true, validates the request body (required fields, enum values, permissions) without creating the audience. Use to pre-flight a create request before committing — especially useful when building audience creation UI or automating bulk audience creation workflows where early error detection reduces wasted processing. Defaults to `false`. A successful validate-only response does not guarantee a subsequent create will succeed if underlying data changes between calls. (default true)"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0eda9c01-806c-4dbb-b3e0-6686f0190ded",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "audiences"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "validateOnly",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "8df7ea4c-e3ad-4d07-bab0-f837ef537a75",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "audiences"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "validateOnly",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e52352e8-79a8-46c4-a35f-d9f75f22669c",
+          "name": "List Audiences",
+          "request": {
+            "name": "List Audiences",
+            "description": {
+              "content": "Returns a paginated, filterable list of audiences accessible to the calling organization. The caller's organization context controls visibility; the `use_cases` field on each audience determines eligible downstream operations.\n\n**Why**: Discover and enumerate audiences before passing them to downstream workflows. Use this endpoint to find READY audiences by classification, ownership, use case, or name before creating measurements or exports. Use GET /v2/audiences/{id} when the audience UUID is already known.\n\n**When**: Call when checking which audiences are available for a measurement campaign; filtering by `useCases` to understand workflow eligibility; discovering SHARED cross-org audiences; retrieving GLOBAL_DEMOGRAPHIC audiences with `broadcastDate` and `currencyOfRecord`; or looking up IDs for share, export, or measurement APIs.\n\n**How**: Apply filters to narrow results, then pass the returned `id` (UUID) to downstream APIs. Only READY audiences are eligible for measurement — exports can be created against an audience in any status. Do not change filter parameters between pages. `total_size` is a point-in-time snapshot and may change between page requests — use the absence of `next_page_token` to detect the final page. Related: POST /v2/audiences (create), GET /v2/audiences/{id} (retrieve by ID), GET /v2/audiences/lookupDemographicFilterFields (discover CUSTOM_DEMOGRAPHIC filter fields).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "audiences"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "advertiserIds",
+                  "value": "<string>",
+                  "description": "Filters audiences by permissioned advertiser UUID(s). Includes audiences permissioned directly to the advertiser as well as those permissioned to any ancestor organization. **Org-level inheritance**: Audiences permissioned to a parent org are visible to all child advertisers. Filtering by two advertisers in the same org may return identical results — both inherit the same org-level pool. This is expected behavior, not a bug. **Multi-advertiser queries**: Results are a deduplicated union, not a concatenation. total_size equals the union count — do not sum per-advertiser counts. **Advertiser-exclusive audiences**: To find audiences exclusive to one advertiser, inspect `permissioned_entities` on each result and filter client-side. Values must be valid UUIDs; duplicates are not permitted."
+                },
+                {
+                  "disabled": false,
+                  "key": "agencyIds",
+                  "value": "<string>",
+                  "description": "Filters audiences by permissioned agency UUID(s). Returns audiences accessible to the given agency IDs. Includes audiences permissioned directly to the agency as well as those permissioned to any of its ancestor organizations. Values must be valid UUIDs; duplicates are not permitted."
+                },
+                {
+                  "disabled": false,
+                  "key": "agencyIds",
+                  "value": "<string>",
+                  "description": "Filters audiences by permissioned agency UUID(s). Returns audiences accessible to the given agency IDs. Includes audiences permissioned directly to the agency as well as those permissioned to any of its ancestor organizations. Values must be valid UUIDs; duplicates are not permitted."
+                },
+                {
+                  "disabled": false,
+                  "key": "broadcastDate",
+                  "value": "<string>",
+                  "description": "Selects which broadcast year's metrics to return based on the broadcast year range containing the specified date. Only applies to 'GLOBAL_DEMOGRAPHIC' audiences; ignored for other types. Uses ISO-8601 date format ('YYYY-MM-DD'). If omitted, the most recent metrics for the given 'currencyOfRecord' are returned. If the date falls outside the available range for the currency of record, a 400 error is returned with the valid date range."
+                },
+                {
+                  "disabled": false,
+                  "key": "cadences",
+                  "value": "<string>",
+                  "description": "Filters audiences by their refresh cadence — how frequently the audience membership is recalculated. Use to find audiences with specific refresh patterns for scheduling-sensitive workflows. Accepts multiple values (OR logic); case-insensitive. Available values: ONE_TIME, `WEEKLY`, `MONTHLY`, `QUARTERLY`."
+                },
+                {
+                  "disabled": false,
+                  "key": "classifications",
+                  "value": "<string>",
+                  "description": "Filters audiences by their __classification__. Case-insensitive. Accepts multiple values (OR logic). Available values: - EXPOSURE - `CONTENT` - `CUSTOM_DEMOGRAPHIC` - `USER_PROVIDED` - `GLOBAL_DEMOGRAPHIC` - `COMPOSITE` - `MODELED` **Note on `GLOBAL_DEMOGRAPHIC` and `use_cases`:** `GLOBAL_DEMOGRAPHIC` audiences vary in their supported `use_cases`. Not all `GLOBAL_DEMOGRAPHIC` audiences support `AD_MEASUREMENT` — some only support `CONTENT_MEASUREMENT`. Combining `classifications=GLOBAL_DEMOGRAPHIC` with `useCases=AD_MEASUREMENT` returns only the subset that supports ad measurement. Omit the `useCases` filter to retrieve all `GLOBAL_DEMOGRAPHIC` audiences regardless of supported use cases."
+                },
+                {
+                  "disabled": false,
+                  "key": "createdByName",
+                  "value": "<string>",
+                  "description": "Case-insensitive substring filter on the 'created_by_name' field of the audience. Useful for finding audiences created by a specific user or team. Matches any audience whose creator's display name contains the supplied string. Combine with 'ownership=OWNED' to narrow results to audiences created by your organization."
+                },
+                {
+                  "disabled": false,
+                  "key": "currencyOfRecord",
+                  "value": "<string>",
+                  "description": "Filters audiences by their currency of record, which identifies the measurement panel and the data and methodologies used for VideoAmp currency guarantees within a given broadcast year. For 'GLOBAL_DEMOGRAPHIC' audiences, combine with 'broadcastDate' to select the correct metrics. Provide as a numeric string (int64 encoded as string). Invalid or unavailable values return a 400 error listing valid options."
+                },
+                {
+                  "disabled": false,
+                  "key": "description",
+                  "value": "<string>",
+                  "description": "Case-insensitive substring filter on the audience 'description' field. Matches any audience whose description contains the supplied string. Useful for finding audiences annotated with specific campaign or workflow context. Combine with 'name' or 'classifications' for more precise filtering. Empty string or omitting this parameter returns all audiences regardless of description. Use the 'search' parameter instead for broader matching across multiple fields."
+                },
+                {
+                  "disabled": false,
+                  "key": "excludeClassifications",
+                  "value": "<string>",
+                  "description": "Query param excludeClassifications will exclude audiences that have the specified __classification__. This field is case insensitive. The available options and restrictions for this field are the same as the __classifications__ filter. For example, to retrieve all audiences except `GLOBAL_DEMOGRAPHIC` audiences: `excludeClassifications=GLOBAL_DEMOGRAPHIC`."
+                },
+                {
+                  "disabled": false,
+                  "key": "ids",
+                  "value": "<string>",
+                  "description": "Filters to a specific set of audiences by their UUID id values. Use when you already know which audiences you need — e.g., to batch-fetch metadata for a saved list of audience IDs. Values must be valid UUIDs. Combine with `statuses=READY` to verify all listed audiences are usable."
+                },
+                {
+                  "disabled": false,
+                  "key": "legacyIds",
+                  "value": "<string>",
+                  "description": "Filters to a specific set of audiences by their legacy numeric legacy_id values. Use when integrating with systems that store legacy integer IDs rather than UUIDs. Prefer `ids` (UUID) for new integrations; use `legacy_ids` only when working with older systems or data stores that reference the numeric ID."
+                },
+                {
+                  "disabled": false,
+                  "key": "level",
+                  "value": "<string>",
+                  "description": "Filters audiences by measurement granularity. 'HOUSEHOLD': household-level metrics (default for most classifications). 'PERSON': person-level metrics for 'GLOBAL_DEMOGRAPHIC' audiences. Omit to return all levels. Unsupported combinations return empty metrics fields. - LEVEL_UNSPECIFIED: Default filter value; returns all audiences regardless of level. Do not use in requests — omit instead. - HOUSEHOLD: Household-level reach and frequency metrics. The default for most classifications. - PERSON: Person-level demographic metrics. Available only for GLOBAL_DEMOGRAPHIC audiences."
+                },
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>",
+                  "description": "Case-insensitive substring filter on the audience 'name' field. Matches any audience whose name contains the supplied string. Use this to narrow results when browsing audiences for a specific campaign. Combine with 'statuses' or 'classifications' to further refine results. Empty string or omitting this parameter returns all audiences regardless of name. Use the 'search' parameter instead for broader matching across multiple fields."
+                },
+                {
+                  "disabled": false,
+                  "key": "orderBy",
+                  "value": "<string>",
+                  "description": "Controls the sort order of returned audiences. Specify a comma-separated list of field_name direction pairs. Direction is optional; omit for ascending order, use 'desc' for descending. Defaults to 'created_at desc' (most recently created first) when omitted. Sortable fields: 'created_at', 'created_by_name', 'name', 'currency_of_record', 'legacy_id'. Example: 'currency_of_record, name desc' sorts by currency of record ascending, then name descending."
+                },
+                {
+                  "disabled": false,
+                  "key": "ownership",
+                  "value": "<string>",
+                  "description": "Filters by audience ownership relative to the calling organization. 'OWNED': audiences created by your organization. 'SHARED': audiences another organization has granted you access to via the Resource Sharing API — use when collaborating cross-org on measurement or activation campaigns. 'SYSTEM': VideoAmp-provided audiences such as GLOBAL_DEMOGRAPHIC audiences. Omit to return all three ownership types. Only one value is accepted per request."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<string>",
+                  "description": "Query param pageSize specifies the number of results to include in a page of results. Defaults to a server-determined page size when omitted. Use larger values (100-500) for batch processing or data export workflows; use smaller values for interactive UI displays with progressive loading. Pair with `pageToken` to paginate through large result sets. Must be a positive integer; excessively large values may increase response latency."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageToken",
+                  "value": "<string>",
+                  "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+                },
+                {
+                  "disabled": false,
+                  "key": "search",
+                  "value": "<string>",
+                  "description": "Filters audiences by matching the provided string against name, description, id, or uuid (case-insensitive). Returns audiences where any of these fields contain the given value. Use this parameter for broad searches when the exact field is unknown or does not matter. For more precise filtering, use the 'name' or 'description' query parameters instead."
+                },
+                {
+                  "disabled": false,
+                  "key": "statuses",
+                  "value": "<string>",
+                  "description": "Filters audiences by processing status. Use READY to find audiences eligible for immediate use in measurement workflows. Exports can be created against an audience in any status. `PROCESSING` and `QUEUED` indicate the audience is being built and is not yet usable. `FAILED` indicates processing encountered an error. Accepts multiple values (OR logic); case-insensitive. Available values: `QUEUED`, `PROCESSING`, `READY`, `FAILED`."
+                },
+                {
+                  "disabled": false,
+                  "key": "useCases",
+                  "value": "<string>",
+                  "description": "Filters audiences to those supporting at least one of the specified use cases. The use_cases property on an audience determines which downstream operations are available — e.g., only audiences with `AD_MEASUREMENT` can be used in ad measurement campaigns. Case-insensitive; accepts multiple values (OR logic). Available values: `ACTIVATION`, `AD_MEASUREMENT`, `CONTENT_MEASUREMENT`."
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2a07cccf-f771-4b39-bb51-f49fd0017fc2",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "audiences"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "advertiserIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "agencyIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "agencyIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "broadcastDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "cadences",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "classifications",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdByName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "currencyOfRecord",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "description",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "excludeClassifications",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "legacyIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "level",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ownership",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "statuses",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "useCases",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0baabb47-5a88-4f84-9701-44b815649e3a",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "audiences"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "advertiserIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "agencyIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "agencyIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "broadcastDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "cadences",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "classifications",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdByName",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "currencyOfRecord",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "description",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "excludeClassifications",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "legacyIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "level",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ownership",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "search",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "statuses",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "useCases",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "437e958e-649c-405d-8e47-01227539982a",
+          "name": "Lookup Demographic Filter Fields",
+          "request": {
+            "name": "Lookup Demographic Filter Fields",
+            "description": {
+              "content": "Returns a paginated list of demographic filter fields available for building Custom Demographic audiences. Each entry contains the field identifier (`field`), a human-readable label, and a detailed description of the demographic attribute.\n\n**Why**: Useful for two scenarios: populating UI field selectors (e.g., dropdowns in an audience builder) where the available fields are not known ahead of time, and validating or exploring available field identifiers before writing code that references them. Programmatic callers with known field identifiers (e.g., AGE_RANGE) do not need to call this endpoint at runtime. Results change infrequently; cache for session duration when called.\n\n**When**: Call when building a UI that lets users select demographic fields, or when exploring what fields are available for the first time. Not required as a prerequisite before every audience creation — if the field identifiers are already known, use them directly in Filter.field. Use the `search` parameter to filter by keyword when looking for a specific attribute.\n\n**How**: Paginate using `pageSize` and `pageToken`. Pass the returned `field` value directly as Filter.field when calling POST /v2/audiences. To discover valid values for a given field, use GET /v2/audiences/lookupDemographicFilterValues.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "audiences",
+                "lookupDemographicFilterFields"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<string>",
+                  "description": "Query param pageSize specifies the number of results to include in a page of results. Defaults to a server-determined page size when omitted. Use larger values (50-100) when building field selectors that display a complete list; use smaller values for progressive-loading UI components. Must be a positive integer. Pair with `pageToken` to paginate through the full catalog. Excessively large values may increase response latency."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageToken",
+                  "value": "<string>",
+                  "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+                },
+                {
+                  "disabled": false,
+                  "key": "search",
+                  "value": "<string>",
+                  "description": "Optional keyword filter to narrow the list of demographic filter fields. Performs a case-insensitive substring match against the 'field' identifier (e.g., AGE_RANGE), the 'description' text, and the 'label' display name (e.g., Age Range). Use when you know part of the field name, description, or display label to quickly locate a specific demographic attribute. Omit to retrieve all available fields. Combine with 'pageSize' for efficient browsing of large field catalogs."
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d8503572-558a-47d0-82c6-29dddf21dbaf",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "audiences",
+                    "lookupDemographicFilterFields"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "search",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d5caa781-caeb-4b05-9a1a-5fb40af1184c",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "audiences",
+                    "lookupDemographicFilterFields"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "search",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d83686c4-7cb8-4d40-b1d0-d6ca9902a085",
+          "name": "Lookup Demographic Filter Values",
+          "request": {
+            "name": "Lookup Demographic Filter Values",
+            "description": {
+              "content": "Returns a paginated list of valid values for a specific demographic filter field. Each entry contains the value identifier (`value`), a human-readable label, and a description of what the value represents.\n\n**Why**: Before creating a CUSTOM_DEMOGRAPHIC audience, you must know the valid values for each Filter.field you intend to use. This endpoint is the authoritative source for the allowed Filter.values for a given field — do not hardcode value identifiers. The value catalog is field-specific and may vary by organization; call once per session and cache results.\n\n**When**: Call after discovering available filter fields via GET /v2/audiences/lookupDemographicFilterFields. Pass the `field` identifier (e.g., AGE_RANGE) to retrieve its valid values. Use the `search` parameter to narrow results when looking for a specific value. Call once per session per field and cache the results — the value catalog changes infrequently.\n\n**How**: Supply the required `field` parameter with a field identifier from the fields endpoint. Pass the returned `value` string directly in Filter.values when calling POST /v2/audiences. Paginate using `pageSize` and `pageToken`. Related: GET /v2/audiences/lookupDemographicFilterFields (discover field identifiers), POST /v2/audiences (create a CUSTOM_DEMOGRAPHIC audience using the discovered values).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "audiences",
+                "lookupDemographicFilterValues"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "field",
+                  "value": "<string>",
+                  "description": "(Required) The demographic filter field identifier to look up values for. Must be a valid field identifier returned by GET /v2/audiences/lookupDemographicFilterFields — e.g., 'AGE_RANGE', 'GENDER', 'INCOME'. Values are UPPERCASE with underscore separators. Case-sensitive: use the exact string returned by the fields endpoint. Returns 400 if the field identifier is not recognized for the calling organization."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<string>",
+                  "description": "Query param pageSize specifies the number of results to include in a page of results. Defaults to a server-determined page size when omitted. Use larger values (50-100) when building value selectors that display a complete list; use smaller values for progressive-loading UI components. Must be a positive integer. Pair with `pageToken` to paginate through the full value catalog for a field. Excessively large values may increase response latency."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageToken",
+                  "value": "<string>",
+                  "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+                },
+                {
+                  "disabled": false,
+                  "key": "search",
+                  "value": "<string>",
+                  "description": "Optional keyword filter to narrow the list of values for the specified field. Performs a case-insensitive substring match against the 'value' identifier (e.g., 13_15) and the 'description' text. Use when you know part of the value string or its description to quickly locate a specific option. Omit to retrieve all available values for the field. Combine with 'pageSize' for efficient browsing of fields with large value catalogs."
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a691acae-a6dc-4245-944c-e36cc1b5b5c0",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "audiences",
+                    "lookupDemographicFilterValues"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "field",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "search",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "99f3df91-7f62-485b-badf-f5a70404fd57",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "audiences",
+                    "lookupDemographicFilterValues"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "field",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "search",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2e24e5f5-9b9f-4c7a-a62f-849a5886679e",
+          "name": "Get Audience",
+          "request": {
+            "name": "Get Audience",
+            "description": {
+              "content": "Returns the complete Audience resource for a single known audience ID. Use this endpoint when you already have the audience UUID or legacy integer ID and need to retrieve full details including classification, status, use_cases, owned vs. shared ownership, and the classification-specific definition object (exposure, content, composite, etc.).\n\n**Why**: Retrieve a specific audience directly without filtering through paginated list results. Use to verify audience status before downstream operations such as measurement, export, or sharing. Prefer this over GET /v2/audiences when the audience ID is already known.\n\n**When**: Call when you need to confirm an audience is READY before use in a downstream workflow, retrieve the full definition object for a known audience ID, or look up audience metadata by ID from an external reference or saved record.\n\n**How**: Supply the UUID or legacy integer ID as the `id` path parameter. Only READY audiences are eligible for measurement — exports can be created against an audience in any status. Related: GET /v2/audiences (list with filters), POST /v2/audiences (create).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "audiences",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) The unique identifier for the audience to retrieve. Accepts either a UUID v4 (e.g., 'b21fd4c7-2423-4358-830a-41b3d744e663') or a legacy integer ID encoded as a string (e.g., '\"101010101\"'). UUID is the preferred format for new integrations. Returns 404 if the audience does not exist or is not accessible to the calling organization."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f84b62ed-f678-47f1-ad85-1a1f3a907e30",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "audiences",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The unique identifier for the audience to retrieve. Accepts either a UUID v4 (e.g., 'b21fd4c7-2423-4358-830a-41b3d744e663') or a legacy integer ID encoded as a string (e.g., '\"101010101\"'). UUID is the preferred format for new integrations. Returns 404 if the audience does not exist or is not accessible to the calling organization."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "95c67f4f-fb7d-4544-8e5f-d8a692142323",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "audiences",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The unique identifier for the audience to retrieve. Accepts either a UUID v4 (e.g., 'b21fd4c7-2423-4358-830a-41b3d744e663') or a legacy integer ID encoded as a string (e.g., '\"101010101\"'). UUID is the preferred format for new integrations. Returns 404 if the audience does not exist or is not accessible to the calling organization."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f8486f5e-c4c2-4be5-81cc-bce7421d92ce",
+          "name": "Update Audience",
+          "request": {
+            "name": "Update Audience",
+            "description": {
+              "content": "Updates an audience's `name` and/or `description` — the only editable fields. Other attributes (classification, definition, currency of record, use cases, status) are immutable. Provide at least one of `name` or `description`; an empty request returns 400. Returns the full updated Audience.\n\n**Why**: Rename or re-describe an audience without rebuilding it or losing its computed members and metrics. **Example**: a planner renames \"test aud\" to \"Q1 2025 CTV Reach\" before sharing.\n\n**When**: Call to fix a name or description, or to apply naming standards.\n\n**How**: Send PATCH /v2/audiences/{id} with the field(s) to change; the update mask is derived from the request body. Precondition: owned by your organization (`ownership=OWNED`; SHARED or SYSTEM returns 403). Editable in any status.\n\n**Next Steps**: inspect the returned Audience to confirm the change. Related: GET /v2/audiences/{id}, GET /v2/audiences, POST /v2/audiences.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "audiences",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) The unique identifier of the audience to update. Accepts either a UUID v4 (e.g., 'b21fd4c7-2423-4358-830a-41b3d744e663') or a legacy integer ID encoded as a string (e.g., '\"311637\"'), the same identifier accepted by GetAudience. UUID is the preferred format for new integrations. Supplied as the '{id}' path parameter. Returns 404 if the audience does not exist or is not accessible to the calling organization."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "55f88d8a-1a90-4d09-ac4e-9320f2a6c3da",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "audiences",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The unique identifier of the audience to update. Accepts either a UUID v4 (e.g., 'b21fd4c7-2423-4358-830a-41b3d744e663') or a legacy integer ID encoded as a string (e.g., '\"311637\"'), the same identifier accepted by GetAudience. UUID is the preferred format for new integrations. Supplied as the '{id}' path parameter. Returns 404 if the audience does not exist or is not accessible to the calling organization."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "869d5d6c-c46f-469e-9938-252582a48f2e",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "audiences",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The unique identifier of the audience to update. Accepts either a UUID v4 (e.g., 'b21fd4c7-2423-4358-830a-41b3d744e663') or a legacy integer ID encoded as a string (e.g., '\"311637\"'), the same identifier accepted by GetAudience. UUID is the preferred format for new integrations. Supplied as the '{id}' path parameter. Returns 404 if the audience does not exist or is not accessible to the calling organization."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "486b2c42-73dc-4354-98b9-2283c7cd879b",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "audiences",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The unique identifier of the audience to update. Accepts either a UUID v4 (e.g., 'b21fd4c7-2423-4358-830a-41b3d744e663') or a legacy integer ID encoded as a string (e.g., '\"311637\"'), the same identifier accepted by GetAudience. UUID is the preferred format for new integrations. Supplied as the '{id}' path parameter. Returns 404 if the audience does not exist or is not accessible to the calling organization."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4f66c1fa-3c3b-4440-abe3-596e88b6f461",
+              "name": "Forbidden — the caller's organization is not permissioned for this resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "audiences",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The unique identifier of the audience to update. Accepts either a UUID v4 (e.g., 'b21fd4c7-2423-4358-830a-41b3d744e663') or a legacy integer ID encoded as a string (e.g., '\"311637\"'), the same identifier accepted by GetAudience. UUID is the preferred format for new integrations. Supplied as the '{id}' path parameter. Returns 404 if the audience does not exist or is not accessible to the calling organization."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.videoamp.dev",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "scope",
+        "value": "openid profile email offline_access"
+      },
+      {
+        "key": "redirect_uri",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "authUrl",
+        "value": "https://login.videoamp.com/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "authorization_code"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "ba211a4c-e8c3-4645-964d-0368cf09f0bb",
+    "name": "VideoAmp Public Audiences API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.\n\n**Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI's `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary's own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.\n\n**Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.\n\nContact Support:\n Name: VideoAmp Support\n Email: support@videoamp.com",
+      "type": "text/plain"
+    }
+  }
+}

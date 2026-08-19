@@ -1,0 +1,517 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VideoAmp Public Data Streams API",
+    "version": "2026-07-31"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://login.videoamp.com/authorize",
+      "accessTokenUrl": "https://login.videoamp.com/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "dataStreams",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Data Streams",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams",
+            "params": [
+              {
+                "name": "advertiserId",
+                "value": "",
+                "type": "query",
+                "description": "Filter by advertiser UUID. Repeat to match multiple advertisers. Each value must be a UUID v4 within the caller's accessible advertiser scope; advertisers outside that scope are rejected with InvalidArgument."
+              },
+              {
+                "name": "advertiserName",
+                "value": "",
+                "type": "query",
+                "description": "Case-insensitive substring filter on the Data Stream's denormalized 'advertiser_name'. Useful for holdco/agency callers narrowing within their access scope by advertiser display name."
+              },
+              {
+                "name": "ingestionStatus",
+                "value": "",
+                "type": "query",
+                "description": "Filter by ingestion health. Repeat to match multiple values (e.g. ?ingestionStatus=HEALTHY&ingestionStatus=DEGRADED). ANDs with the `status` filter, so callers can narrow provisioned streams by ingestion outcome. When omitted, ingestion health is not filtered. - DATA_STREAM_INGESTION_STATUS_UNSPECIFIED: Default unspecified value. - NONE: No ingestion has occurred yet. Default for a newly created Data Stream. - HEALTHY: The most recent ingestion succeeded. - DEGRADED: One or more recent ingestions failed, but a prior ingestion succeeded. - FAILING: No ingestion has ever succeeded, or failures have continued for a sustained consecutive streak."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Case-insensitive substring filter on Data Stream 'name'. Matches anywhere in the value (no leading/trailing wildcards required)."
+              },
+              {
+                "name": "orderBy",
+                "value": "",
+                "type": "query",
+                "description": "Sort order applied before pagination. Format: '<field>' for ascending or '<field> desc' for descending. Supported fields: 'created_at', 'updated_at', 'name', 'status'. Defaults to 'updated_at desc' when omitted. Results carry an additional stable tiebreaker so paging is deterministic."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Query param pageSize specifies the number of results to include in a page of results. Defaults to 50 if not specified. Maximum allowed value is 200."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by Data Stream status. Repeat to match multiple statuses (e.g. ?status=DRAFT&status=AWAITING_DELIVERY). When omitted, Data Streams of every status are returned. - DATA_STREAM_STATUS_UNSPECIFIED: Default unspecified value. - DRAFT: Data Stream has been created but delivery configuration or file upload is not yet complete. - AWAITING_DELIVERY: Configuration is set and the Data Stream is awaiting an initial file delivery. - AWAITING_APPROVAL: First successful delivery inspection has completed; the schema mapping is awaiting approval. - PROVISIONING: Schema mapping has been approved; the Data Stream is being provisioned into downstream systems. - PROVISIONED: Ingestion pipeline has acknowledged the provisioning job — the end of the intake/ingestion path. Reached from PROVISIONING."
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Filter by Data Stream type. Repeat to match multiple types. Supported values: AD_SCHEDULES. - DATA_STREAM_TYPE_UNSPECIFIED: Default unspecified value; rejected at create time. - AD_SCHEDULES: Provider-supplied planned or delivered ad schedule with flight, placement, and inventory metadata."
+              }
+            ]
+          },
+          "docs": "### What\n\nReturns a paginated, filterable list of Data Stream resources the caller is entitled to read.\n\n### Why\n\nUse this to power Data Stream list views, dashboards, and bulk-management workflows. Results are scoped to the caller's accessible advertisers (across the holdco/agency/advertiser hierarchy), so the same call can be issued by a holdco-tier user (sees every reachable advertiser's rows) or an advertiser-tier user (sees their advertiser's rows).\n\n### When\n\nAny time after at least one `C"
+        },
+        {
+          "info": {
+            "name": "Create Data Stream",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### What\n\nCreates a new Data Stream resource in `DRAFT` status. The server populates `id`, `org_id`, `advertiser_name`, `status`, `created_by`, `updated_by`, `created_at`, and `updated_at`; client-supplied values for those output-only fields are ignored.\n\n### Why\n\nData Streams register external feeds for ingestion into VideoAmp's measurement pipeline. The `DRAFT` state lets a user describe the stream before it is configured for delivery.\n\n### When\n\nThe first call in the intake flow — see Lifecyc"
+        },
+        {
+          "info": {
+            "name": "Get Data Stream",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the Data Stream to retrieve. Obtained from the response of 'POST /v1alpha/dataStreams'. Returns 404 if the id does not exist OR exists outside the caller's organization/advertiser access scope (existence is not leaked across organizations)."
+              }
+            ]
+          },
+          "docs": "### What\n\nRetrieves a complete Data Stream configuration by `data_stream_id`, including metadata (`name`, `description`, `type`), lifecycle state (`status`), advertiser (`advertiser_id`, `advertiser_name`), and audit timestamps (`created_at`, `updated_at`) and audit users (`created_by`, `updated_by`).\n\n### Why\n\nUse this to validate intake state, display details in UI, or audit configuration.\n\n### When\n\nAfter `CreateDataStream` and at any point in the resource's lifecycle.\n\n### How\n\nReturns 404 i"
+        },
+        {
+          "info": {
+            "name": "Update Data Stream",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the Data Stream to update. Path parameter only — any value supplied in the body is ignored."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### What\n\nPartial-merge update of a Data Stream's editable fields: `name` and `description`. Sending an empty string is interpreted as \"leave the stored value unchanged\". Output-only fields (`id`, `org_id`, `advertiser_id`, `advertiser_name`, `type`, `status`, audit users + timestamps) cannot be modified through this endpoint.\n\n### Why\n\nLets a caller correct a Data Stream's user-visible metadata without re-reading the full resource first. PATCH semantics keep client integrations simple and avoid"
+        },
+        {
+          "info": {
+            "name": "Get Delivery Config",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId/deliveryConfig",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the parent DataStream. Returns 404 if the DataStream does not exist within the caller's access scope, or if no DeliveryConfig has been created for it."
+              }
+            ]
+          },
+          "docs": "### What\n\nRetrieves the DeliveryConfig for a DataStream, including the delivery `method`, lifecycle `status`, and audit timestamps.\n\n### Why\n\nUse this to inspect the current delivery configuration and determine whether to call `:approve` or adjust the method first.\n\n### When\n\nAfter `PUT /deliveryConfig` and at any point in the resource's lifecycle.\n\n### How\n\nReturns 404 if the parent DataStream does not exist within the caller's access scope, or if no DeliveryConfig has been created for it. Exis"
+        },
+        {
+          "info": {
+            "name": "Upsert Delivery Config",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId/deliveryConfig",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### What\n\nCreates or replaces the DeliveryConfig for a DataStream. Idempotent for `DRAFT` configs: a second PUT with the same method is a no-op; a PUT with a different method updates it. Output-only fields (`id`, `data_stream_id`, `status`) supplied in the body are ignored.\n\n### Why\n\nLets a caller configure or reconfigure the delivery method before committing to delivery. Separating configuration (this endpoint) from commitment (`:approve`) means a user can change their mind without reprovisioni"
+        },
+        {
+          "info": {
+            "name": "Approve Delivery Config",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId/deliveryConfig:approve",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is already APPROVED."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### What\n\nCommits the delivery configuration: locks the delivery method, provisions S3 infrastructure for the DataStream, runs S3 access probes, and advances the parent DataStream status to `AWAITING_DELIVERY`. Returns the updated DeliveryConfig with `status: APPROVED`.\n\n### Why\n\nSeparating configuration (PUT) from commitment (this action) lets callers change the delivery method freely before locking in. Once approved, the DataStream is ready to receive data.\n\n### When\n\nAfter `PUT /deliveryConfi"
+        },
+        {
+          "info": {
+            "name": "Confirm Delivery Config Access",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId/deliveryConfig:confirmAccess",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### What\n\nRuns a read-only connectivity diagnostic against the DataStream's delivery destination. No state is changed. Returns `accessible: true` when probes pass and `accessible: false` with a diagnostic `message` when they fail.\n\n### Why\n\nProvides a connectivity check that can be run at any point the config has sufficient information to probe — optionally before `:approve` or as a post-approve re-diagnostic when delivery problems are suspected.\n\n### When\n\nWhenever the DeliveryConfig has suffic"
+        },
+        {
+          "info": {
+            "name": "Create Upload URL",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId/deliveryConfig:createUploadUrl",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is not yet APPROVED."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### What\n\nGenerates a time-limited upload URL for delivering a data file to the DataStream's delivery destination. Returns the URL and its expiration timestamp. Each call generates a new URL; previous URLs are not invalidated.\n\n### Why\n\nThe upload URL allows the caller to deliver files directly to the delivery destination without routing data through the API server, supporting large file transfers efficiently.\n\n### When\n\nAfter `:approve` has succeeded (DeliveryConfig `status` must be `APPROVED`)"
+        },
+        {
+          "info": {
+            "name": "Delete Uploaded File",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId/deliveryConfig:deleteUploadedFile",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### What\n\nRemoves a previously uploaded file from the DataStream's delivery bucket. Returns 204 on success.\n\n### Why\n\nAllows a caller to remove an incorrect or superseded file before triggering inspection, avoiding a failed inspection run.\n\n### When\n\nWhile the parent DataStream is in `AWAITING_DELIVERY`. Returns 400 if the DeliveryConfig is not `APPROVED`, or if the DataStream is not in `AWAITING_DELIVERY`. Returns 404 if the specified file does not exist in the bucket.\n\n### How\n\nThe caller must"
+        },
+        {
+          "info": {
+            "name": "List Uploaded Files",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId/deliveryConfig:listUploadedFiles",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the parent DataStream. Returns 404 if the DataStream or its DeliveryConfig does not exist within the caller's access scope. Returns 400 if the DeliveryConfig is not yet APPROVED."
+              }
+            ]
+          },
+          "docs": "### What\n\nReturns metadata for all files currently in the DataStream's delivery bucket. Returns an empty list if no files have been uploaded.\n\n### Why\n\nAllows a caller to verify which files are present before triggering inspection, and to surface existing files when returning to the delivery step.\n\n### When\n\nAfter `:approve` has succeeded (DeliveryConfig `status` must be `APPROVED`). Returns 400 if the DeliveryConfig is still `DRAFT`.\n\n### How\n\nThe caller must have read access on the parent Data"
+        },
+        {
+          "info": {
+            "name": "List Delivery Inspections",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId/deliveryInspections",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the DataStream whose inspections to list."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Query param pageSize specifies the number of results to include in a page of results. Defaults to 25 if not specified. Maximum allowed value is 100."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+              }
+            ]
+          },
+          "docs": "### What\n\nReturns a paginated list of delivery inspections for a DataStream, ordered by `inspected_at` descending (most recent first). Each result is the full `DeliveryInspection` object — the same shape as `GetDeliveryInspection`.\n\n### Why\n\nProvides a history of all inspections for a DataStream. Results are sorted by `inspected_at` descending — call with `page_size=1` to retrieve the most recent inspection without a follow-up `GET`.\n\n### When\n\nAt any point after `CreateDeliveryInspection` has b"
+        },
+        {
+          "info": {
+            "name": "Create Delivery Inspection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId/deliveryInspections",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the DataStream to inspect. Returns 404 if the DataStream does not exist within the caller's access scope."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### What\n\nTriggers a delivery inspection for the DataStream. All files at the DataStream's delivery prefix are listed and inspected synchronously. Returns `200` with the full `DeliveryInspection` result — the same shape as `GetDeliveryInspection`.\n\n### Why\n\nInspection detects each file's format and extracts column names and sample values, which drive the schema-mapping step. On first success the parent DataStream transitions from `AWAITING_DELIVERY` to `AWAITING_APPROVAL`.\n\n### When\n\nAfter files"
+        },
+        {
+          "info": {
+            "name": "Get Delivery Inspection",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId/deliveryInspections/:inspectionId",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the parent DataStream."
+              },
+              {
+                "name": "inspectionId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the inspection to retrieve."
+              }
+            ]
+          },
+          "docs": "### What\n\nReturns inspection-level metadata for a single delivery inspection: `id`, `status`, `inspected_at`, and any inspection-level `errors`. Per-file detail is not included.\n\n### Why\n\nProvides the outcome of an inspection and any inspection-level error detail (e.g. no files found at the prefix). Use the returned `id` to fetch per-file results via `ListDeliveryInspectionFiles`.\n\n### When\n\nAfter `CreateDeliveryInspection` returns, use the `id` field on the `DeliveryInspection` response. Or use"
+        },
+        {
+          "info": {
+            "name": "List Delivery Inspection Files",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId/deliveryInspections/:inspectionId/files",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the parent DataStream."
+              },
+              {
+                "name": "inspectionId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the inspection whose file results to list."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Query param pageSize specifies the number of results to include in a page of results. Defaults to 25 if not specified. Maximum allowed value is 100."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+              }
+            ]
+          },
+          "docs": "### What\n\nReturns a paginated list of per-file results for a delivery inspection. Each result includes the filename, detected format, columns detected in that file, and any file-level errors. `columns[].samples` holds up to 3 distinct non-empty values for non-redacted columns (empty if none were sampled); a column whose samples matched a known PII-shaped pattern has `columns[].redacted` set to `true` and never carries samples.\n\n### Why\n\nPer-file results expose the column names and sample values "
+        },
+        {
+          "info": {
+            "name": "List Ingestions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId/ingestions",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path",
+                "description": "The DataStream to list ingestions for. Required. UUID v4."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Query param pageSize specifies the number of results to include in a page of results. Defaults to 50 if not specified. Maximum allowed value is 200."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+              }
+            ]
+          },
+          "docs": "### What\n\nReturns a paginated list of ingestion runs for a DataStream, ordered newest-first by `completed_at`. Each run summarises the outcome of one or more files processed by the backend.\n\n### Why\n\nAllows clients to audit ingestion history, confirm data was received and processed, and identify failed runs that need attention.\n\n### When\n\nCall after a DataStream has been provisioned. Results appear as backends complete ingestion runs and notify Data Management. A DataStream in `PROVISIONING` may"
+        },
+        {
+          "info": {
+            "name": "Get Schema Mapping",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId/schemaMapping",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the parent DataStream. Returns 404 if the DataStream does not exist within the caller's access scope, or if no SchemaMapping has been created for it."
+              }
+            ]
+          },
+          "docs": "### What\n\nRetrieves the SchemaMapping for a DataStream, including its lifecycle `status` and the full set of `column_bindings`.\n\n### Why\n\nUse this to inspect the current bindings and decide whether to edit them (PUT) or approve the mapping.\n\n### When\n\nAfter the SchemaMapping has been created, at any point in its lifecycle.\n\n### How\n\nThe caller must have read access on the parent DataStream's advertiser. Returns 404 if the parent DataStream does not exist within the caller's access scope, or if n"
+        },
+        {
+          "info": {
+            "name": "Upsert Schema Mapping",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId/schemaMapping",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### What\n\nCreates or replaces the SchemaMapping for a DataStream, binding the raw columns discovered in delivered files onto VideoAmp's canonical schema fields. Idempotent: the first PUT creates the mapping with `status: DRAFT`; a subsequent PUT replaces its `column_bindings` wholesale (omitting a binding removes it — this is not a partial merge). Output-only fields (`id`, `data_stream_id`, `status`) supplied in the body are ignored.\n\n### Why\n\nThe mapping tells VideoAmp how to interpret each del"
+        },
+        {
+          "info": {
+            "name": "Approve Schema Mapping",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v1alpha/dataStreams/:dataStreamId/schemaMapping:approve",
+            "params": [
+              {
+                "name": "dataStreamId",
+                "value": "",
+                "type": "path",
+                "description": "UUID v4 of the parent DataStream. Path parameter only — the request has no body fields."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### What\n\nApproves the SchemaMapping for a DataStream. This is an irreversible gate: it locks the column bindings (`status` becomes `APPROVED`), triggers downstream ingestion of the delivered files, and advances the parent DataStream through `PROVISIONING` toward `PROVISIONED`.\n\n### Why\n\nApproval is the commitment step that separates configuring the mapping (`PUT .../schemaMapping`) from acting on it. Once approved, the bindings are frozen and the delivered data is handed to the ingestion pipeli"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

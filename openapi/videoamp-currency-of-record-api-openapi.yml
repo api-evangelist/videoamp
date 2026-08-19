@@ -1,0 +1,145 @@
+openapi: 3.2.0
+info:
+  title: VideoAmp Public Currency Of Record API
+  version: '2026-07-31'
+  summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
+  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
+
+
+    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
+
+
+    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  contact:
+    name: VideoAmp Support
+    email: support@videoamp.com
+    url: https://help.videoamp.dev
+  termsOfService: https://videoamp.com/terms-of-use/
+servers:
+- url: https://api.videoamp.dev
+  description: Production. The VideoAmp CLI also references `staging` and `preprod` environments (api.staging.videoamp.dev, api.preprod.videoamp.dev), but neither resolves publicly (DNS NXDOMAIN as of 2026-08-02), so they are not listed as callable servers.
+security:
+- videoampOAuth: []
+tags:
+- name: currency-of-record
+  description: currency-of-record operations.
+paths:
+  /external/v1/currency-of-record:
+    get:
+      operationId: cor_list
+      summary: List Currency of Records
+      tags:
+      - currency-of-record
+      description: '### What
+
+
+        Retrieves a paginated list of available Currency of Records (CoRs) with filtering and search capabilities. Each CoR represents a specific measurement methodology tied to a broadcast year, defining the panel composition, data collection standards, and measurement currency used for audience guarantees.
+
+
+        ### Why
+
+
+        Currency of Records are foundational to VideoAmp''s measurement system, ensuring consistent methodology across analyses within the same broadcast year. Different broadcast years use different panels, measurement techniques, and data sources, making CoR selection critical for accurate comparisons and contractual guarantees. This endpoint enables discovery of valid CoRs before creating Measurement requests, preventing configuration errors.
+
+
+        ### When
+
+
+        Call this endpoint when you need to:
+
+        - Discover available measurement methodologies for your account before creating Measurement requests
+
+        - Validate CoR values for API requests that require `currency_of_record` parameters
+
+        - Understand broadcast year boundaries and data availability windows for campaign planning
+
+        - Filter CoRs by reporting scope (Ad Measurement vs Content Measurement requests) for specific use cases
+
+        - Check actualized data dates to determine when final broadcast metrics are available
+
+
+        ### How
+
+
+        Requires bearer token authentication with appropriate scope. Supports optional filtering by `name` (substring search), `currencyOfRecord` IDs (exact match), and `reportingScope` values (case-insensitive exact match). Pagination uses `pageSize` (max 1000, default 50) and opaque `pageToken` for cursor-based navigation. Response includes broadcast year boundaries, CoR IDs, and actualized data dates for both linear and digital mediums. Typical response time under 200ms for unfiltered queries.
+
+
+        Related endpoints:
+
+        - `POST /v2beta/adMeasurements` - Uses `currency_of_record` from this endpoint
+
+        - `GET /v2beta/adMeasurements/{id}` - Returns Measurement requests using specific CoR methodology'
+      parameters:
+      - name: currencyOfRecord
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Optional filter to retrieve specific Currency of Records by their numeric IDs. Accepts an array of int32 values representing CoR identifiers, with exact match filtering. Common CoR ID values include 23 (broadcast year 2023-24), 25 (2024-25), and 26 (2025-26), though available IDs vary by account permissions and product configuration. This filter uses OR logic, returning CoRs that match any of the provided IDs. Use this parameter when you already know specific CoR IDs from previous API calls or configuration data and want to retrieve their detailed metadata (broadcast year boundaries, actualized dates, reporting scopes). Can be combined with `name` and `reportingScope` filters for more refined queries. Maximum of 100 IDs supported per request. Leave empty or omit to retrieve all CoRs without ID filtering. If an invalid or unauthorized CoR ID is provided, it is silently ignored rather than causing an error, resulting in fewer results than IDs requested.
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Optional filter for searching CoR names using case-insensitive substring-based matching. Accepts multiple search strings that are matched against the primary name field of each Currency of Record. The substring matching logic uses SQL ILIKE with wildcard patterns, so partial matches are supported (e.g., searching for '24-25' will match 'Currency 2024-25'). Each string in the array is treated as an independent search term with OR logic, meaning results include CoRs matching any of the provided name patterns. Common use case is searching by broadcast year identifiers like '23', '24', '25' to quickly find specific currency years. Leave empty or omit entirely to retrieve all available CoRs without name filtering.
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results. Controls the size of the `data` array in the response and impacts both API performance and client memory usage. Accepted values range from 1 to 1000, with values exceeding 1000 automatically coerced down to the maximum. Default is 50 when omitted, which provides good balance for most interactive use cases. Smaller page sizes (10-25) are recommended for UI pagination with progressive loading, while larger sizes (100-1000) are more efficient for batch processing workflows and data exports that need to retrieve all CoRs with minimal API calls. The total number of available results is returned in the `paging.totalResults` field, allowing clients to calculate the number of pages needed. When processing all results, use maximum `pageSize` (1000) combined with `pageToken` navigation to minimize round trips while respecting rate limits.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      - name: reportingScope
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Optional filter to retrieve Currency of Records by their reporting scope classification, which determines what types of Measurement requests can use each CoR. Accepts an array of scope strings with case-insensitive exact matching (no partial matches or fuzzy logic). Valid values are 'AD_MEASUREMENT' and 'CONTENT_MEASUREMENT'. Some CoRs support multiple scopes and will be returned if any of their scopes match any filter value provided (OR logic). Use this filter when building scope-specific workflows that require filtering CoRs by their intended measurement use case. For example, Ad Measurement workflows should filter by 'AD_MEASUREMENT' to exclude content-only CoRs. Leave empty or omit to retrieve all CoRs regardless of reporting scope. Invalid scope values are silently ignored rather than causing errors.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: cor_list
+components:
+  securitySchemes:
+    videoampOAuth:
+      type: oauth2
+      description: OAuth 2.0 / OIDC via VideoAmp's Auth0 tenant at https://login.videoamp.com. Verified from https://login.videoamp.com/.well-known/openid-configuration (HTTP 200) and https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp (HTTP 200, RFC 9728). Bearer tokens are presented in the Authorization header.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.videoamp.com/authorize
+          tokenUrl: https://login.videoamp.com/oauth/token
+          refreshUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://login.videoamp.com/oauth/device/code
+          tokenUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+externalDocs:
+  url: https://docs.videoamp.dev
+  description: VideoAmp Public API documentation (Auth0-gated)
+x-evidence:
+  method: derived
+  derived_from: github.com/VideoAmp/cli release v0.148.32 (videoamp_v0.148.32_darwin_arm64.tar.gz)
+  extraction: videoamp --help; videoamp <command> --help
+  fetched: '2026-08-02'
+  operations: 118
+  parameters: 295
+  anonymous_openapi_published: false
+  notes: docs.videoamp.dev returns HTTP 302 to Auth0 for every path; api.videoamp.dev returns 404 for /openapi.json, /swagger.json, /v1/openapi.json, /api-docs, /docs, /redoc.

@@ -1,0 +1,1411 @@
+{
+  "item": [
+    {
+      "id": "72c8c74f-3511-4bad-9e04-37834397ab00",
+      "name": "plans",
+      "description": {
+        "content": "plans operations.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "8c88f02d-86fb-4250-87d6-f46204b19ab0",
+          "name": "Create Plan",
+          "request": {
+            "name": "Create Plan",
+            "description": {
+              "content": "Creates a new media plan optimization scenario. The plan defines a budget allocation strategy across inventory titles and constraints to maximize reach, impressions, or audience concentration for a campaign.\n\n**Why**: Run reach and frequency optimization against a campaign's inventory set. Plans are the core output of the media planning workflow, producing optimized budget allocations. Use `OBJECTIVE_FORECAST_ONLY` to skip optimization and forecast reach, impressions, and frequency directly from a fixed unit allocation — useful for secondary-read use cases where the buy has already been committed in another currency.\n\n**When**: Call after creating a campaign with valid audiences and an inventory set. Requires a campaign ID, a budget, and rates (via rate card or overrides). Use `validate_only=true` to pre-validate inputs without triggering optimization.\n\n**How**: Submit the plan configuration in the request body. Returns 201 with the created plan including server-assigned `id` and initial `status` (QUEUED). The plan processes asynchronously — poll `GET /v1beta/plans/{plan_id}` to check status (QUEUED → PROCESSING → READY or FAILED).\n\n**Forecast-only workflow** (skip optimization, forecast from fixed units):\n1. Set `primary_objective.objective_type` to `OBJECTIVE_FORECAST_ONLY`. Set `budget` to `\"0\"`.\n2. Add one `FIXED_INVESTMENT_UNITS` constraint per title: `constraint_type: FIXED_INVESTMENT_UNITS`, `operator: EQUAL`, `goal: \"<unit_count>\"`, `creative_duration_seconds`, and `title_filters` with `title_filter_type: ID`.\n3. Omit `target_budget`, saturation rules, and frequency rules — all are rejected with HTTP 400 when combined with `OBJECTIVE_FORECAST_ONLY`.\n4. Do not combine `OBJECTIVE_FORECAST_ONLY` with any `OBJECTIVE_MAXIMIZE_*` objective on the same plan.\n5. Poll `GET /v1beta/plans/{plan_id}` until `status` is `READY`, then download results from the `output` URL.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1beta",
+                "plans"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "44aafa0a-6481-4792-8095-5e3c95c09b2e",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "plans"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4e5be597-f6f1-4ddf-b975-972ccc65e026",
+              "name": "Bad Request — invalid or unsupported parameter values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "plans"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "8518811f-ff9e-4181-b8d5-fde83ab166ba",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "plans"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8f744d27-03bc-4d06-9f7c-dc073ea3cacd",
+          "name": "List Plans",
+          "request": {
+            "name": "List Plans",
+            "description": {
+              "content": "Returns a paginated, filterable list of Plans accessible to the caller. Plans represent optimization scenarios that allocate budget across campaigns and inventory titles.\n\n**Why**: Discover and manage plans across your organization. Use to find completed plans for result retrieval, monitor processing status, or audit plan configurations.\n\n**When**: Call when building a plan management UI, checking optimization status across multiple plans, or filtering plans by status, creator, or campaign.\n\n**How**: All parameters are optional. Narrow results using `statuses`, `displayNames`, `createdBy`, `campaignIds`, or `inventorySetIds` filters. Sort with `orderBy` (defaults to `created_at desc`). Paginate with `pageSize` and `pageToken`. The `total_size` field reflects all matching plans across all pages.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1beta",
+                "plans"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "campaignIds",
+                  "value": "<string>",
+                  "description": "Optional filter by campaign UUID. Returns plans that include the specified campaigns. Pass multiple values as repeated query params for OR logic."
+                },
+                {
+                  "disabled": false,
+                  "key": "campaignIds",
+                  "value": "<string>",
+                  "description": "Optional filter by campaign UUID. Returns plans that include the specified campaigns. Pass multiple values as repeated query params for OR logic."
+                },
+                {
+                  "disabled": false,
+                  "key": "createdBy",
+                  "value": "<string>",
+                  "description": "Optional filter by the user ID who created the plan. Provide creator UUIDs to retrieve only plans created by those users. Pass multiple values as repeated query params for OR logic."
+                },
+                {
+                  "disabled": false,
+                  "key": "createdBy",
+                  "value": "<string>",
+                  "description": "Optional filter by the user ID who created the plan. Provide creator UUIDs to retrieve only plans created by those users. Pass multiple values as repeated query params for OR logic."
+                },
+                {
+                  "disabled": false,
+                  "key": "displayNames",
+                  "value": "<string>",
+                  "description": "Optional filter by plan name using case-insensitive substring matching on the display_name field. Returns plans whose name contains the provided string. Pass multiple values as repeated query params for OR logic."
+                },
+                {
+                  "disabled": false,
+                  "key": "ids",
+                  "value": "<string>",
+                  "description": "Optional filter by plan UUIDs. Pass multiple values as repeated query params: ?ids=uuid1&ids=uuid2. Use for efficient batch retrieval when you already know which specific plans you need. Plans not found or not accessible to the caller are silently omitted from results rather than causing an error."
+                },
+                {
+                  "disabled": false,
+                  "key": "inventorySetIds",
+                  "value": "<string>",
+                  "description": "Optional filter by inventory set UUID. Returns plans associated with the specified inventory sets. Pass multiple values as repeated query params for OR logic."
+                },
+                {
+                  "disabled": false,
+                  "key": "inventorySetIds",
+                  "value": "<string>",
+                  "description": "Optional filter by inventory set UUID. Returns plans associated with the specified inventory sets. Pass multiple values as repeated query params for OR logic."
+                },
+                {
+                  "disabled": false,
+                  "key": "orderBy",
+                  "value": "<string>",
+                  "description": "This field specifies how to order the list results. If no value is provided, the results will be sorted by created_at descending order. Specify the order by providing a comma separated list of 'field_name direction' strings. Omitted direction defaults to asc. Example: 'created_at desc, display_name' Accepted Values: - 'status' - 'failure_msg' - 'display_name' - 'inventory_set_id' - 'budget' - 'minimum_investment' - 'created_at' - 'created_by' Accepted Sort: - 'desc' - 'asc'"
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<string>",
+                  "description": "Query param pageSize specifies the number of results to include in a page of results. Defaults to 100 when omitted. Maximum value is 1000."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageToken",
+                  "value": "<string>",
+                  "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+                },
+                {
+                  "disabled": false,
+                  "key": "statuses",
+                  "value": "<string>",
+                  "description": "Optional filter by plan processing status. Use to find completed plans (READY), in-progress plans (PROCESSING/QUEUED), or failed plans (FAILED). Pass multiple values for OR logic. - STATUS_UNSPECIFIED: Status is unspecified. Default proto3 zero value. Do not use in client logic. - QUEUED: The plan has been created and its required data dependencies are being resolved. Transitions to PROCESSING once all required data is available. - PROCESSING: The plan optimization is actively running. Processing time varies based on plan complexity (number of titles, constraints, and audience combinations). - READY: The plan optimization completed successfully. Results are available via the output field which contains a presigned S3 URL for downloading the optimized allocation. - FAILED: The plan optimization failed. Check `failure_msg` for a human-readable error message and `status_info` for structured error details (code, status, diagnostics). Common causes include invalid inventory data, insufficient rates, or optimizer errors. Fix the configuration and create a new plan to retry. - DRAFT: The plan has been created and allows further modification"
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "879ddc9f-39fb-4312-89e4-4d8e18b1ed85",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "plans"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "campaignIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "campaignIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "displayNames",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "inventorySetIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "inventorySetIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "statuses",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c739982f-d6f5-41ce-b39e-1fd2df13c382",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "plans"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "campaignIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "campaignIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "createdBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "displayNames",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "inventorySetIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "inventorySetIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "statuses",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f440ca1f-0a6e-4884-97f0-a3453c5f4e7b",
+          "name": "Delete Plan",
+          "request": {
+            "name": "Delete Plan",
+            "description": {
+              "content": "Deletes a Plan, removing it from all API responses. This action cannot be undone through the API — there is no undelete operation.\n\n**Why**: Remove plans that are no longer needed, were created in error, or have been superseded by a new optimization scenario.\n\n**When**: Call when a plan is no longer required regardless of its current status (QUEUED, PROCESSING, READY, and FAILED plans can all be deleted). Verify the plan exists via `GET /v1beta/plans/{plan_id}` before deleting.\n\n**How**: Supply the plan UUID as the `plan_id` path parameter. Returns 204 with an empty body on success. Returns 404 if the plan does not exist or is not accessible. In-flight optimization may continue briefly after deletion but will not produce results.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1beta",
+                "plans",
+                ":planId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "planId",
+                  "description": "(Required) UUID of the Plan to delete. Obtain this value from the 'id' field in plan creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the plan does not exist or is not accessible to the caller."
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a0ff2f76-e063-446f-987a-1ac44976f103",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "plans",
+                    ":planId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "planId",
+                      "description": "(Required) UUID of the Plan to delete. Obtain this value from the 'id' field in plan creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the plan does not exist or is not accessible to the caller."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d2ce9a3f-869e-47e9-880d-0a463324cc27",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "plans",
+                    ":planId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "planId",
+                      "description": "(Required) UUID of the Plan to delete. Obtain this value from the 'id' field in plan creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the plan does not exist or is not accessible to the caller."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "80ac9f93-74f3-4635-9237-053e8be53c89",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "plans",
+                    ":planId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "planId",
+                      "description": "(Required) UUID of the Plan to delete. Obtain this value from the 'id' field in plan creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the plan does not exist or is not accessible to the caller."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a75d6ebb-c72e-419f-8633-dfd4bc35ab8e",
+          "name": "Get Plan",
+          "request": {
+            "name": "Get Plan",
+            "description": {
+              "content": "Returns the complete Plan resource for a single known plan ID. Use this endpoint when you already have the plan UUID and need to retrieve full details including status, output, and configuration.\n\n**Why**: Retrieve plan details to check optimization status, access results (presigned URL when READY), or review the plan configuration. Essential for polling async plan processing.\n\n**When**: Call after creating a plan to poll for completion (QUEUED → PROCESSING → READY/FAILED). Also use to retrieve a specific plan's configuration or download optimized results.\n\n**How**: Supply the plan UUID as the `plan_id` path parameter. When status is READY, the response includes an `output` field with a presigned S3 URL for downloading results. Returns 404 if the plan does not exist or is not accessible.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1beta",
+                "plans",
+                ":planId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "planId",
+                  "description": "(Required) UUID of the Plan to retrieve. Obtain this value from the 'id' field in plan creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the plan does not exist or is not accessible to the caller."
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "be6217f5-8f07-4d15-9df1-40af377120a3",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "plans",
+                    ":planId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "planId",
+                      "description": "(Required) UUID of the Plan to retrieve. Obtain this value from the 'id' field in plan creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the plan does not exist or is not accessible to the caller."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2501d0c4-8431-4f51-9894-e0470a1c0019",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "plans",
+                    ":planId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "planId",
+                      "description": "(Required) UUID of the Plan to retrieve. Obtain this value from the 'id' field in plan creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the plan does not exist or is not accessible to the caller."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0be6b592-7f88-4919-81be-df692e7fff4e",
+              "name": "Not Found — the resource does not exist or is not accessible to the calling organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1beta",
+                    "plans",
+                    ":planId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "planId",
+                      "description": "(Required) UUID of the Plan to retrieve. Obtain this value from the 'id' field in plan creation responses or list results. Must be a valid UUID v4 format. Returns 404 if the plan does not exist or is not accessible to the caller."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6fad4f80-c662-43eb-9790-4cc7bb0cac6f",
+          "name": "Create Plan (Draft)",
+          "request": {
+            "name": "Create Plan (Draft)",
+            "description": {
+              "content": "Starts the draft branch of the planning workflow by creating a media plan in DRAFT status for a campaign. The draft captures the budget-allocation strategy — budget, constraints, objectives, filters, and rates — so it can be refined before optimization.\n\n**Why**: A media plan can be produced two ways — submitted complete and sent straight to optimization, or built incrementally through draft → edit → approve. This endpoint begins the incremental path: create the draft now, refine it, and approve it when ready. Rates are not required while the plan is a draft.\n\n**When**: First step of the draft workflow. Call with a campaign_id and display_name; refine the draft with PATCH /v2beta/plans/{plan_id}, then submit it with POST /v2beta/plans/{plan_id}:approve.\n\n**How**: Submit the plan configuration in the request body. Returns 201 with the created Plan including server-assigned `id` and `status` = DRAFT. The inventory_set_id, audiences, and creative durations are derived from the campaign.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2beta",
+                "plans"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c03873a2-2198-4708-969c-a2cfdae600da",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2beta",
+                    "plans"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "25f3da96-f8d2-4d15-af17-09169e8c7a8c",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2beta",
+                    "plans"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8a37b967-3d43-4095-80de-e2e08bffd998",
+          "name": "Patch Plan (Draft)",
+          "request": {
+            "name": "Patch Plan (Draft)",
+            "description": {
+              "content": "Refines a DRAFT media plan in the draft branch of the planning workflow. Send only the fields you want to change; omitted fields keep their current values.\n\n**Why**: Lets planners iterate on a draft — adjust budget, constraints, objectives, filters, or rate card / overrides — between creating it and approving it for optimization.\n\n**When**: While the plan is still in DRAFT status, after it is created and before it is approved.\n\n**How**: Supply the plan UUID as `plan_id`. Merge semantics: a field omitted (null) is left unchanged; an explicit empty array `[]` clears that collection (e.g. remove all constraints); an empty string for `rate_card_id` detaches the rate card. Returns 200 with the updated Plan.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2beta",
+                "plans",
+                ":planId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "planId",
+                  "description": "(Required) Unique identifier for the Plan in UUID v4 format. Auto-generated on creation and immutable thereafter. Use this ID in subsequent get and delete operations. Store this value after creation to poll for optimization status."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "21861ccc-1b51-44a5-976e-4afcdfb954f1",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2beta",
+                    "plans",
+                    ":planId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "planId",
+                      "description": "(Required) Unique identifier for the Plan in UUID v4 format. Auto-generated on creation and immutable thereafter. Use this ID in subsequent get and delete operations. Store this value after creation to poll for optimization status."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "11f16423-9e09-4a87-8616-729326279fe8",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2beta",
+                    "plans",
+                    ":planId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "planId",
+                      "description": "(Required) Unique identifier for the Plan in UUID v4 format. Auto-generated on creation and immutable thereafter. Use this ID in subsequent get and delete operations. Store this value after creation to poll for optimization status."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "076ebdd2-e837-4408-b2bf-5cd6142e1a5d",
+          "name": "Approve Plan",
+          "request": {
+            "name": "Approve Plan",
+            "description": {
+              "content": "Approves a DRAFT media plan, completing the draft branch of the planning workflow: it runs full cross-field validation and, on success, submits the plan for asynchronous optimization.\n\n**Why**: The commit step of the draft → edit → approve path. Approval transitions the plan from DRAFT to QUEUED and runs the same optimization a directly-submitted plan would, producing the allocated media plan.\n\n**When**: After the draft is fully configured. The plan MUST be in DRAFT status. Rates are required at this step — provide a rate card and/or rate overrides covering the plan's titles.\n\n**How**: Supply the plan UUID as `plan_id`. Returns 201 with the Plan in status QUEUED; poll the plan (GET /v1beta/plans/{plan_id}) to track QUEUED → PROCESSING → READY/FAILED. Submitting an identical plan within one hour is rejected with 409.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2beta",
+                "plans",
+                "{{planId}}:approve"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5a2d4297-9ee4-4f56-90f0-60c99c9dba6b",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2beta",
+                    "plans",
+                    "{{planId}}:approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "aae5e783-8f9f-4422-9fe4-9348eb56284a",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2beta",
+                    "plans",
+                    "{{planId}}:approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "25012801-607a-489f-aa81-b57ac6b272ad",
+              "name": "Conflict — the request conflicts with the current state of the resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2beta",
+                    "plans",
+                    "{{planId}}:approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.videoamp.dev",
+      "key": "baseUrl"
+    },
+    {
+      "disabled": false,
+      "description": {
+        "content": "(Required) Unique identifier for the Plan in UUID v4 format. Auto-generated on creation and immutable thereafter. Use this ID in subsequent get and delete operations. Store this value after creation to poll for optimization status.",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "<string>",
+      "key": "planId"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "scope",
+        "value": "openid profile email offline_access"
+      },
+      {
+        "key": "redirect_uri",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "authUrl",
+        "value": "https://login.videoamp.com/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "authorization_code"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "30a7f292-2b22-42f8-8fa6-b5e046214ec9",
+    "name": "VideoAmp Public Plans API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.\n\n**Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI's `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary's own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.\n\n**Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.\n\nContact Support:\n Name: VideoAmp Support\n Email: support@videoamp.com",
+      "type": "text/plain"
+    }
+  }
+}

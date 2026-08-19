@@ -1,0 +1,546 @@
+openapi: 3.2.0
+info:
+  title: VideoAmp Public Inventories API
+  version: '2026-07-31'
+  summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
+  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
+
+
+    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
+
+
+    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  contact:
+    name: VideoAmp Support
+    email: support@videoamp.com
+    url: https://help.videoamp.dev
+  termsOfService: https://videoamp.com/terms-of-use/
+servers:
+- url: https://api.videoamp.dev
+  description: Production. The VideoAmp CLI also references `staging` and `preprod` environments (api.staging.videoamp.dev, api.preprod.videoamp.dev), but neither resolves publicly (DNS NXDOMAIN as of 2026-08-02), so they are not listed as callable servers.
+security:
+- videoampOAuth: []
+tags:
+- name: inventories
+  description: inventories operations.
+paths:
+  /v1beta/inventories:
+    get:
+      operationId: inventory_list
+      summary: List Inventories
+      tags:
+      - inventories
+      description: 'Returns a paginated list of inventory sets accessible to the caller.
+
+
+        **Why**: Discover available inventory sets before creating campaigns or plans. Each inventory set defines the media universe (titles and placements) available for optimization.
+
+
+        **When**: Call when building an inventory picker UI, searching for a specific inventory set by name, or discovering what inventory sets are available in your organization.
+
+
+        **How**: All parameters are optional. Sort with `orderBy` (defaults to `created_at desc`). Paginate with `pageSize` and `pageToken`. The `total_size` field reflects all matching inventory sets across all pages. Results include summary fields only — use `inventory_get` / GET /v1beta/inventories/{inventoryId} for full title details.
+
+
+        **Caution**: `inventory_get` has no bulk mode — answering a question that needs per-title data (e.g. environment, network) across many of the sets returned here means calling `inventory_get` once per set. That is expensive at scale; confirm scope with the user before fetching details for more than a handful of sets, rather than fanning out across every result automatically.
+
+
+        **Next Steps**: Use the returned `id` as `inventory_set_id` when creating a Campaign (`POST /v1beta/campaigns`) or Rate Card.'
+      parameters:
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'This field specifies how to order the list results. If no value is provided, the results will be sorted by created_at descending order. Specify the order by providing a comma separated list of ''field_name direction'' strings. Omitted direction defaults to asc. Example: ''created_at desc, display_name'' Accepted Values: - ''currency_of_record'' - ''display_name'' - ''created_at'' Accepted Sort: - ''desc'' - ''asc'''
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results. Defaults to 100 when omitted. Maximum value is 1000.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: inventory_list
+  /v1beta/inventories/{inventoryId}:
+    get:
+      operationId: inventory_get
+      summary: Get Inventory
+      tags:
+      - inventories
+      description: 'Returns the complete inventory set definition including all titles and dimension configuration.
+
+
+        **Why**: Retrieve the full inventory set to inspect available titles, their custom parameters, and environment assignments. Required before creating plans to understand what media universe is available.
+
+
+        **When**: Call when you need the full title list for a known inventory set — for example, to build rate card overrides or validate constraint title_filters. Use LIST for discovery, GET for full details.
+
+
+        **How**: Supply the inventory set UUID as the `inventoryId` path parameter. Response includes the complete `titles` array and `dimension_names` configuration (not available in LIST). Returns 404 if not found or not accessible to the caller — these cases are intentionally indistinguishable.
+
+
+        **Caution**: `ListInventories` has no per-title or per-environment summary, so answering a cross-set question (e.g. "which sets have no Linear titles?") by calling this endpoint once per set is expensive — for large accounts this means dozens of calls, some returning hundreds of titles each. Before calling this on more than a handful of sets in one request, confirm scope with the user (e.g. narrow by name, currency of record, or a smaller candidate list) rather than fetching every set automatically.'
+      parameters:
+      - name: inventoryId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the inventory set to retrieve. Returns 404 if the inventory does not exist or is not accessible to the caller.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '404':
+          description: Not Found — the resource does not exist or is not accessible to the calling organization.
+      x-videoamp-cli-command: inventory_get
+    patch:
+      operationId: inventory_update
+      summary: Update Inventory Dimension Names
+      tags:
+      - inventories
+      description: 'Updates the dimension name labels for an inventory set''s custom parameters.
+
+
+        **Why**: Rename dimension labels to align with how your team describes the inventory (e.g., relabel CUSTOM_PARAM_1 as NETWORK).
+
+
+        **When**: After initial inventory ingestion, before sharing the inventory set with downstream consumers.
+
+
+        **How**: PATCH with the new `dimension_names` array. Existing labels are replaced entirely.'
+      parameters:
+      - name: inventoryId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the inventory set to update.
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp inventory_update --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: inventory_update
+  /v1beta/inventories/{inventoryId}/rateCards:
+    post:
+      operationId: rate_card_create
+      summary: Create Rate Card
+      tags:
+      - inventories
+      description: 'Creates a new rate card with rates for an inventory set.
+
+
+        **Why**: Define pricing for inventory titles before creating a plan. Plans require rates (via rate card or inline overrides) to calculate budget allocations.
+
+
+        **When**: Call after creating an inventory set and before creating plans. Use `validate_only=true` to pre-validate Kantar rate ranges without persisting.
+
+
+        **How**: Submit the rate card in the request body with `display_name` and at least one of: `rates` (array of title_id/rate_type/rate) or `default_rate` (auto-populates from historical Kantar data for titles matching the filter). Returns 201 with the created rate card.'
+      parameters:
+      - name: inventoryId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the inventory set this rate card belongs to.
+      - name: validateOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: When true, validates Kantar rates are within the acceptable range ($1.00–$10,000.00) without creating the rate card. Returns 200 if all rates are valid, or 400 with per-title violation details if any rate is out of range. (default true)
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp rate_card_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: rate_card_create
+    get:
+      operationId: rate_card_list
+      summary: List Rate Cards
+      tags:
+      - inventories
+      description: 'Returns a paginated list of rate cards for an inventory set.
+
+
+        **Why**: Discover available rate cards before creating a plan. Plans reference rate cards by ID to provide default rates for optimization.
+
+
+        **When**: Call when building a rate card picker UI or checking what rates are available for a specific inventory set.
+
+
+        **How**: Supply the inventory set UUID as a path parameter. Optionally filter by `advertiser_id` to see advertiser-scoped rate cards (omit to see organization-level cards only). Sort with `orderBy` and paginate with `pageSize`/`pageToken`.'
+      parameters:
+      - name: inventoryId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the inventory set to list rate cards for.
+      - name: advertiserId
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by advertiser UUID. If not provided, only organization-level rate cards are returned.
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Specify the order and direction of the list with values separated by commas. Omitted direction defaults to asc. Example: ''created_at desc'' Accepted Values: - ''display_name'' - ''created_at'' - ''created_by'' - ''updated_at'' - ''updated_by'' Accepted Sort: - ''desc'' - ''asc'''
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: rate_card_list
+  /v1beta/inventories/{inventoryId}/rateCards/{rateCardId}:
+    delete:
+      operationId: rate_card_delete
+      summary: Delete Rate Card
+      tags:
+      - inventories
+      description: 'Deletes a rate card and its rates. This action cannot be undone.
+
+
+        **Why**: Remove rate cards that are no longer needed or were created in error.
+
+
+        **When**: Call when a rate card is obsolete. Existing plans that reference this rate card are not affected — their rates are stored independently.
+
+
+        **How**: Supply the inventory set UUID and rate card UUID as path parameters. Returns 204 on success. Returns 404 if either does not exist or is not accessible.'
+      parameters:
+      - name: inventoryId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the inventory set.
+      - name: rateCardId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the rate card.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '404':
+          description: Not Found — the resource does not exist or is not accessible to the calling organization.
+      x-videoamp-cli-command: rate_card_delete
+    get:
+      operationId: rate_card_get
+      summary: Get Rate Card
+      tags:
+      - inventories
+      description: 'Returns a rate card with its rates.
+
+
+        **Why**: Retrieve the full rate card to inspect rates before using it in a plan or to verify it was created correctly.
+
+
+        **When**: Call when you need the complete rate details for a specific rate card. Use LIST for discovery.
+
+
+        **How**: Supply the inventory set UUID and rate card UUID as path parameters. Returns 404 if not found or not accessible to the caller — these cases are intentionally indistinguishable.'
+      parameters:
+      - name: inventoryId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the inventory set.
+      - name: rateCardId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the rate card.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '404':
+          description: Not Found — the resource does not exist or is not accessible to the calling organization.
+      x-videoamp-cli-command: rate_card_get
+    patch:
+      operationId: rate_card_update
+      summary: Update Rate Card
+      tags:
+      - inventories
+      description: 'Updates an existing rate card.
+
+
+        **Why**: Adjust rates, change advertiser scope, or update the display name of an existing rate card.
+
+
+        **When**: When rates need correction or the rate card should be reassigned to a different advertiser.
+
+
+        **How**: PATCH with the updated `rate_card` body. Supports partial updates. If `rates` are provided, existing rates are replaced entirely; if omitted, existing rates are kept. `advertiser_id` is always overridden from the request — include the current value to preserve it, or omit to clear the advertiser scope (making the rate card organization-level).'
+      parameters:
+      - name: inventoryId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the inventory set.
+      - name: rateCardId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the rate card to update.
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp rate_card_update --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: rate_card_update
+  /v1beta/inventories/{inventoryId}/reachCurves:
+    post:
+      operationId: reach_curve_create
+      summary: Create Custom Reach Curve
+      tags:
+      - inventories
+      description: 'Creates a custom reach curve for use in media plan optimization. The curve is processed asynchronously — poll via GET to check status.
+
+
+        **Why**: Provide custom audience reach data for Digital inventory titles when default forecasted reach curves are unavailable or need to be overridden.
+
+
+        **When**: Call after creating an inventory set and before creating plans that need custom reach data. Only Digital environment titles are supported. Use `validate_only=true` to pre-validate inputs.
+
+
+        **How**: Submit the reach curve data with `audience_id`, `start_date`/`end_date` (within a single quarter), and `title_curves` (4–25 impression/reach data points per title). Returns 201 with initial status QUEUED. Poll `GET /v1beta/inventories/{inventoryId}/reachCurves/{reachCurveId}` until status is READY or FAILED.'
+      parameters:
+      - name: inventoryId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the inventory set this reach curve belongs to.
+      - name: validateOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: When true, validates the required fields, title IDs, and audience accessibility without creating the reach curve. Returns 200 if valid, 400 with details if not. (default true)
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp reach_curve_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: reach_curve_create
+    get:
+      operationId: reach_curve_list
+      summary: List Custom Reach Curves
+      tags:
+      - inventories
+      description: 'Returns a paginated list of custom reach curves for an inventory set.
+
+
+        **Why**: Discover existing custom reach curves and their processing status before creating plans or to audit what curves have been uploaded.
+
+
+        **When**: Call to find available reach curves for a specific inventory set, or to monitor processing status across multiple curves.
+
+
+        **How**: Supply the inventory set UUID as a path parameter. Sort with `orderBy` (created_at or status). Paginate with `pageSize`/`pageToken`. Use GET for error details on FAILED curves.'
+      parameters:
+      - name: inventoryId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the inventory set to list reach curves for.
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Specify the order and direction of the list with values separated by commas. Omitted direction defaults to asc. Example: ''created_at desc'' Accepted Values: - ''created_at'' - ''status'' Accepted Sort: - ''desc'' - ''asc'''
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: reach_curve_list
+  /v1beta/inventories/{inventoryId}/reachCurves/{reachCurveId}:
+    delete:
+      operationId: reach_curve_delete
+      summary: Delete Custom Reach Curve
+      tags:
+      - inventories
+      description: 'Deletes a custom reach curve. This action cannot be undone.
+
+
+        **Why**: Remove reach curves that are no longer needed, were created in error, or have been superseded by updated data.
+
+
+        **When**: Call when a reach curve is obsolete. Existing plans that were optimized using this curve are not affected.
+
+
+        **How**: Supply the inventory set UUID and reach curve UUID as path parameters. Returns 204 on success. Returns 404 if either does not exist or is not accessible.'
+      parameters:
+      - name: inventoryId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the inventory set.
+      - name: reachCurveId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the reach curve.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '404':
+          description: Not Found — the resource does not exist or is not accessible to the calling organization.
+      x-videoamp-cli-command: reach_curve_delete
+    get:
+      operationId: reach_curve_get
+      summary: Get Custom Reach Curve
+      tags:
+      - inventories
+      description: 'Returns the full details of a custom reach curve including status and errors.
+
+
+        **Why**: Check the processing status of a reach curve after creation, or retrieve the complete curve data including any errors on FAILED curves.
+
+
+        **When**: Poll after creation to check if ingestion completed (QUEUED → READY/FAILED). Also use to inspect error details when status is FAILED.
+
+
+        **How**: Supply the inventory set UUID and reach curve UUID as path parameters. Returns 404 if not found or not accessible to the caller — these cases are intentionally indistinguishable.'
+      parameters:
+      - name: inventoryId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the inventory set.
+      - name: reachCurveId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the reach curve.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '404':
+          description: Not Found — the resource does not exist or is not accessible to the calling organization.
+      x-videoamp-cli-command: reach_curve_get
+components:
+  securitySchemes:
+    videoampOAuth:
+      type: oauth2
+      description: OAuth 2.0 / OIDC via VideoAmp's Auth0 tenant at https://login.videoamp.com. Verified from https://login.videoamp.com/.well-known/openid-configuration (HTTP 200) and https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp (HTTP 200, RFC 9728). Bearer tokens are presented in the Authorization header.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.videoamp.com/authorize
+          tokenUrl: https://login.videoamp.com/oauth/token
+          refreshUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://login.videoamp.com/oauth/device/code
+          tokenUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+externalDocs:
+  url: https://docs.videoamp.dev
+  description: VideoAmp Public API documentation (Auth0-gated)
+x-evidence:
+  method: derived
+  derived_from: github.com/VideoAmp/cli release v0.148.32 (videoamp_v0.148.32_darwin_arm64.tar.gz)
+  extraction: videoamp --help; videoamp <command> --help
+  fetched: '2026-08-02'
+  operations: 118
+  parameters: 295
+  anonymous_openapi_published: false
+  notes: docs.videoamp.dev returns HTTP 302 to Auth0 for every path; api.videoamp.dev returns 404 for /openapi.json, /swagger.json, /v1/openapi.json, /api-docs, /docs, /redoc.

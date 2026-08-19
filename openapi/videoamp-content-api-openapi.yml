@@ -1,0 +1,367 @@
+openapi: 3.2.0
+info:
+  title: VideoAmp Public Content API
+  version: '2026-07-31'
+  summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
+  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
+
+
+    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
+
+
+    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  contact:
+    name: VideoAmp Support
+    email: support@videoamp.com
+    url: https://help.videoamp.dev
+  termsOfService: https://videoamp.com/terms-of-use/
+servers:
+- url: https://api.videoamp.dev
+  description: Production. The VideoAmp CLI also references `staging` and `preprod` environments (api.staging.videoamp.dev, api.preprod.videoamp.dev), but neither resolves publicly (DNS NXDOMAIN as of 2026-08-02), so they are not listed as callable servers.
+security:
+- videoampOAuth: []
+tags:
+- name: content
+  description: content operations.
+paths:
+  /external/v1/content/episodes:
+    get:
+      operationId: episode_list
+      summary: List Episodes
+      tags:
+      - content
+      description: Retrieve a filtered list of TV episodes with associated metadata. Use this endpoint to discover available episode inventory for content measurement campaigns, build episode selection interfaces, or perform bulk analysis of programming content. Supports filtering by network, program, and currency of record to match specific measurement requirements.
+      parameters:
+      - name: currencyOfRecord
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Viewershiptype id as a filter.
+      - name: episodeIds
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: A list of episodes to filter the results to.
+      - name: networkId
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: To filter programs to those that are aired on a given network.
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results. The maximum value is 1000; values above 1000 will be coerced to 1000.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      - name: programId
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: To filter episodes to those that belong to a particular series.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: episode_list
+  /external/v1/content/episodes/{episodeId}:
+    get:
+      operationId: episode_get
+      summary: Get Episode
+      tags:
+      - content
+      description: Retrieve detailed metadata for a specific TV episode by ID. Use this endpoint to access episode-specific information needed for content measurement, advertising campaign planning, or media inventory analysis. Essential for workflows that require episode-level granularity in viewership reporting.
+      parameters:
+      - name: episodeId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The unique identifier of the Episode.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: episode_get
+  /external/v1/content/media-groups:
+    get:
+      operationId: media_group_list
+      summary: List Network MediaGroups
+      tags:
+      - content
+      description: Return a list of network media groups with metadata available to query networks.
+      parameters:
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: A search string for matching against the network media group name.
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: media_group_list
+  /external/v1/content/metric-type-compatibility-matrix:
+    get:
+      operationId: content_metric_compatibility_get
+      summary: List Metric and Dimension Types
+      tags:
+      - content
+      description: Return the compatibility matrix of supported metrics and dimensions for content measurement requests. Use this endpoint before creating content metrics to validate your measurement configuration and discover available combinations. Essential for building dynamic UI forms or validating programmatic measurement requests.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: content_metric_compatibility_get
+  /external/v1/content/metrics:
+    post:
+      operationId: content_metric_create
+      summary: Create Metrics
+      tags:
+      - content
+      description: Initiates an asynchronous content metric request that returns a universally unique identifier (uuid). The Get Content Metrics Request endpoint can be polled to obtain the status of the async request and, once complete, the output location in the client's configured S3 bucket.
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp content_metric_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: content_metric_create
+  /external/v1/content/metrics/{id}:
+    get:
+      operationId: content_metric_get
+      summary: Get Metrics
+      tags:
+      - content
+      description: Given a valid content metrics uuid, returns the status of the request and, if complete, the s3 location of the output CSV file.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: content_metric_get
+  /external/v1/content/networks:
+    get:
+      operationId: network_list
+      summary: List Networks
+      tags:
+      - content
+      description: Returns a list of networks with metadata available for use.
+      parameters:
+      - name: currencyOfRecord
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Viewershiptype id as a filter.
+      - name: mediaGroupName
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: A Media group name to use as filter.
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Search strings for matching against the primary name of the underlying object. This is a case insensitive simple text search using fuzzy matching logic.
+      - name: networkIds
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: A list of network ids to filter the results to, if its empty return all the networks.
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results. The maximum value is 1000; values above 1000 will be coerced to 1000.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: network_list
+  /external/v1/content/networks/{id}:
+    get:
+      operationId: network_get
+      summary: Get Network
+      tags:
+      - content
+      description: Returns the network details provided an id.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: network_get
+  /external/v1/content/programs:
+    get:
+      operationId: program_list
+      summary: List Programs
+      tags:
+      - content
+      description: Returns a list of programs with metadata available for use.
+      parameters:
+      - name: currencyOfRecord
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Viewershiptype id as a filter.
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: A search string for matching against the primary name of the underlying object. This is a case insensitive simple text search using fuzzy matching logic on NAME column.
+      - name: networkId
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Network to filter to.
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results. The maximum value is 1000; values above 1000 will be coerced to 1000.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests.
+      - name: programIds
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: A list of programs to filter against.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: program_list
+  /external/v1/content/programs/{programId}:
+    get:
+      operationId: program_get
+      summary: Get Program
+      tags:
+      - content
+      description: Returns the program details provided an id.
+      parameters:
+      - name: programId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: program_get
+components:
+  securitySchemes:
+    videoampOAuth:
+      type: oauth2
+      description: OAuth 2.0 / OIDC via VideoAmp's Auth0 tenant at https://login.videoamp.com. Verified from https://login.videoamp.com/.well-known/openid-configuration (HTTP 200) and https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp (HTTP 200, RFC 9728). Bearer tokens are presented in the Authorization header.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.videoamp.com/authorize
+          tokenUrl: https://login.videoamp.com/oauth/token
+          refreshUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://login.videoamp.com/oauth/device/code
+          tokenUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+externalDocs:
+  url: https://docs.videoamp.dev
+  description: VideoAmp Public API documentation (Auth0-gated)
+x-evidence:
+  method: derived
+  derived_from: github.com/VideoAmp/cli release v0.148.32 (videoamp_v0.148.32_darwin_arm64.tar.gz)
+  extraction: videoamp --help; videoamp <command> --help
+  fetched: '2026-08-02'
+  operations: 118
+  parameters: 295
+  anonymous_openapi_published: false
+  notes: docs.videoamp.dev returns HTTP 302 to Auth0 for every path; api.videoamp.dev returns 404 for /openapi.json, /swagger.json, /v1/openapi.json, /api-docs, /docs, /redoc.

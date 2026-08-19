@@ -1,0 +1,73 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VideoAmp Public Currency Of Record API",
+    "version": "2026-07-31"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://login.videoamp.com/authorize",
+      "accessTokenUrl": "https://login.videoamp.com/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "currency-of-record",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Currency of Records",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/external/v1/currency-of-record",
+            "params": [
+              {
+                "name": "currencyOfRecord",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter to retrieve specific Currency of Records by their numeric IDs. Accepts an array of int32 values representing CoR identifiers, with exact match filtering. Common CoR ID values include 23 (broadcast year 2023-24), 25 (2024-25), and 26 (2025-26), though available IDs vary by account permissions and product configuration. This filter uses OR logic, returning CoRs that match any of the provided IDs. Use this parameter when you already know specific CoR IDs from previous API calls or configuration data and want to retrieve their detailed metadata (broadcast year boundaries, actualized dates, reporting scopes). Can be combined with `name` and `reportingScope` filters for more refined queries. Maximum of 100 IDs supported per request. Leave empty or omit to retrieve all CoRs without ID filtering. If an invalid or unauthorized CoR ID is provided, it is silently ignored rather than causing an error, resulting in fewer results than IDs requested."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter for searching CoR names using case-insensitive substring-based matching. Accepts multiple search strings that are matched against the primary name field of each Currency of Record. The substring matching logic uses SQL ILIKE with wildcard patterns, so partial matches are supported (e.g., searching for '24-25' will match 'Currency 2024-25'). Each string in the array is treated as an independent search term with OR logic, meaning results include CoRs matching any of the provided name patterns. Common use case is searching by broadcast year identifiers like '23', '24', '25' to quickly find specific currency years. Leave empty or omit entirely to retrieve all available CoRs without name filtering."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Query param pageSize specifies the number of results to include in a page of results. Controls the size of the `data` array in the response and impacts both API performance and client memory usage. Accepted values range from 1 to 1000, with values exceeding 1000 automatically coerced down to the maximum. Default is 50 when omitted, which provides good balance for most interactive use cases. Smaller page sizes (10-25) are recommended for UI pagination with progressive loading, while larger sizes (100-1000) are more efficient for batch processing workflows and data exports that need to retrieve all CoRs with minimal API calls. The total number of available results is returned in the `paging.totalResults` field, allowing clients to calculate the number of pages needed. When processing all results, use maximum `pageSize` (1000) combined with `pageToken` navigation to minimize round trips while respecting rate limits."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+              },
+              {
+                "name": "reportingScope",
+                "value": "",
+                "type": "query",
+                "description": "Optional filter to retrieve Currency of Records by their reporting scope classification, which determines what types of Measurement requests can use each CoR. Accepts an array of scope strings with case-insensitive exact matching (no partial matches or fuzzy logic). Valid values are 'AD_MEASUREMENT' and 'CONTENT_MEASUREMENT'. Some CoRs support multiple scopes and will be returned if any of their scopes match any filter value provided (OR logic). Use this filter when building scope-specific workflows that require filtering CoRs by their intended measurement use case. For example, Ad Measurement workflows should filter by 'AD_MEASUREMENT' to exclude content-only CoRs. Leave empty or omit to retrieve all CoRs regardless of reporting scope. Invalid scope values are silently ignored rather than causing errors."
+              }
+            ]
+          },
+          "docs": "### What\n\nRetrieves a paginated list of available Currency of Records (CoRs) with filtering and search capabilities. Each CoR represents a specific measurement methodology tied to a broadcast year, defining the panel composition, data collection standards, and measurement currency used for audience guarantees.\n\n### Why\n\nCurrency of Records are foundational to VideoAmp's measurement system, ensuring consistent methodology across analyses within the same broadcast year. Different broadcast years u"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

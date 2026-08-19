@@ -1,0 +1,99 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VideoAmp Public Me API",
+    "version": "2026-07-31"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://login.videoamp.com/authorize",
+      "accessTokenUrl": "https://login.videoamp.com/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "me",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Current User",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1/me",
+            "params": [
+              {
+                "name": "include_memberships",
+                "value": "",
+                "type": "query",
+                "description": "Filter support If true, includes the memberships array in the response. Set to false to omit business entity details for lightweight responses when organizational context is not needed. Default is true. (default true)"
+              },
+              {
+                "name": "membership_kinds",
+                "value": "",
+                "type": "query",
+                "description": "If provided, filters the memberships array to only include business entities of the specified kinds (e.g., only `ADVERTISER` entities). If empty or not set, all membership kinds are returned. Accepts multiple values for combined filtering.Ex: /v1/me?membership_kinds=ADVERTISER,AD_AGENCY to return both ADVERTISER and AD_AGENCY. **Cross-API note**: The Sharing API uses `ORGANIZATION` instead of `HOLDING_COMPANY` — translate when passing kind values to sharing endpoints. - HOLDING_COMPANY: Top-level entity in the business/access hierarchy, corresponding to \"Organization\" (tenant) in external terminology. The `id` of a HOLDING_COMPANY business entity is the same UUID as `current_organization_id` from the `/v1/me` response. This UUID can be used as `org_id`, `public_org_id`, or `organization_id` in other APIs accepting string UUIDs. - AD_AGENCY: Media buying agency under a holding company. Same as `AD_AGENCY` in Sharing API's SubjectKind. - ADVERTISER: Brand or advertiser purchasing media. Same as `ADVERTISER` in Sharing API's SubjectKind. Use `membership_kinds=ADVERTISER` for name resolution to avoid returning agencies with the same name."
+              },
+              {
+                "name": "membership_search",
+                "value": "",
+                "type": "query",
+                "description": "Optional search string to filter 'memberships' by display name. Performs case-insensitive substring match against the 'display_name' field of each business entity. Useful for implementing search-as-you-type functionality in business entity selectors. If empty or not set, no name filtering is applied."
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Pagination for memberships Number of membership records to return per page. Used for paginating through large sets of business entity memberships. If not set a default page size of 999 is used."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Token from a previous 'IdentifyUser' response to retrieve the next page of membership results. Used in conjunction with 'page_size' for pagination. If not set, retrieves the first page."
+              }
+            ]
+          },
+          "docs": "### What\n\nReturns authenticated user profile including personal details (name, email), and business entity memberships (holding companies, agencies, advertisers). Delivers identity (UUID, names, email) plus org hierarchy for authorization and multi-tenant resource scoping.\n\n### Why\n\n- App initialization: provides identity, org context, and permissions for session management\n- Multi-tenant isolation: enforces resource scoping and authorization decisions\n- **Business Name Resolution**: Discover UU"
+        },
+        {
+          "info": {
+            "name": "Update User Profile (Internal Only)",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.videoamp.dev/v1/me",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "### What\n\nUpdates the authenticated user's profile settings, specifically the current organization context. Changes which organization the user is operating within, affecting resource visibility, permissions, and data filtering across the platform. Returns updated user profile including the new organization context and available memberships. This endpoint only updates `current_organization_id`. Other profile fields (`given_name`, `family_name`, `email`) are read-only and cannot be modified throu"
+        },
+        {
+          "info": {
+            "name": "List All User Organizations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1/me/orgs"
+          },
+          "docs": "### What\n\nReturns **ALL organizations** the authenticated user has access to or can switch to. Provides complete list of organizations with UUID, display name, and organizational kind.\n\n**Key Distinction from `/v1/me`:**\n- This endpoint (`/v1/me/orgs`) returns **ALL** organizations the user can access\n- `/v1/me` returns only the **current** organization (via `current_organization_id` field)\n\n### Why\n\n- Organization switching: Shows which organizations users can switch between\n- Access discovery:"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

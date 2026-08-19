@@ -16,7 +16,10 @@ authentication:
   - https://login.videoamp.com
   bearer_methods_supported:
   - header
-  note: An anonymous POST of tools/list returns HTTP 401 with a WWW-Authenticate Bearer challenge citing the RFC 9728 resource metadata URL. The tool list below was therefore read from the official CLI binary offline (`videoamp mcp list-tools`), which requires no login; per-tool JSON inputSchema is only served to authenticated callers.
+  note: An anonymous POST of tools/list returns HTTP 401 with a WWW-Authenticate Bearer challenge citing
+    the RFC 9728 resource metadata URL. The tool list below was therefore read from the official CLI binary
+    offline (`videoamp mcp list-tools`), which requires no login; per-tool JSON inputSchema is only served
+    to authenticated callers.
 clients:
 - name: Claude Desktop
   method: Custom Connector (remote)
@@ -34,26 +37,36 @@ features:
   - meta_tool_list
   - meta_tool_category_list
   arazzo_workflows: true
-  note: The CLI binary ships a PROGRESSIVE_DISCOVERY tool-exposure mode, meta tools for listing tools/categories, and an Arazzo 1.x workflow runner (lib.ParseArazzoFile) that loads *.arazzo.yaml files as MCP-executable workflows.
+  note: The CLI binary ships a PROGRESSIVE_DISCOVERY tool-exposure mode, meta tools for listing tools/categories,
+    and an Arazzo 1.x workflow runner (lib.ParseArazzoFile) that loads *.arazzo.yaml files as MCP-executable
+    workflows.
 tool_count: 101
 tools:
 - name: audience_batch_get
-  description: This endpoint returns the requested audiences and their details. To see a full list of response messages please view our [help page](https://help.videoamp.dev/en/articles/9415579-audience-service-error-codes-messages).
+  description: This endpoint returns the requested audiences and their details. To see a full list of
+    response messages please view our [help page](https://help.videoamp.dev/en/articles/9415579-audience-service-error-codes-messages).
   rest: GET /v1/audiences:batchGet
   category: audiences
   source_operation: openapi/videoamp-public-api-openapi.yml#audience_batch_get
 - name: audience_create
-  description: 'Creates a new audience resource and queues it for processing. Returns the created Audience object with `status=QUEUED`. **Status lifecycle**: `QUEUED` → `PROCESSING` → `READY` (success) or `FAILED` (error). `READY` and `FAILED` are terminal; `QUEUED` and `PROCESSING` are non-terminal. Processing typically takes 10–20 minutes for common audience types; large or complex audiences (e.g., `COMPOSITE`,'
+  description: 'Creates a new audience resource and queues it for processing. Returns the created Audience
+    object with `status=QUEUED`. **Status lifecycle**: `QUEUED` → `PROCESSING` → `READY` (success) or
+    `FAILED` (error). `READY` and `FAILED` are terminal; `QUEUED` and `PROCESSING` are non-terminal. Processing
+    typically takes 10–20 minutes for common audience types; large or complex audiences (e.g., `COMPOSITE`,'
   rest: POST /v2/audiences
   category: audiences
   source_operation: openapi/videoamp-public-api-openapi.yml#audience_create
 - name: audience_demographic_filter_field_lookup
-  description: Returns a paginated list of demographic filter fields available for building Custom Demographic audiences. Each entry contains the field identifier (`field`), a human-readable label, and a detailed description of the demographic attribute.
+  description: Returns a paginated list of demographic filter fields available for building Custom Demographic
+    audiences. Each entry contains the field identifier (`field`), a human-readable label, and a detailed
+    description of the demographic attribute.
   rest: GET /v2/audiences/lookupDemographicFilterFields
   category: audiences
   source_operation: openapi/videoamp-public-api-openapi.yml#audience_demographic_filter_field_lookup
 - name: audience_demographic_filter_value_lookup
-  description: Returns a paginated list of valid values for a specific demographic filter field. Each entry contains the value identifier (`value`), a human-readable label, and a description of what the value represents.
+  description: Returns a paginated list of valid values for a specific demographic filter field. Each
+    entry contains the value identifier (`value`), a human-readable label, and a description of what the
+    value represents.
   rest: GET /v2/audiences/lookupDemographicFilterValues
   category: audiences
   source_operation: openapi/videoamp-public-api-openapi.yml#audience_demographic_filter_value_lookup
@@ -73,47 +86,62 @@ tools:
   category: audiences
   source_operation: openapi/videoamp-public-api-openapi.yml#audience_export_list
 - name: audience_get
-  description: Returns the complete Audience resource for a single known audience ID. Use this endpoint when you already have the audience UUID or legacy integer ID and need to retrieve full details including classification, status, use_cases, owned vs. shared ownership, and the classification-specific definition object (exposure, content, composite, etc.).
+  description: Returns the complete Audience resource for a single known audience ID. Use this endpoint
+    when you already have the audience UUID or legacy integer ID and need to retrieve full details including
+    classification, status, use_cases, owned vs. shared ownership, and the classification-specific definition
+    object (exposure, content, composite, etc.).
   rest: GET /v2/audiences/{id}
   category: audiences
   source_operation: openapi/videoamp-public-api-openapi.yml#audience_get
 - name: audience_id_types_lookup
-  description: Returns all identifier types supported for audience ingestion and export within the authenticated organization. Each entry includes the type name, description, and ingestible/exportable flags.
+  description: Returns all identifier types supported for audience ingestion and export within the authenticated
+    organization. Each entry includes the type name, description, and ingestible/exportable flags.
   rest: GET /v1/audiences:lookUpIdTypes
   category: audiences
   source_operation: openapi/videoamp-public-api-openapi.yml#audience_id_types_lookup
 - name: audience_list
-  description: Returns a paginated, filterable list of audiences accessible to the calling organization. The caller's organization context controls visibility; the `use_cases` field on each audience determines eligible downstream operations.
+  description: Returns a paginated, filterable list of audiences accessible to the calling organization.
+    The caller's organization context controls visibility; the `use_cases` field on each audience determines
+    eligible downstream operations.
   rest: GET /v2/audiences
   category: audiences
   source_operation: openapi/videoamp-public-api-openapi.yml#audience_list
 - name: audience_status_list
-  description: This endpoint returns a list of audience creation statuses. The list can be filtered and sorted. To see a full list of response messages please view our [help page](https://help.videoamp.dev/en/articles/9415579-audience-service-error-codes-messages).
+  description: This endpoint returns a list of audience creation statuses. The list can be filtered and
+    sorted. To see a full list of response messages please view our [help page](https://help.videoamp.dev/en/articles/9415579-audience-service-error-codes-messages).
   rest: GET /v1/audiences/status
   category: audiences
   source_operation: openapi/videoamp-public-api-openapi.yml#audience_status_list
 - name: audience_update
-  description: Updates an audience's `name` and/or `description` — the only editable fields. Other attributes (classification, definition, currency of record, use cases, status) are immutable. Provide at least one of `name` or `description`; an empty request returns 400. Returns the full updated Audience.
+  description: Updates an audience's `name` and/or `description` — the only editable fields. Other attributes
+    (classification, definition, currency of record, use cases, status) are immutable. Provide at least
+    one of `name` or `description`; an empty request returns 400. Returns the full updated Audience.
   rest: PATCH /v2/audiences/{id}
   category: audiences
   source_operation: openapi/videoamp-public-api-openapi.yml#audience_update
 - name: campaign_create
-  description: Creates a new Campaign for media planning optimization. The campaign groups target audiences, an inventory set, creative durations, and a date range into a single planning unit.
+  description: Creates a new Campaign for media planning optimization. The campaign groups target audiences,
+    an inventory set, creative durations, and a date range into a single planning unit.
   rest: POST /v1beta/campaigns
   category: campaigns
   source_operation: openapi/videoamp-public-api-openapi.yml#campaign_create
 - name: campaign_delete
-  description: Deletes a Campaign, removing it from all API responses and downstream workflows. This action cannot be undone through the API — there is no undelete operation.
+  description: Deletes a Campaign, removing it from all API responses and downstream workflows. This action
+    cannot be undone through the API — there is no undelete operation.
   rest: DELETE /v1beta/campaigns/{campaignId}
   category: campaigns
   source_operation: openapi/videoamp-public-api-openapi.yml#campaign_delete
 - name: campaign_get
-  description: Returns the complete Campaign resource for a single known campaign ID. Use this endpoint when you already have the campaign UUID and need to retrieve full details including configuration, status, and metadata.
+  description: Returns the complete Campaign resource for a single known campaign ID. Use this endpoint
+    when you already have the campaign UUID and need to retrieve full details including configuration,
+    status, and metadata.
   rest: GET /v1beta/campaigns/{campaignId}
   category: campaigns
   source_operation: openapi/videoamp-public-api-openapi.yml#campaign_get
 - name: campaign_list
-  description: Returns a paginated, filterable list of Campaigns accessible to the caller. Campaigns are the top-level resource in VideoAmp's media planning system, grouping target audiences, an inventory set, and a date range for optimization and reporting.
+  description: Returns a paginated, filterable list of Campaigns accessible to the caller. Campaigns are
+    the top-level resource in VideoAmp's media planning system, grouping target audiences, an inventory
+    set, and a date range for optimization and reporting.
   rest: GET /v1beta/campaigns
   category: campaigns
   source_operation: openapi/videoamp-public-api-openapi.yml#campaign_list
@@ -128,19 +156,27 @@ tools:
   category: consents
   source_operation: openapi/videoamp-public-api-openapi.yml#consent_list_v3
 - name: conversion_group_create
-  description: Creates a new Conversion Group using the provided details. A valid `data_provider_id` must be specified. The `data_provider_id` can be retrieved using the [`Search Conversion Data Providers`](/#tag/datasource-options-service/POST/v1/library/conversionDataProviderOptionsSearch) endpoint. The response returns the details of the newly created Conversion Group, including its unique identifier, metadat
+  description: Creates a new Conversion Group using the provided details. A valid `data_provider_id` must
+    be specified. The `data_provider_id` can be retrieved using the [`Search Conversion Data Providers`](/#tag/datasource-options-service/POST/v1/library/conversionDataProviderOptionsSearch)
+    endpoint. The response returns the details of the newly created Conversion Group, including its unique
+    identifier, metadat
   rest: POST /v1/library/conversionGroups
   category: library
   source_operation: openapi/videoamp-public-api-openapi.yml#conversion_group_create
 - name: conversion_group_delete
-  description: |-
-    Soft deletes a Conversion Group by its unique identifier (UUID). The resource can still be referenced by ID but will not be included in list results unless `include_deleted` is set to true.
-    Please view our [help page](https://help.videoamp.dev/en/articles/11429351-conversion-groups) for more information on how conversion groups can be used.
+  description: 'Soft deletes a Conversion Group by its unique identifier (UUID). The resource can still
+    be referenced by ID but will not be included in list results unless `include_deleted` is set to true.
+
+    Please view our [help page](https://help.videoamp.dev/en/articles/11429351-conversion-groups) for
+    more information on how conversion groups can be used.'
   rest: DELETE /v1/library/conversionGroups/{conversionGroupId}
   category: library
   source_operation: openapi/videoamp-public-api-openapi.yml#conversion_group_delete
 - name: conversion_group_get
-  description: Retrieves complete details of a specific Conversion Group by UUID. Returns the full resource configuration including datasources with filters, lookback window settings, metadata, and timestamps. The response structure matches the format used when creating or listing Conversion Groups. Use `top_level_only=true` to retrieve metadata without datasource details for reduced response size. Use `include_
+  description: Retrieves complete details of a specific Conversion Group by UUID. Returns the full resource
+    configuration including datasources with filters, lookback window settings, metadata, and timestamps.
+    The response structure matches the format used when creating or listing Conversion Groups. Use `top_level_only=true`
+    to retrieve metadata without datasource details for reduced response size. Use `include_
   rest: GET /v1/library/conversionGroups/{conversionGroupId}
   category: library
   source_operation: openapi/videoamp-public-api-openapi.yml#conversion_group_get
@@ -185,9 +221,11 @@ tools:
   category: dataStreams
   source_operation: openapi/videoamp-public-api-openapi.yml#data_stream_update
 - name: datasource_conversion_provider_search
-  description: |-
-    Searches for a list of available Conversion Data Providers for a given agency advertiser. The response includes details such as the provider's value and label.
-    Please view our [help page](https://help.videoamp.dev/en/articles/11429353-datasource-options) for more information on how datasource options can be used.
+  description: 'Searches for a list of available Conversion Data Providers for a given agency advertiser.
+    The response includes details such as the provider''s value and label.
+
+    Please view our [help page](https://help.videoamp.dev/en/articles/11429353-datasource-options) for
+    more information on how datasource options can be used.'
   rest: POST /v1/library/conversionDataProviderOptionsSearch
   category: library
   source_operation: openapi/videoamp-public-api-openapi.yml#datasource_conversion_provider_search
@@ -202,14 +240,19 @@ tools:
   category: library
   source_operation: openapi/videoamp-public-api-openapi.yml#datasource_filter_value_search
 - name: datasource_group_create
-  description: Creates a new Datasource Group using the provided details. To retrieve the `datasource_type`, use the [`Search Datasource Type Options`](/#tag/datasource-options-service/POST/v1/library/datasourceTypeOptionsSearch) endpoint. To retrieve filters, use the [`Search Datasource Filter Names`](/#tag/datasource-options-service/POST/v1/library/datasourceFilterNameOptionsSearch) and [`Search Datasource Fil
+  description: Creates a new Datasource Group using the provided details. To retrieve the `datasource_type`,
+    use the [`Search Datasource Type Options`](/#tag/datasource-options-service/POST/v1/library/datasourceTypeOptionsSearch)
+    endpoint. To retrieve filters, use the [`Search Datasource Filter Names`](/#tag/datasource-options-service/POST/v1/library/datasourceFilterNameOptionsSearch)
+    and [`Search Datasource Fil
   rest: POST /v1/library/datasourceGroups
   category: library
   source_operation: openapi/videoamp-public-api-openapi.yml#datasource_group_create
 - name: datasource_group_delete
-  description: |-
-    Soft deletes a Datasource Group by its unique identifier (UUID). The resource can still be referenced by ID but will not be included in list results unless `include_deleted` is set to true.
-    Please view our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more information on how Datasource Groups and Datasource Group Rules are used.
+  description: 'Soft deletes a Datasource Group by its unique identifier (UUID). The resource can still
+    be referenced by ID but will not be included in list results unless `include_deleted` is set to true.
+
+    Please view our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules)
+    for more information on how Datasource Groups and Datasource Group Rules are used.'
   rest: DELETE /v1/library/datasourceGroups/{datasourceGroupId}
   category: library
   source_operation: openapi/videoamp-public-api-openapi.yml#datasource_group_delete
@@ -229,21 +272,29 @@ tools:
   category: library
   source_operation: openapi/videoamp-public-api-openapi.yml#datasource_group_rule_create
 - name: datasource_group_rule_delete
-  description: |-
-    Soft deletes a Rule by its unique identifier (UUID). The resource can still be referenced by ID but will not be included in list results unless `include_deleted` is set to true.
-    Please view our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more information on how Datasource Groups and Datasource Group Rules are used.
+  description: 'Soft deletes a Rule by its unique identifier (UUID). The resource can still be referenced
+    by ID but will not be included in list results unless `include_deleted` is set to true.
+
+    Please view our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules)
+    for more information on how Datasource Groups and Datasource Group Rules are used.'
   rest: DELETE /v1/library/datasourceGroups/{datasourceGroupId}/rules/{ruleId}
   category: library
   source_operation: openapi/videoamp-public-api-openapi.yml#datasource_group_rule_delete
 - name: datasource_group_rule_get
-  description: Retrieves complete details of a specific Rule by UUID including name, description, Rule definition with operators and filters, and metadata (creator, timestamps). Use `top_level_only=true` to retrieve metadata without nested items for reduced response size. Use `include_deleted=true` to retrieve soft-deleted Rules.
+  description: Retrieves complete details of a specific Rule by UUID including name, description, Rule
+    definition with operators and filters, and metadata (creator, timestamps). Use `top_level_only=true`
+    to retrieve metadata without nested items for reduced response size. Use `include_deleted=true` to
+    retrieve soft-deleted Rules.
   rest: GET /v1/library/datasourceGroups/{datasourceGroupId}/rules/{ruleId}
   category: library
   source_operation: openapi/videoamp-public-api-openapi.yml#datasource_group_rule_get
 - name: datasource_group_rule_list
-  description: |-
-    Retrieves all Rules associated with a user or by Datasource Group ID, with the ability to bulk fetch by providing a list of Rule IDs. Use the `-` character to list all Rules associated to a user. Otherwise, provide the Datasource Group ID in the path to return Rules associated to the Datasource Group ID. The response includes a list of all Rules.
-    Please view our [help page](https://help.videoamp.d
+  description: 'Retrieves all Rules associated with a user or by Datasource Group ID, with the ability
+    to bulk fetch by providing a list of Rule IDs. Use the `-` character to list all Rules associated
+    to a user. Otherwise, provide the Datasource Group ID in the path to return Rules associated to the
+    Datasource Group ID. The response includes a list of all Rules.
+
+    Please view our [help page](https://help.videoamp.d'
   rest: GET /v1/library/datasourceGroups/{datasourceGroupId}/rules
   category: library
   source_operation: openapi/videoamp-public-api-openapi.yml#datasource_group_rule_list
@@ -328,12 +379,14 @@ tools:
   category: dataStreams
   source_operation: openapi/videoamp-public-api-openapi.yml#delivery_inspection_list
 - name: draft_plan_approve
-  description: 'Approves a DRAFT media plan, completing the draft branch of the planning workflow: it runs full cross-field validation and, on success, submits the plan for asynchronous optimization.'
+  description: 'Approves a DRAFT media plan, completing the draft branch of the planning workflow: it
+    runs full cross-field validation and, on success, submits the plan for asynchronous optimization.'
   rest: POST /v2beta/plans/{planId}:approve
   category: plans
   source_operation: openapi/videoamp-public-api-openapi.yml#draft_plan_approve
 - name: draft_plan_update
-  description: Refines a DRAFT media plan in the draft branch of the planning workflow. Send only the fields you want to change; omitted fields keep their current values.
+  description: Refines a DRAFT media plan in the draft branch of the planning workflow. Send only the
+    fields you want to change; omitted fields keep their current values.
   rest: PATCH /v2beta/plans/{planId}
   category: plans
   source_operation: openapi/videoamp-public-api-openapi.yml#draft_plan_update
@@ -353,12 +406,14 @@ tools:
   category: inventories
   source_operation: openapi/videoamp-public-api-openapi.yml#inventory_list
 - name: measurement_create
-  description: Create Measurement report to analyze campaign performance across audiences and data sources. Calculates reach, frequency, impressions, and effectiveness metrics.
+  description: Create Measurement report to analyze campaign performance across audiences and data sources.
+    Calculates reach, frequency, impressions, and effectiveness metrics.
   rest: POST /v2/adMeasurements
   category: adMeasurements
   source_operation: openapi/videoamp-public-api-openapi.yml#measurement_create
 - name: measurement_create_post_process
-  description: Creates a new post-processing analysis request for a completed Measurement report that may take up to 30 hours to complete.
+  description: Creates a new post-processing analysis request for a completed Measurement report that
+    may take up to 30 hours to complete.
   rest: POST /v2/adMeasurements/{adMeasurement_uuid}/postProcesses
   category: adMeasurements
   source_operation: openapi/videoamp-public-api-openapi.yml#measurement_create_post_process
@@ -368,12 +423,17 @@ tools:
   category: adMeasurements
   source_operation: openapi/videoamp-public-api-openapi.yml#measurement_delete
 - name: measurement_delete_post_process
-  description: Deletes a post-process request under an AdMeasurement without deleting the entire AdMeasurement. The request is marked as deleted but data is retained.
+  description: Deletes a post-process request under an AdMeasurement without deleting the entire AdMeasurement.
+    The request is marked as deleted but data is retained.
   rest: DELETE /v2/adMeasurements/{adMeasurement_uuid}/postProcesses/{postProcessUuid}
   category: adMeasurements
   source_operation: openapi/videoamp-public-api-openapi.yml#measurement_delete_post_process
 - name: measurement_get
-  description: Retrieves complete details for a specific Measurement report including configuration, processing status, execution history, and downloadable export links. Essential for monitoring Measurement report processing progress, accessing completed analysis results, and tracking the lifecycle of advertising performance analyses from submission through completion. Enables automated polling workflows that wa
+  description: Retrieves complete details for a specific Measurement report including configuration, processing
+    status, execution history, and downloadable export links. Essential for monitoring Measurement report
+    processing progress, accessing completed analysis results, and tracking the lifecycle of advertising
+    performance analyses from submission through completion. Enables automated polling workflows that
+    wa
   rest: GET /v2/adMeasurements/{id}
   category: adMeasurements
   source_operation: openapi/videoamp-public-api-openapi.yml#measurement_get
@@ -388,7 +448,9 @@ tools:
   category: adMeasurements
   source_operation: openapi/videoamp-public-api-openapi.yml#measurement_get_post_process_requirements
 - name: measurement_list
-  description: Retrieve a paginated list of Measurement reports, with comprehensive filtering and sorting capabilities. Measurement reports analyze advertising campaign effectiveness across specified audiences, data sources, and time periods, producing reach, frequency, and conversion metrics.
+  description: Retrieve a paginated list of Measurement reports, with comprehensive filtering and sorting
+    capabilities. Measurement reports analyze advertising campaign effectiveness across specified audiences,
+    data sources, and time periods, producing reach, frequency, and conversion metrics.
   rest: GET /v2/adMeasurements
   category: adMeasurements
   source_operation: openapi/videoamp-public-api-openapi.yml#measurement_list
@@ -403,27 +465,34 @@ tools:
   category: adMeasurements
   source_operation: openapi/videoamp-public-api-openapi.yml#measurement_refresh
 - name: plan_create
-  description: Creates a new media plan optimization scenario. The plan defines a budget allocation strategy across inventory titles and constraints to maximize reach, impressions, or audience concentration for a campaign.
+  description: Creates a new media plan optimization scenario. The plan defines a budget allocation strategy
+    across inventory titles and constraints to maximize reach, impressions, or audience concentration
+    for a campaign.
   rest: POST /v1beta/plans
   category: plans
   source_operation: openapi/videoamp-public-api-openapi.yml#plan_create
 - name: plan_delete
-  description: Deletes a Plan, removing it from all API responses. This action cannot be undone through the API — there is no undelete operation.
+  description: Deletes a Plan, removing it from all API responses. This action cannot be undone through
+    the API — there is no undelete operation.
   rest: DELETE /v1beta/plans/{planId}
   category: plans
   source_operation: openapi/videoamp-public-api-openapi.yml#plan_delete
 - name: plan_draft_create
-  description: Starts the draft branch of the planning workflow by creating a media plan in DRAFT status for a campaign. The draft captures the budget-allocation strategy — budget, constraints, objectives, filters, and rates — so it can be refined before optimization.
+  description: Starts the draft branch of the planning workflow by creating a media plan in DRAFT status
+    for a campaign. The draft captures the budget-allocation strategy — budget, constraints, objectives,
+    filters, and rates — so it can be refined before optimization.
   rest: POST /v2beta/plans
   category: plans
   source_operation: openapi/videoamp-public-api-openapi.yml#plan_draft_create
 - name: plan_get
-  description: Returns the complete Plan resource for a single known plan ID. Use this endpoint when you already have the plan UUID and need to retrieve full details including status, output, and configuration.
+  description: Returns the complete Plan resource for a single known plan ID. Use this endpoint when you
+    already have the plan UUID and need to retrieve full details including status, output, and configuration.
   rest: GET /v1beta/plans/{planId}
   category: plans
   source_operation: openapi/videoamp-public-api-openapi.yml#plan_get
 - name: plan_list
-  description: Returns a paginated, filterable list of Plans accessible to the caller. Plans represent optimization scenarios that allocate budget across campaigns and inventory titles.
+  description: Returns a paginated, filterable list of Plans accessible to the caller. Plans represent
+    optimization scenarios that allocate budget across campaigns and inventory titles.
   rest: GET /v1beta/plans
   category: plans
   source_operation: openapi/videoamp-public-api-openapi.yml#plan_list
@@ -448,7 +517,8 @@ tools:
   category: inventories
   source_operation: openapi/videoamp-public-api-openapi.yml#rate_card_list
 - name: reach_curve_create
-  description: Creates a custom reach curve for use in media plan optimization. The curve is processed asynchronously — poll via GET to check status.
+  description: Creates a custom reach curve for use in media plan optimization. The curve is processed
+    asynchronously — poll via GET to check status.
   rest: POST /v1beta/inventories/{inventoryId}/reachCurves
   category: inventories
   source_operation: openapi/videoamp-public-api-openapi.yml#reach_curve_create
@@ -468,12 +538,20 @@ tools:
   category: inventories
   source_operation: openapi/videoamp-public-api-openapi.yml#reach_curve_list
 - name: report_context_search
-  description: 'Retrieve semantic context (dimensions, measures, views, documentation) scoped to a single measurement report, ranked by the user''s natural-language query. Why: The semantic layer describes the report''s metrics and dimensions in natural language and maps them to exact field paths. Calling this first prevents hallucinating field names in a follow-up query. When: Call FIRST whenever the user asks a d'
+  description: 'Retrieve semantic context (dimensions, measures, views, documentation) scoped to a single
+    measurement report, ranked by the user''s natural-language query. Why: The semantic layer describes
+    the report''s metrics and dimensions in natural language and maps them to exact field paths. Calling
+    this first prevents hallucinating field names in a follow-up query. When: Call FIRST whenever the
+    user asks a d'
   rest: GET /v1alpha/reports/{reportId}:searchContext
   category: reports
   source_operation: openapi/videoamp-public-api-openapi.yml#report_context_search
 - name: report_query_create
-  description: 'Execute a query against the report''s semantic model, referencing sources and fields from report_context_search. Why: the data-fetching endpoint — returns a result the client renders inline as a chart or table. When: call AFTER report_context_search so the query is grounded in real entities. How: use exact field paths from the context response; never invent names. Prefer a named view over an ad-hoc'
+  description: 'Execute a query against the report''s semantic model, referencing sources and fields from
+    report_context_search. Why: the data-fetching endpoint — returns a result the client renders inline
+    as a chart or table. When: call AFTER report_context_search so the query is grounded in real entities.
+    How: use exact field paths from the context response; never invent names. Prefer a named view over
+    an ad-hoc'
   rest: POST /v1alpha/reports/{reportId}:createQuery
   category: reports
   source_operation: openapi/videoamp-public-api-openapi.yml#report_query_create
@@ -557,3 +635,10 @@ x-evidence:
   tools_list_http_status: 401
   protected_resource_http_status: 200
   offline_tool_list: videoamp mcp list-tools (CLI release v0.148.32)
+deployment:
+  mode: remote
+  endpoint: https://api.videoamp.dev/v1/mcp
+  verified: probed
+  probe: gated
+  checked: '2026-08-12'
+  source: catalog MCP census

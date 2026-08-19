@@ -1,0 +1,534 @@
+openapi: 3.2.0
+info:
+  title: VideoAmp Public Shares API
+  version: '2026-07-31'
+  summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
+  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
+
+
+    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
+
+
+    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  contact:
+    name: VideoAmp Support
+    email: support@videoamp.com
+    url: https://help.videoamp.dev
+  termsOfService: https://videoamp.com/terms-of-use/
+servers:
+- url: https://api.videoamp.dev
+  description: Production. The VideoAmp CLI also references `staging` and `preprod` environments (api.staging.videoamp.dev, api.preprod.videoamp.dev), but neither resolves publicly (DNS NXDOMAIN as of 2026-08-02), so they are not listed as callable servers.
+security:
+- videoampOAuth: []
+tags:
+- name: shares
+  description: shares operations.
+paths:
+  /v1/shares:
+    get:
+      operationId: share_list
+      summary: List Shares
+      tags:
+      - shares
+      description: '### What
+
+
+        Retrieves a paginated list of resource shares matching filter criteria. Returns share metadata including sharer organization, recipients with permissions, resources with types and names, lifecycle status, and audit trail.
+
+
+        ### Why
+
+
+        Enables discovery and monitoring of sharing relationships across organizations. Essential for auditing data access, managing permissions, tracking resource distribution, and compliance. Target users: audience owners sharing their data, users viewing and managing shares created by their organization, platform operations via share management UI, and audience teams.
+
+
+        ### When
+
+
+        - Discover all shares created by your organization
+
+        - Filter by kind (e.g., ADVANCED_AUDIENCE) to view all audience shares specifically
+
+        - Validate whether shares are successful or deleted when recipients report access issues
+
+        - Audit resource access across organizational boundaries for QA and compliance
+
+        - Monitor share lifecycle status changes between ACTIVE and DELETED
+
+        - Build share management dashboards and compliance reports
+
+
+        Use GET /v1/shares/{id} for single share details. Use POST /v1/shares to create new shares.
+
+
+        ### How
+
+
+        Requires valid JWT authentication. Use pageSize and pageToken for pagination through results. Use q parameter for filtering by kind or createdAt. Returns 400 for invalid params, 403 for auth errors, 500 for server errors.'
+      parameters:
+      - name: fetchRecipientAncestorPath
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: 'When true, includes the ancestor_path field for each recipient showing their full position in the organizational hierarchy from root to leaf. This hierarchical path is essential for understanding the sharing scope within complex multi-level organizational structures. Use this to display breadcrumb navigation in UIs, validate sharing permissions at the correct org level, or audit which parent entities have inherited access. Performance note: enabling this adds a lookup per recipient, so omit for large result sets where hierarchy is not needed. (default true)'
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: 'Order by attribute(s): - createdAt (ASC, DESC) Sort order for results controlling how shares are ordered in the response. Format: ''createdAt ASC'' for oldest first or ''createdAt DESC'' for newest first. Defaults to createdAt DESC when not specified. Important: changing the order parameter between paginated requests invalidates the pageToken and you must restart from page 1. This ensures consistent ordering across pages. For audit workflows, use ASC to process shares chronologically from oldest to newest. For monitoring dashboards, use DESC to see most recent shares first.'
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query param pageSize specifies the number of results to include in a page of results.
+      - name: pageToken
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Query param ''pageToken'' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field ''next_page_token''. When requesting the next page, additional query parameters should NOT change between page requests. - createdAt ISO 8601 formatted string (gt, lt, gte, lte) - kind `string` (eq, in) - resourceId `string` (eq, in) Advanced query filter for attribute-based filtering. Supported attributes: - **kind**: Filter by resource kind. Operators: eq, in. Currently supported: ADVANCED_AUDIENCE. - **createdAt**: Filter by creation date (ISO 8601). Operators: gt, lt, gte, lte. - **resourceId**: Filter by resource id. Operators: eq, in. Use the same id supplied as resource.id in POST /v1/shares (or resources[] in POST /v2/shares). Multiple q parameters are AND''d by default. Prefix with ''or'' for OR logic. Examples: - ?q=kind eq ADVANCED_AUDIENCE - ?q=createdAt gt 2025-01-01T00:00:00Z - ?q=resourceId eq 277777 - ?q=resourceId in 277777,277778 - ?q=kind eq ADVANCED_AUDIENCE&q=createdAt gte 2025-01-01'
+      responses:
+        '200':
+          description: Successful response.
+        '400':
+          description: Bad Request — invalid or unsupported parameter values.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '403':
+          description: Forbidden — the caller's organization is not permissioned for this resource.
+        '500':
+          description: Internal Server Error.
+      x-videoamp-cli-command: share_list
+    post:
+      operationId: share_resource_create
+      summary: Create Share
+      tags:
+      - shares
+      description: "### What\n\nCreates a share granting a single recipient access to a single audience resource. Returns the complete Share object including recipients, resources, status, and audit trail.\n\n### Why\n\nProvides simple single-recipient, single-resource sharing for straightforward use cases. Returns full share details immediately for verification without requiring an additional GET call. Ideal for simple integrations and UI-driven workflows.\n\n### When\n\n- Share one audience with one recipient and verify details in the response\n- Simple integrations that share one resource at a time\n- UI-driven sharing where user selects one audience and one recipient\n\nFor bulk operations (multiple recipients or resources), use POST /v2/shares instead. Verify consent exists via GET /v1/consents before sharing.\n\n### How\n\nRequires valid JWT authentication. Provide share object with recipient (kind and id), resource (legacy integer identifier), optional name, and optional permissions. Set fetch_recipient_ancestor_path=true to include organizational hierarchy in response. Returns 400 for validation errors, 403 if not authorized, 409 if share already exists.\n\n### Example\n\n```json\n{\n  \"recipient\": {\"id\": \"10\", \"kind\": \"ORGANIZATION\"},\n  \"resource\": {\"id\": \"277777\"},\n  \"name\": \"Share to Partner Org\"\n}\n```\n\n**Notes:**\n- `resource.id`: Use the audience's legacy integer ID (`audienceId` from v1 API, or `legacy_id` from v2 API), not the UUID\n- `recipient.kind`: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, or PRODUCT"
+      parameters:
+      - name: fetchRecipientAncestorPath
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: When true, includes the ancestor_path field in the response showing the recipient's full position in the organizational hierarchy. Useful for verifying the share was created at the correct organizational level. (default true)
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp share_resource_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '400':
+          description: Bad Request — invalid or unsupported parameter values.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '403':
+          description: Forbidden — the caller's organization is not permissioned for this resource.
+        '409':
+          description: Conflict — the request conflicts with the current state of the resource.
+      x-videoamp-cli-command: share_resource_create
+  /v1/shares/audiences/revoke/cancel/{confirmId}:
+    post:
+      operationId: share_audience_revocation_cancel
+      summary: 'Cancel Bulk Audience Revocation (Step 2b: Abort)'
+      tags:
+      - shares
+      description: '### Workflow
+
+
+        This is **step 2b** of a 2-step confirmation workflow. Call this after reviewing the summary returned by **step 1**: DELETE /v1/shares/audiences/revoke/recipient/{recipient}, and deciding the revocation should NOT proceed. All shares remain active and recipients retain access.
+
+
+        To execute the revocation instead, use **step 2a**: POST /v1/shares/audiences/revoke/confirm/{confirmId}.
+
+
+        ### What
+
+
+        Cancels a pending bulk revocation initiated via DELETE /v1/shares/audiences/revoke/recipient/{recipient}. The shared audiences remain active and recipients retain access. Returns the list of preserved share IDs.
+
+
+        ### Why
+
+
+        After reviewing the step 1 summary, users may discover the revocation scope is wrong or that it was initiated by mistake. Without an explicit cancel, the only option would be to wait for the 1-hour expiry.
+
+
+        ### When
+
+
+        - The step 1 summary shows shares or audiences that should not be revoked
+
+        - The bulk revocation was started by mistake
+
+        - Must be called within 1 hour of initiation and before confirmation
+
+
+        ### How
+
+
+        Requires valid JWT authentication. Pass the confirm_id (UUID) from the step 1 response as the path parameter. Only the user who initiated the revocation can cancel it. Expires after 1 hour. Returns the list of share UUIDs that were preserved (remain in ACTIVE status). Returns 404 if the confirm_id does not exist, was already confirmed or canceled, or has expired.'
+      parameters:
+      - name: confirmId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the pending revocation to cancel. Obtained from the confirm_id field in the response of DELETE /v1/shares/audiences/revoke/recipient/{recipient}. Must reference a revocation that has not yet been confirmed or canceled, and must be used within 1 hour of initiation. Only the user who initiated the revocation can use this confirm_id.
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp share_audience_revocation_cancel --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '404':
+          description: Not Found — the resource does not exist or is not accessible to the calling organization.
+      x-videoamp-cli-command: share_audience_revocation_cancel
+  /v1/shares/audiences/revoke/confirm/{confirmId}:
+    post:
+      operationId: share_audience_revocation_confirm
+      summary: 'Confirm Bulk Audience Revocation (Step 2a: Execute)'
+      tags:
+      - shares
+      description: '### Workflow
+
+
+        This is **step 2a** of a 2-step confirmation workflow. Call this after reviewing the summary returned by **step 1**: DELETE /v1/shares/audiences/revoke/recipient/{recipient}. This action is irreversible. Once confirmed, all identified shares are permanently revoked and recipient access is terminated.
+
+
+        To abort instead, use **step 2b**: POST /v1/shares/audiences/revoke/cancel/{confirmId}.
+
+
+        ### What
+
+
+        Executes a pending bulk revocation initiated via DELETE /v1/shares/audiences/revoke/recipient/{recipient}. Permanently revokes all identified shares, terminating recipient access. Returns per-share results: revoked_shares for successes and errors for failures.
+
+
+        ### Why
+
+
+        Bulk revocation is irreversible and high-impact. A separate confirmation step lets users review the step 1 impact summary before committing, so shares are never revoked without explicit intent.
+
+
+        ### When
+
+
+        - After reviewing the step 1 summary (share_count, share_ids, audience_ids) and deciding to proceed
+
+        - Must be called within 1 hour of initiation (confirm_id expires)
+
+        - Cannot be called after the same confirm_id has been canceled
+
+
+        ### How
+
+
+        Requires valid JWT authentication. Pass the confirm_id (UUID) from the step 1 response as the path parameter. Only the user who initiated the revocation can confirm it. Each share is revoked individually; partial success is possible. Check the revoked_shares array for successes and the errors array for failures. Shares that fail can be retried individually via DELETE /v1/shares/{id}. Use POST /v1/shares/audiences/revoke/cancel/{confirmId} to abort instead.'
+      parameters:
+      - name: confirmId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: UUID of the pending revocation to confirm and execute. Obtained from the confirm_id field in the response of DELETE /v1/shares/audiences/revoke/recipient/{recipient}. Must reference a revocation that has not been confirmed, canceled, or expired (1-hour window). Only the user who initiated the revocation can confirm it.
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp share_audience_revocation_confirm --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: share_audience_revocation_confirm
+  /v1/shares/audiences/revoke/recipient/{recipient}:
+    delete:
+      operationId: share_audience_recipient_revoke
+      summary: Initiate Bulk Audience Revocation (Step 1 of 2)
+      tags:
+      - shares
+      description: '### Workflow
+
+
+        **Step 1 of 2.** This endpoint does NOT revoke any shares. You must follow up with:
+
+        - **Step 2a** (execute): POST /v1/shares/audiences/revoke/confirm/{confirmId}
+
+        - **Step 2b** (abort): POST /v1/shares/audiences/revoke/cancel/{confirmId}
+
+
+        ### What
+
+
+        Initiates a bulk revocation of all audience shares with a specific recipient. Does NOT immediately revoke access. Returns a confirm_id (expires in 1 hour) and a summary of affected shares (share_count, share_ids, audience_ids) for review.
+
+
+        ### Why
+
+
+        Revoking shares individually via DELETE /v1/shares/{id} is impractical at scale. This endpoint handles all shares with a recipient in a single operation. The two-step confirmation workflow prevents accidental bulk access termination.
+
+
+        ### When
+
+
+        - End of a partner relationship and need to revoke all shared audiences at once
+
+        - Offboard a recipient organization from all shared data
+
+        - Respond to compliance or security concerns requiring full access termination
+
+
+        ### How
+
+
+        Requires valid JWT authentication. Pass the recipient in KIND-ID format (e.g., ORGANIZATION-123) where KIND is ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, or PRODUCT. Obtain valid identifiers from GET /v1/shares or GET /v1/consents.
+
+
+        Response fields: `confirm_id` (UUID, pass to confirm/cancel within 1 hour), `share_count`, `share_ids`, `audience_ids`. Only the initiating user can confirm or cancel.'
+      parameters:
+      - name: recipient
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Composite identifier of the recipient to revoke all audience shares with, in the format KIND-ID where KIND is one of ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, or PRODUCT, and ID is the recipient's numeric identifier. Obtain valid recipient identifiers from GET /v1/shares (recipients[].kind and recipients[].id fields) or GET /v1/consents.
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: share_audience_recipient_revoke
+  /v1/shares/{id}:
+    delete:
+      operationId: share_delete
+      summary: Revoke Share
+      tags:
+      - shares
+      description: '### What
+
+
+        Permanently revokes a resource share, immediately terminating recipient access to all shared resources.
+
+
+        ### Why
+
+
+        Enables resource owners to control shared data by allowing users to terminate access when partnerships conclude, agreements expire, or access is no longer needed. Critical for data governance and compliance. The share record is retained with DELETED status for audit purposes.
+
+
+        ### When
+
+
+        - Quickly revoke an incorrect share made by mistake
+
+        - Terminate a partner relationship or data sharing agreement
+
+        - Revoke access when a campaign completes
+
+        - Clean up unwanted shares (e.g., recipient only needs one of multiple shared audiences)
+
+        - Respond to security concerns requiring immediate access termination
+
+        - Remove access for recipients who no longer need shared resources
+
+
+        Use GET /v1/shares to discover shares. Use GET /v1/shares/{id} to verify details before revoking.
+
+
+        ### How
+
+
+        Requires valid JWT authentication. Pass share UUID as path parameter. Your organization must own the share. Returns the updated share with status DELETED. Returns 400 for invalid UUID, 403 for insufficient permissions, 404 if share not found or not owned by your organization.'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique identifier of the share to revoke in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from share creation response, list operations, or UI selection. The share must be owned by your organization to revoke it. Upon successful revocation, the share status changes to DELETED and all recipients immediately lose access to the shared resources. Returns 404 if share doesn't exist or is not owned by your organization.
+      - name: fetchRecipientAncestorPath
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: 'When true, includes the ancestor_path field for each recipient in the response showing their full position in the organizational hierarchy from root to leaf. This hierarchical path is useful for understanding which organizational levels had access before revocation. Use this for audit logging, compliance documentation, or confirming the correct share was revoked. Performance note: enabling this adds a lookup per recipient. (default true)'
+      responses:
+        '200':
+          description: Successful response.
+        '400':
+          description: Bad Request — invalid or unsupported parameter values.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '403':
+          description: Forbidden — the caller's organization is not permissioned for this resource.
+        '404':
+          description: Not Found — the resource does not exist or is not accessible to the calling organization.
+      x-videoamp-cli-command: share_delete
+    get:
+      operationId: share_get
+      summary: Get Share
+      tags:
+      - shares
+      description: '### What
+
+
+        Returns a share along with its associated resources and recipients.
+
+
+        ### Why
+
+
+        Enables retrieval of complete share details for auditing, compliance, and share management. Target users: audience owners sharing their data, users viewing and managing shares created by their organization, platform operations via share management UI, and audience teams.
+
+
+        ### When
+
+
+        - Confirm a share was created successfully after creation
+
+        - Validate whether a share is active or deleted when a recipient reports access issues
+
+        - Retrieve complete share details when you have a share ID from list operations or creation
+
+        - Display share metadata in UI including recipients, resources, and permissions
+
+        - Audit share configuration for compliance reporting
+
+        - Troubleshoot sharing issues by examining full share state
+
+
+        Use GET /v1/shares for discovery and bulk retrieval. Use POST /v1/shares to create new shares.
+
+
+        ### How
+
+
+        Requires valid JWT authentication. Pass share UUID as path parameter. Set fetch_recipient_ancestor_path=true to include organizational hierarchy for recipients. Returns 400 for invalid UUID, 403 for auth errors, 404 if share not found.'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique identifier for the share to retrieve in standard UUID v4 format. This ID is immutable and globally unique across the platform. Obtained from creation response, list operations, or UI selection. Returns 404 if share doesn't exist, user lacks access, or share is deleted. Use this ID to fetch complete share details including recipients, resources, and audit trail.
+      - name: fetchRecipientAncestorPath
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: 'When true, includes the ancestor_path field for each recipient showing their full position in the organizational hierarchy from root to leaf. This hierarchical path is essential for understanding the sharing scope within complex multi-level organizational structures. Use this to display breadcrumb navigation in UIs, validate sharing permissions at the correct org level, or audit which parent entities have inherited access. Performance note: enabling this adds a lookup per recipient, so omit for large result sets where hierarchy is not needed. (default true)'
+      responses:
+        '200':
+          description: Successful response.
+        '400':
+          description: Bad Request — invalid or unsupported parameter values.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '403':
+          description: Forbidden — the caller's organization is not permissioned for this resource.
+        '404':
+          description: Not Found — the resource does not exist or is not accessible to the calling organization.
+      x-videoamp-cli-command: share_get
+  /v2/shares:
+    post:
+      operationId: share_resources_create
+      summary: Bulk Create Shares
+      tags:
+      - shares
+      description: "### What\n\nCreates a new resource share granting one or more recipients access to one or more resources such as audiences. Supports bulk operations with up to 100 recipients and 100 resources per request.\n\n### Why\n\nEnables organizations to securely share data assets with partners, agencies, and advertisers within the VideoAmp ecosystem. Essential for cross-organizational collaboration on audience targeting, campaign planning, and measurement. Consent-based sharing ensures data governance compliance.\n\n### When\n\n- Share audiences with agency partners for campaign activation\n- Grant advertiser access to custom audience segments\n- Distribute measurement audiences to multiple recipients simultaneously\n- Establish data sharing relationships for collaborative analytics\n\nUse POST /v1/shares for single-recipient sharing. Use GET /v1/shares to discover existing shares. Use DELETE /v1/shares/{id} to revoke access.\n\n### How\n\nRequires valid JWT authentication. Provide recipients array with kind and id for each recipient, resources array with legacy integer identifiers, optional name, and optional permissions beyond read access. Pre-approval may be required for certain resource types - contact VideoAmp support for onboarding. Returns share ID for tracking. Returns 400 for validation errors, 403 for unauthorized sharers.\n\n### Example\n\n```json\n{\n  \"recipients\": [{\"id\": \"10\", \"kind\": \"ORGANIZATION\"}],\n  \"resources\": [\"277777\"],\n  \"name\": \"Share to Partner Org\"\n}\n```\n\n**Notes:**\n- `resources`: Use the audience's legacy integer ID (`audienceId` from v1 API, or `legacy_id` from v2 API), not UUIDs\n- `recipients[].kind`: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, or PRODUCT"
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp share_resources_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '400':
+          description: Bad Request — invalid or unsupported parameter values.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '403':
+          description: Forbidden — the caller's organization is not permissioned for this resource.
+      x-videoamp-cli-command: share_resources_create
+  /v3/shares:
+    post:
+      operationId: share_resources_v3_create
+      summary: Bulk Create Shares (UUID Recipients)
+      tags:
+      - shares
+      description: "### What\n\nCreates a new resource share granting one or more recipients access to one or more resources such as audiences. Supports bulk operations with up to 100 recipients and 100 resources per request. Recipients are identified by their UUID.\n\n### Why\n\nEnables organizations to securely share data assets with partners, agencies, and advertisers within the VideoAmp ecosystem using UUID-based recipient identifiers. Essential for cross-organizational collaboration on audience targeting, campaign planning, and measurement.\n\n### When\n\n- Share audiences with agency partners for campaign activation\n- Grant advertiser access to custom audience segments\n- Distribute measurement audiences to multiple recipients simultaneously\n- Establish data sharing relationships for collaborative analytics\n\nUse POST /v2/shares for composite (kind+id) recipient identifiers. Use GET /v1/shares to discover existing shares. Use DELETE /v1/shares/{id} to revoke access.\n\n### How\n\nRequires valid JWT authentication. Provide recipients array with UUID identifiers for each recipient, resources array with legacy integer identifiers, optional name, and optional permissions beyond read access. Returns share ID for tracking. Returns 400 for validation errors, 403 for unauthorized sharers.\n\n### Example\n\n```json\n{\n  \"recipients\": [\"550e8400-e29b-41d4-a716-446655440000\"],\n  \"resources\": [\"277777\"],\n  \"name\": \"Share to Partner Org\"\n}\n```\n\n**Notes:**\n- `recipients`: UUID v4 identifiers for each recipient entity\n- `resources`: Use the audience's legacy integer ID (`audienceId` from v1 API, or `legacy_id` from v2 API), not UUIDs"
+      requestBody:
+        required: true
+        description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp share_resources_v3_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response.
+        '400':
+          description: Bad Request — invalid or unsupported parameter values.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+        '403':
+          description: Forbidden — the caller's organization is not permissioned for this resource.
+      x-videoamp-cli-command: share_resources_v3_create
+components:
+  securitySchemes:
+    videoampOAuth:
+      type: oauth2
+      description: OAuth 2.0 / OIDC via VideoAmp's Auth0 tenant at https://login.videoamp.com. Verified from https://login.videoamp.com/.well-known/openid-configuration (HTTP 200) and https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp (HTTP 200, RFC 9728). Bearer tokens are presented in the Authorization header.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.videoamp.com/authorize
+          tokenUrl: https://login.videoamp.com/oauth/token
+          refreshUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://login.videoamp.com/oauth/device/code
+          tokenUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+externalDocs:
+  url: https://docs.videoamp.dev
+  description: VideoAmp Public API documentation (Auth0-gated)
+x-evidence:
+  method: derived
+  derived_from: github.com/VideoAmp/cli release v0.148.32 (videoamp_v0.148.32_darwin_arm64.tar.gz)
+  extraction: videoamp --help; videoamp <command> --help
+  fetched: '2026-08-02'
+  operations: 118
+  parameters: 295
+  anonymous_openapi_published: false
+  notes: docs.videoamp.dev returns HTTP 302 to Auth0 for every path; api.videoamp.dev returns 404 for /openapi.json, /swagger.json, /v1/openapi.json, /api-docs, /docs, /redoc.

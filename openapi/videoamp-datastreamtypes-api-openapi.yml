@@ -1,0 +1,150 @@
+openapi: 3.2.0
+info:
+  title: VideoAmp Public Data Stream Types API
+  version: '2026-07-31'
+  summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
+  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
+
+
+    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
+
+
+    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  contact:
+    name: VideoAmp Support
+    email: support@videoamp.com
+    url: https://help.videoamp.dev
+  termsOfService: https://videoamp.com/terms-of-use/
+servers:
+- url: https://api.videoamp.dev
+  description: Production. The VideoAmp CLI also references `staging` and `preprod` environments (api.staging.videoamp.dev, api.preprod.videoamp.dev), but neither resolves publicly (DNS NXDOMAIN as of 2026-08-02), so they are not listed as callable servers.
+security:
+- videoampOAuth: []
+tags:
+- name: dataStreamTypes
+  description: dataStreamTypes operations.
+paths:
+  /v1alpha/dataStreamTypes:
+    get:
+      operationId: data_stream_type_list
+      summary: List Data Stream Types
+      tags:
+      - dataStreamTypes
+      description: '### What
+
+
+        Returns the catalog of supported Data Stream types. Each entry includes `name` (the kebab-case URL identifier), `enum_value` (the `dataStream.type` enum form), `display_name` (a human-readable label), and `description` (long-form prose tuned for LLM retrieval). The canonical `fields` schema is omitted — call `GET /dataStreamTypes/{dataStreamTypeName}` to retrieve it.
+
+
+        ### Why
+
+
+        Lets agents and UIs enumerate the types VideoAmp ingests. The list response is rich enough for an agent to reason about which type a provider feed belongs to without a second round trip per entry; UIs that only need a picker can read just the `name` and `display_name` fields they care about.
+
+
+        ### When
+
+
+        Before creating a new Data Stream — agents use this to choose a `type`; UIs use it to populate the type selector.
+
+
+        ### How
+
+
+        Authorization: any authenticated caller.
+
+
+        ### Related operations
+
+
+        - `GET /v1alpha/dataStreamTypes/{dataStreamTypeName}` — retrieve the full definition for one type, including the canonical `fields` schema.
+
+        - `POST /v1alpha/dataStreams` — create a new Data Stream; pass one of these `enum_value`s as `dataStream.type`.'
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: data_stream_type_list
+  /v1alpha/dataStreamTypes/{dataStreamTypeName}:
+    get:
+      operationId: data_stream_type_get
+      summary: Get Data Stream Type
+      tags:
+      - dataStreamTypes
+      description: '### What
+
+
+        Returns the canonical definition of a single Data Stream type — display metadata (`name`, `enum_value`, `display_name`, `description`) and the canonical `fields` schema (each with `name`, `description`, `type`, `required`, `examples`, `aliases`).
+
+
+        ### Why
+
+
+        Mapping agents and onboarding UIs use this to learn the field set a provider feed must satisfy. Required fields gate transitioning the parent Data Stream to `PROVISIONING`.
+
+
+        ### When
+
+
+        After picking a `type` from the list endpoint — fetch the full definition once to drive the schema-mapping flow.
+
+
+        ### How
+
+
+        Authorization: any authenticated caller.
+
+
+        ### Related operations
+
+
+        - `GET /v1alpha/dataStreamTypes` — enumerate available types.'
+      parameters:
+      - name: dataStreamTypeName
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Kebab-case identifier for the type. Obtainable from 'GET /dataStreamTypes' (each entry's 'name').
+      responses:
+        '200':
+          description: Successful response.
+        '401':
+          description: Unauthorized — missing or invalid bearer token.
+      x-videoamp-cli-command: data_stream_type_get
+components:
+  securitySchemes:
+    videoampOAuth:
+      type: oauth2
+      description: OAuth 2.0 / OIDC via VideoAmp's Auth0 tenant at https://login.videoamp.com. Verified from https://login.videoamp.com/.well-known/openid-configuration (HTTP 200) and https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp (HTTP 200, RFC 9728). Bearer tokens are presented in the Authorization header.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.videoamp.com/authorize
+          tokenUrl: https://login.videoamp.com/oauth/token
+          refreshUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://login.videoamp.com/oauth/device/code
+          tokenUrl: https://login.videoamp.com/oauth/token
+          scopes:
+            openid: OIDC subject identifier
+            profile: Basic profile claims
+            email: Email address claim
+            offline_access: Issue a refresh token
+externalDocs:
+  url: https://docs.videoamp.dev
+  description: VideoAmp Public API documentation (Auth0-gated)
+x-evidence:
+  method: derived
+  derived_from: github.com/VideoAmp/cli release v0.148.32 (videoamp_v0.148.32_darwin_arm64.tar.gz)
+  extraction: videoamp --help; videoamp <command> --help
+  fetched: '2026-08-02'
+  operations: 118
+  parameters: 295
+  anonymous_openapi_published: false
+  notes: docs.videoamp.dev returns HTTP 302 to Auth0 for every path; api.videoamp.dev returns 404 for /openapi.json, /swagger.json, /v1/openapi.json, /api-docs, /docs, /redoc.

@@ -1,0 +1,423 @@
+{
+  "item": [
+    {
+      "id": "1d396cec-aadf-4ae1-9a66-da00d22bd5cf",
+      "name": "consents",
+      "description": {
+        "content": "consents operations.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "cd15214d-5326-486c-8fc9-b00b2137680f",
+          "name": "List Consents",
+          "request": {
+            "name": "List Consents",
+            "description": {
+              "content": "### What\n\nReturns a paginated list of consent records where recipients have authorized your organization to share resources with them. Each consent contains recipient identity, status, organization names, and optionally the recipient's organizational hierarchy path.\n\n### Why\n\nEnables discovery of which recipients have consented to receive shared data from your organization. Essential for pre-share validation (verifying consent exists before creating shares), building consent management dashboards, and searching for specific partner organizations by name or type.\n\n### When\n\n- Verify consent exists before calling POST /v1/shares or POST /v2/shares to create new shares\n- Build partner management UIs displaying all consenting recipients\n- Search for specific recipients by name using q=recipient_name filters\n- Filter recipients by organizational type using q=recipient_kind filters\n\nUse POST /v1/shares to create shares with consenting recipients. Use GET /v1/shares to view existing shares.\n\n### How\n\nRequires valid JWT authentication. Results are automatically filtered to show only consents where your organization is the approved sharer. Use pageSize and pageToken for pagination. Use q parameter to filter by recipient_kind (eq, in) or recipient_name (startswith, endswith, contains).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "consents"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "fetchRecipientAncestorPath",
+                  "value": "<boolean>",
+                  "description": "When true, populates the recipient_ancestor_path field in each consent showing the recipient's full position in the organizational hierarchy (e.g., 'Organization > Ad Agency > Advertiser'). Useful for consent dashboards that need to display organizational context. May increase response time for large result sets - omit if hierarchy information is not needed. (default true)"
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<string>",
+                  "description": "Query param pageSize specifies the number of results to include in a page of results."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageToken",
+                  "value": "<string>",
+                  "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+                },
+                {
+                  "disabled": false,
+                  "key": "q",
+                  "value": "<string>",
+                  "description": "Advanced query filter for attribute-based filtering. Supported attributes: - **recipient_kind**: Filter by recipient type. Operators: eq, in. Values: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, PRODUCT. - **recipient_name**: Filter by recipient organization name. Operators: startswith, endswith, contains. Multiple q parameters are AND'd by default. Use OR keyword between conditions for OR logic. Examples: - ?q=recipient_kind eq ADVERTISER - ?q=recipient_kind in ADVERTISER,AD_AGENCY - ?q=recipient_name startswith Acme - ?q=recipient_name contains Media OR recipient_kind eq AD_AGENCY"
+                },
+                {
+                  "disabled": false,
+                  "key": "q",
+                  "value": "<string>",
+                  "description": "Advanced query filter for attribute-based filtering. Supported attributes: - **recipient_kind**: Filter by recipient type. Operators: eq, in. Values: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, PRODUCT. - **recipient_name**: Filter by recipient organization name. Operators: startswith, endswith, contains. Multiple q parameters are AND'd by default. Use OR keyword between conditions for OR logic. Examples: - ?q=recipient_kind eq ADVERTISER - ?q=recipient_kind in ADVERTISER,AD_AGENCY - ?q=recipient_name startswith Acme - ?q=recipient_name contains Media OR recipient_kind eq AD_AGENCY"
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "dbba4a34-7103-404e-8cc0-7e901db29d2f",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "consents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7168045e-69a2-45ad-ab21-e24bdc669168",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "consents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f01d3320-e6e8-4e25-ad52-3332f8684eaa",
+          "name": "List Consents (UUID)",
+          "request": {
+            "name": "List Consents (UUID)",
+            "description": {
+              "content": "### What\n\nReturns a paginated list of consent records where recipients have authorized your organization to share resources with them. Sharer and recipient are identified exclusively by UUID.\n\n### Why\n\nEnables discovery of which recipients have consented to receive shared data from your organization using UUID identifiers. Essential for pre-share validation (verifying consent exists before creating shares via POST /v3/shares), building consent management dashboards, and searching for specific partner organizations by name or type.\n\n### When\n\n- Verify a recipient has consented before creating a share via POST /v3/shares\n- Build consent management dashboards showing all consented partners\n- Search for specific recipients by name or organizational type\n- Audit consent relationships for compliance reporting\n\nUse GET /v1/consents for composite (kind+id) identifiers.\n\n### How\n\nRequires valid JWT authentication. Use optional query parameters for filtering and pagination. Results are automatically filtered to show only consents where your organization is the sharer.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v3",
+                "consents"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "fetchRecipientAncestorPath",
+                  "value": "<boolean>",
+                  "description": "When true, populates the recipient_ancestor_path field in each consent showing the recipient's full position in the organizational hierarchy (e.g., 'Organization > Ad Agency > Advertiser'). Useful for consent dashboards that need to display organizational context. May increase response time for large result sets - omit if hierarchy information is not needed. (default true)"
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<string>",
+                  "description": "Query param pageSize specifies the number of results to include in a page of results."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageToken",
+                  "value": "<string>",
+                  "description": "Query param 'pageToken' specifies the value of the next page to retrieve within a paginated set of results. Valid values can be found in paginated responses that include field 'next_page_token'. When requesting the next page, additional query parameters should NOT change between page requests."
+                },
+                {
+                  "disabled": false,
+                  "key": "q",
+                  "value": "<string>",
+                  "description": "Advanced query filter for attribute-based filtering. Supported attributes: - **recipient_kind**: Filter by recipient type. Operators: eq, in. Values: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, PRODUCT. - **recipient_name**: Filter by recipient organization name. Operators: startswith, endswith, contains. Multiple q parameters are AND'd by default. Use OR keyword between conditions for OR logic. Examples: - ?q=recipient_kind eq ADVERTISER - ?q=recipient_kind in ADVERTISER,AD_AGENCY - ?q=recipient_name startswith Acme - ?q=recipient_name contains Media OR recipient_kind eq AD_AGENCY"
+                },
+                {
+                  "disabled": false,
+                  "key": "q",
+                  "value": "<string>",
+                  "description": "Advanced query filter for attribute-based filtering. Supported attributes: - **recipient_kind**: Filter by recipient type. Operators: eq, in. Values: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, PRODUCT. - **recipient_name**: Filter by recipient organization name. Operators: startswith, endswith, contains. Multiple q parameters are AND'd by default. Use OR keyword between conditions for OR logic. Examples: - ?q=recipient_kind eq ADVERTISER - ?q=recipient_kind in ADVERTISER,AD_AGENCY - ?q=recipient_name startswith Acme - ?q=recipient_name contains Media OR recipient_kind eq AD_AGENCY"
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1a191e5f-1095-4b60-914b-82b2b4ddb2a6",
+              "name": "Successful response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v3",
+                    "consents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f6c53e03-d357-45ef-a81c-21ad0ea620d7",
+              "name": "Unauthorized — missing or invalid bearer token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v3",
+                    "consents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchRecipientAncestorPath",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageToken",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.videoamp.dev",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "scope",
+        "value": "openid profile email offline_access"
+      },
+      {
+        "key": "redirect_uri",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://login.videoamp.com/oauth/token"
+      },
+      {
+        "key": "authUrl",
+        "value": "https://login.videoamp.com/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "authorization_code"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "fa8d453a-00ad-440d-a687-ad222b49043a",
+    "name": "VideoAmp Public Consents API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.\n\n**Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI's `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary's own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.\n\n**Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.\n\nContact Support:\n Name: VideoAmp Support\n Email: support@videoamp.com",
+      "type": "text/plain"
+    }
+  }
+}

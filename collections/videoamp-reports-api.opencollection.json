@@ -1,0 +1,78 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "VideoAmp Public Reports API",
+    "version": "2026-07-31"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://login.videoamp.com/authorize",
+      "accessTokenUrl": "https://login.videoamp.com/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "reports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Scoped Query for Report",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.videoamp.dev/v1alpha/reports/:reportId:createQuery",
+            "params": [
+              {
+                "name": "reportId",
+                "value": "",
+                "type": "path",
+                "description": "report_id is the UUID of the measurement report the query targets. Server-side, advertiser_id and report_id are bound as Credible filterParams from this UUID — callers cannot widen scope by overriding them in the query body."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Execute a query against the report's semantic model, referencing sources and fields from report_context_search. Why: the data-fetching endpoint — returns a result the client renders inline as a chart or table. When: call AFTER report_context_search so the query is grounded in real entities. How: use exact field paths from the context response; never invent names. Prefer a named view over an ad-hoc aggregation when one matches — views carry visualization annotations that drive rendering. For a ch"
+        },
+        {
+          "info": {
+            "name": "Search Report Semantic Context",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.videoamp.dev/v1alpha/reports/:reportId:searchContext",
+            "params": [
+              {
+                "name": "reportId",
+                "value": "",
+                "type": "path",
+                "description": "report_id is the UUID of the measurement report whose semantic model (dimensions, measures, views) the caller wants ranked against natural_language_query. Used server-side to scope the search to this single report — the LLM never supplies advertiser_id or report_id filters directly."
+              },
+              {
+                "name": "naturalLanguageQuery",
+                "value": "",
+                "type": "query",
+                "description": "Natural language query from the end user (what the user typed in the chat). Used by the semantic search layer to rank relevant dimensions, measures, and views. Phrase as a complete sentence or question describing the analysis to perform (e.g. \"reach by audience segment over the last week\")."
+              }
+            ]
+          },
+          "docs": "Retrieve semantic context (dimensions, measures, views, documentation) scoped to a single measurement report, ranked by the user's natural-language query. Why: The semantic layer describes the report's metrics and dimensions in natural language and maps them to exact field paths. Calling this first prevents hallucinating field names in a follow-up query. When: Call FIRST whenever the user asks a data question about the report. How: Pass the user's question verbatim as naturalLanguageQuery — phra"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
