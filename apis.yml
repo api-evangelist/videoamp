@@ -13,7 +13,7 @@ image: https://videoamp.com/wp-content/uploads/2020/06/5e8e31e378cb39dc533b5e00_
 url: https://raw.githubusercontent.com/api-evangelist/videoamp/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-specificationVersion: '0.21'
+specificationVersion: '0.23'
 created: '2026-08-02'
 modified: '2026-08-02'
 tags:
