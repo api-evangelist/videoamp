@@ -9,6 +9,18 @@ description: >-
   campaigns, media plans, inventories and rate cards, reach curves, ad and content measurement, data streams
   and ingestion, and cross-organization data sharing and consent — plus a first-party CLI and a hosted remote
   MCP server so agents can drive the same operations.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://videoamp.com/wp-content/uploads/2020/06/5e8e31e378cb39dc533b5e00_blog_covid19-response.jpg
 url: https://raw.githubusercontent.com/api-evangelist/videoamp/refs/heads/main/apis.yml
 x-type: company
