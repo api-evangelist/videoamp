@@ -29,15 +29,15 @@ specificationVersion: '0.23'
 created: '2026-08-02'
 modified: '2026-08-02'
 tags:
-  - media-measurement
+  - Media Measurement
   - Advertising
-  - adtech
+  - AdTech
   - tv-currency
-  - audience-measurement
-  - media-planning
-  - streaming
+  - Audience Measurement
+  - Media Planning
+  - Streaming
   - Attribution
-  - data-collaboration
+  - Data Collaboration
   - MCP
   - agent-native
 tags_raw:
@@ -64,7 +64,7 @@ apis:
   tags:
   - MCP
   - agent-native
-  - media-measurement
+  - Media Measurement
   tags_raw:
   - mcp
   - agent-native
@@ -166,7 +166,7 @@ apis:
   humanURL: https://docs.videoamp.dev
   baseURL: https://api.videoamp.dev
   tags:
-  - consents
+  - Consents
   tags_raw:
   - consents
   properties:
@@ -194,7 +194,7 @@ apis:
   humanURL: https://docs.videoamp.dev
   baseURL: https://api.videoamp.dev
   tags:
-  - content
+  - Content
   tags_raw:
   - content
   properties:
@@ -247,7 +247,8 @@ apis:
   description: dataStreams operations.
   humanURL: https://docs.videoamp.dev
   baseURL: https://api.videoamp.dev
-  tags: []
+  tags:
+  - Data Streams
   tags_raw:
   - dataStreams
   properties:
@@ -302,7 +303,7 @@ apis:
   humanURL: https://docs.videoamp.dev
   baseURL: https://api.videoamp.dev
   tags:
-  - inventories
+  - Inventories
   tags_raw:
   - inventories
   properties:
@@ -330,7 +331,7 @@ apis:
   humanURL: https://docs.videoamp.dev
   baseURL: https://api.videoamp.dev
   tags:
-  - library
+  - Library
   tags_raw:
   - library
   properties:
