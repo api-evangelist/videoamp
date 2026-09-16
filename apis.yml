@@ -255,34 +255,6 @@ apis:
     url: data-model/videoamp-data-model.yml
   - type: AgenticAccess
     url: agentic-access/videoamp-agentic-access.yml
-- aid: videoamp:videoamp-datastreams-api
-  name: VideoAmp Data Streams API
-  description: dataStreams operations.
-  humanURL: https://docs.videoamp.dev
-  baseURL: https://api.videoamp.dev
-  tags:
-  - Data Streams
-  tags_raw:
-  - dataStreams
-  properties:
-  - type: OpenAPI
-    url: openapi/videoamp-datastreams-api-openapi.yml
-  - type: Documentation
-    url: https://docs.videoamp.dev
-  - type: APIReference
-    url: https://docs.videoamp.dev
-  - type: Authentication
-    url: authentication/videoamp-authentication.yml
-  - type: OAuthScopes
-    url: scopes/videoamp-scopes.yml
-  - type: ErrorCatalog
-    url: errors/videoamp-problem-types.yml
-  - type: Conventions
-    url: conventions/videoamp-conventions.yml
-  - type: DataModel
-    url: data-model/videoamp-data-model.yml
-  - type: AgenticAccess
-    url: agentic-access/videoamp-agentic-access.yml
 - aid: videoamp:videoamp-datastreamtypes-api
   name: VideoAmp Data Stream Types API
   description: dataStreamTypes operations.
@@ -462,6 +434,32 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/videoamp-shares-api-openapi.yml
+  - type: Documentation
+    url: https://docs.videoamp.dev
+  - type: APIReference
+    url: https://docs.videoamp.dev
+  - type: Authentication
+    url: authentication/videoamp-authentication.yml
+  - type: OAuthScopes
+    url: scopes/videoamp-scopes.yml
+  - type: ErrorCatalog
+    url: errors/videoamp-problem-types.yml
+  - type: Conventions
+    url: conventions/videoamp-conventions.yml
+  - type: DataModel
+    url: data-model/videoamp-data-model.yml
+  - type: AgenticAccess
+    url: agentic-access/videoamp-agentic-access.yml
+- aid: videoamp:videoamp-data-streams-api
+  name: VideoAmp Data Streams API
+  description: dataStreams operations.
+  humanURL: https://github.com/VideoAmp/cli
+  baseURL: https://api.videoamp.dev/v1/mcp
+  tags:
+  - Data Streams
+  properties:
+  - type: OpenAPI
+    url: openapi/videoamp-data-streams-api-openapi.yml
   - type: Documentation
     url: https://docs.videoamp.dev
   - type: APIReference
