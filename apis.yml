@@ -428,7 +428,7 @@ apis:
   humanURL: https://docs.videoamp.dev
   baseURL: https://api.videoamp.dev
   tags:
-  - Shares
+  - Share
   tags_raw:
   - shares
   properties:
