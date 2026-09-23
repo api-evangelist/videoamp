@@ -3,13 +3,7 @@ info:
   title: VideoAmp Public Data Streams API
   version: '2026-07-31'
   summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
-  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
-
-
-    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
-
-
-    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  description: The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
   contact:
     name: VideoAmp Support
     email: support@videoamp.com
@@ -21,7 +15,7 @@ servers:
 security:
 - videoampOAuth: []
 tags:
-- name: dataStreams
+- name: Data Streams
   description: dataStreams operations.
 paths:
   /v1alpha/dataStreams:
@@ -29,7 +23,7 @@ paths:
       operationId: data_stream_create
       summary: Create Data Stream
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -102,7 +96,7 @@ paths:
       operationId: data_stream_list
       summary: List Data Streams
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -199,7 +193,7 @@ paths:
       operationId: data_stream_get
       summary: Get Data Stream
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -247,7 +241,7 @@ paths:
       operationId: data_stream_update
       summary: Update Data Stream
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -305,7 +299,7 @@ paths:
       operationId: delivery_config_get
       summary: Get Delivery Config
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -355,7 +349,7 @@ paths:
       operationId: delivery_config_update
       summary: Upsert Delivery Config
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -414,7 +408,7 @@ paths:
       operationId: delivery_config_approve
       summary: Approve Delivery Config
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -476,7 +470,7 @@ paths:
       operationId: delivery_config_access_confirm
       summary: Confirm Delivery Config Access
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -532,7 +526,7 @@ paths:
       operationId: delivery_config_upload_url_create
       summary: Create Upload URL
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -596,7 +590,7 @@ paths:
       operationId: delivery_config_file_delete
       summary: Delete Uploaded File
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -656,7 +650,7 @@ paths:
       operationId: delivery_config_uploaded_files_get
       summary: List Uploaded Files
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -707,7 +701,7 @@ paths:
       operationId: delivery_inspection_create
       summary: Create Delivery Inspection
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -768,7 +762,7 @@ paths:
       operationId: delivery_inspection_list
       summary: List Delivery Inspections
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -829,7 +823,7 @@ paths:
       operationId: delivery_inspection_get
       summary: Get Delivery Inspection
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -888,7 +882,7 @@ paths:
       operationId: delivery_inspection_files_list
       summary: List Delivery Inspection Files
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -953,7 +947,7 @@ paths:
       operationId: ingestion_list
       summary: List Ingestions
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -1012,7 +1006,7 @@ paths:
       operationId: schema_mapping_get
       summary: Get Schema Mapping
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -1060,7 +1054,7 @@ paths:
       operationId: schema_mapping_update
       summary: Upsert Schema Mapping
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 
@@ -1119,7 +1113,7 @@ paths:
       operationId: schema_mapping_approve
       summary: Approve Schema Mapping
       tags:
-      - dataStreams
+      - Data Streams
       description: '### What
 
 

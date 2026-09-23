@@ -3,13 +3,7 @@ info:
   title: VideoAmp Public Shares API
   version: '2026-07-31'
   summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
-  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
-
-
-    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
-
-
-    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  description: The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
   contact:
     name: VideoAmp Support
     email: support@videoamp.com
@@ -21,7 +15,7 @@ servers:
 security:
 - videoampOAuth: []
 tags:
-- name: shares
+- name: Shares
   description: shares operations.
 paths:
   /v1/shares:
@@ -29,7 +23,7 @@ paths:
       operationId: share_list
       summary: List Shares
       tags:
-      - shares
+      - Shares
       description: '### What
 
 
@@ -108,8 +102,61 @@ paths:
       operationId: share_resource_create
       summary: Create Share
       tags:
-      - shares
-      description: "### What\n\nCreates a share granting a single recipient access to a single audience resource. Returns the complete Share object including recipients, resources, status, and audit trail.\n\n### Why\n\nProvides simple single-recipient, single-resource sharing for straightforward use cases. Returns full share details immediately for verification without requiring an additional GET call. Ideal for simple integrations and UI-driven workflows.\n\n### When\n\n- Share one audience with one recipient and verify details in the response\n- Simple integrations that share one resource at a time\n- UI-driven sharing where user selects one audience and one recipient\n\nFor bulk operations (multiple recipients or resources), use POST /v2/shares instead. Verify consent exists via GET /v1/consents before sharing.\n\n### How\n\nRequires valid JWT authentication. Provide share object with recipient (kind and id), resource (legacy integer identifier), optional name, and optional permissions. Set fetch_recipient_ancestor_path=true to include organizational hierarchy in response. Returns 400 for validation errors, 403 if not authorized, 409 if share already exists.\n\n### Example\n\n```json\n{\n  \"recipient\": {\"id\": \"10\", \"kind\": \"ORGANIZATION\"},\n  \"resource\": {\"id\": \"277777\"},\n  \"name\": \"Share to Partner Org\"\n}\n```\n\n**Notes:**\n- `resource.id`: Use the audience's legacy integer ID (`audienceId` from v1 API, or `legacy_id` from v2 API), not the UUID\n- `recipient.kind`: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, or PRODUCT"
+      - Shares
+      description: '### What
+
+
+        Creates a share granting a single recipient access to a single audience resource. Returns the complete Share object including recipients, resources, status, and audit trail.
+
+
+        ### Why
+
+
+        Provides simple single-recipient, single-resource sharing for straightforward use cases. Returns full share details immediately for verification without requiring an additional GET call. Ideal for simple integrations and UI-driven workflows.
+
+
+        ### When
+
+
+        - Share one audience with one recipient and verify details in the response
+
+        - Simple integrations that share one resource at a time
+
+        - UI-driven sharing where user selects one audience and one recipient
+
+
+        For bulk operations (multiple recipients or resources), use POST /v2/shares instead. Verify consent exists via GET /v1/consents before sharing.
+
+
+        ### How
+
+
+        Requires valid JWT authentication. Provide share object with recipient (kind and id), resource (legacy integer identifier), optional name, and optional permissions. Set fetch_recipient_ancestor_path=true to include organizational hierarchy in response. Returns 400 for validation errors, 403 if not authorized, 409 if share already exists.
+
+
+        ### Example
+
+
+        ```json
+
+        {
+
+        "recipient": {"id": "10", "kind": "ORGANIZATION"},
+
+        "resource": {"id": "277777"},
+
+        "name": "Share to Partner Org"
+
+        }
+
+        ```
+
+
+        **Notes:**
+
+        - `resource.id`: Use the audience''s legacy integer ID (`audienceId` from v1 API, or `legacy_id` from v2 API), not the UUID
+
+        - `recipient.kind`: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, or PRODUCT'
       parameters:
       - name: fetchRecipientAncestorPath
         in: query
@@ -141,7 +188,7 @@ paths:
       operationId: share_audience_revocation_cancel
       summary: 'Cancel Bulk Audience Revocation (Step 2b: Abort)'
       tags:
-      - shares
+      - Shares
       description: '### Workflow
 
 
@@ -204,7 +251,7 @@ paths:
       operationId: share_audience_revocation_confirm
       summary: 'Confirm Bulk Audience Revocation (Step 2a: Execute)'
       tags:
-      - shares
+      - Shares
       description: '### Workflow
 
 
@@ -265,7 +312,7 @@ paths:
       operationId: share_audience_recipient_revoke
       summary: Initiate Bulk Audience Revocation (Step 1 of 2)
       tags:
-      - shares
+      - Shares
       description: '### Workflow
 
 
@@ -323,7 +370,7 @@ paths:
       operationId: share_delete
       summary: Revoke Share
       tags:
-      - shares
+      - Shares
       description: '### What
 
 
@@ -388,7 +435,7 @@ paths:
       operationId: share_get
       summary: Get Share
       tags:
-      - shares
+      - Shares
       description: '### What
 
 
@@ -454,8 +501,63 @@ paths:
       operationId: share_resources_create
       summary: Bulk Create Shares
       tags:
-      - shares
-      description: "### What\n\nCreates a new resource share granting one or more recipients access to one or more resources such as audiences. Supports bulk operations with up to 100 recipients and 100 resources per request.\n\n### Why\n\nEnables organizations to securely share data assets with partners, agencies, and advertisers within the VideoAmp ecosystem. Essential for cross-organizational collaboration on audience targeting, campaign planning, and measurement. Consent-based sharing ensures data governance compliance.\n\n### When\n\n- Share audiences with agency partners for campaign activation\n- Grant advertiser access to custom audience segments\n- Distribute measurement audiences to multiple recipients simultaneously\n- Establish data sharing relationships for collaborative analytics\n\nUse POST /v1/shares for single-recipient sharing. Use GET /v1/shares to discover existing shares. Use DELETE /v1/shares/{id} to revoke access.\n\n### How\n\nRequires valid JWT authentication. Provide recipients array with kind and id for each recipient, resources array with legacy integer identifiers, optional name, and optional permissions beyond read access. Pre-approval may be required for certain resource types - contact VideoAmp support for onboarding. Returns share ID for tracking. Returns 400 for validation errors, 403 for unauthorized sharers.\n\n### Example\n\n```json\n{\n  \"recipients\": [{\"id\": \"10\", \"kind\": \"ORGANIZATION\"}],\n  \"resources\": [\"277777\"],\n  \"name\": \"Share to Partner Org\"\n}\n```\n\n**Notes:**\n- `resources`: Use the audience's legacy integer ID (`audienceId` from v1 API, or `legacy_id` from v2 API), not UUIDs\n- `recipients[].kind`: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, or PRODUCT"
+      - Shares
+      description: '### What
+
+
+        Creates a new resource share granting one or more recipients access to one or more resources such as audiences. Supports bulk operations with up to 100 recipients and 100 resources per request.
+
+
+        ### Why
+
+
+        Enables organizations to securely share data assets with partners, agencies, and advertisers within the VideoAmp ecosystem. Essential for cross-organizational collaboration on audience targeting, campaign planning, and measurement. Consent-based sharing ensures data governance compliance.
+
+
+        ### When
+
+
+        - Share audiences with agency partners for campaign activation
+
+        - Grant advertiser access to custom audience segments
+
+        - Distribute measurement audiences to multiple recipients simultaneously
+
+        - Establish data sharing relationships for collaborative analytics
+
+
+        Use POST /v1/shares for single-recipient sharing. Use GET /v1/shares to discover existing shares. Use DELETE /v1/shares/{id} to revoke access.
+
+
+        ### How
+
+
+        Requires valid JWT authentication. Provide recipients array with kind and id for each recipient, resources array with legacy integer identifiers, optional name, and optional permissions beyond read access. Pre-approval may be required for certain resource types - contact VideoAmp support for onboarding. Returns share ID for tracking. Returns 400 for validation errors, 403 for unauthorized sharers.
+
+
+        ### Example
+
+
+        ```json
+
+        {
+
+        "recipients": [{"id": "10", "kind": "ORGANIZATION"}],
+
+        "resources": ["277777"],
+
+        "name": "Share to Partner Org"
+
+        }
+
+        ```
+
+
+        **Notes:**
+
+        - `resources`: Use the audience''s legacy integer ID (`audienceId` from v1 API, or `legacy_id` from v2 API), not UUIDs
+
+        - `recipients[].kind`: ORGANIZATION, ADVERTISER, AD_AGENCY, BRAND, SUB_BRAND, or PRODUCT'
       requestBody:
         required: true
         description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp share_resources_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
@@ -478,8 +580,63 @@ paths:
       operationId: share_resources_v3_create
       summary: Bulk Create Shares (UUID Recipients)
       tags:
-      - shares
-      description: "### What\n\nCreates a new resource share granting one or more recipients access to one or more resources such as audiences. Supports bulk operations with up to 100 recipients and 100 resources per request. Recipients are identified by their UUID.\n\n### Why\n\nEnables organizations to securely share data assets with partners, agencies, and advertisers within the VideoAmp ecosystem using UUID-based recipient identifiers. Essential for cross-organizational collaboration on audience targeting, campaign planning, and measurement.\n\n### When\n\n- Share audiences with agency partners for campaign activation\n- Grant advertiser access to custom audience segments\n- Distribute measurement audiences to multiple recipients simultaneously\n- Establish data sharing relationships for collaborative analytics\n\nUse POST /v2/shares for composite (kind+id) recipient identifiers. Use GET /v1/shares to discover existing shares. Use DELETE /v1/shares/{id} to revoke access.\n\n### How\n\nRequires valid JWT authentication. Provide recipients array with UUID identifiers for each recipient, resources array with legacy integer identifiers, optional name, and optional permissions beyond read access. Returns share ID for tracking. Returns 400 for validation errors, 403 for unauthorized sharers.\n\n### Example\n\n```json\n{\n  \"recipients\": [\"550e8400-e29b-41d4-a716-446655440000\"],\n  \"resources\": [\"277777\"],\n  \"name\": \"Share to Partner Org\"\n}\n```\n\n**Notes:**\n- `recipients`: UUID v4 identifiers for each recipient entity\n- `resources`: Use the audience's legacy integer ID (`audienceId` from v1 API, or `legacy_id` from v2 API), not UUIDs"
+      - Shares
+      description: '### What
+
+
+        Creates a new resource share granting one or more recipients access to one or more resources such as audiences. Supports bulk operations with up to 100 recipients and 100 resources per request. Recipients are identified by their UUID.
+
+
+        ### Why
+
+
+        Enables organizations to securely share data assets with partners, agencies, and advertisers within the VideoAmp ecosystem using UUID-based recipient identifiers. Essential for cross-organizational collaboration on audience targeting, campaign planning, and measurement.
+
+
+        ### When
+
+
+        - Share audiences with agency partners for campaign activation
+
+        - Grant advertiser access to custom audience segments
+
+        - Distribute measurement audiences to multiple recipients simultaneously
+
+        - Establish data sharing relationships for collaborative analytics
+
+
+        Use POST /v2/shares for composite (kind+id) recipient identifiers. Use GET /v1/shares to discover existing shares. Use DELETE /v1/shares/{id} to revoke access.
+
+
+        ### How
+
+
+        Requires valid JWT authentication. Provide recipients array with UUID identifiers for each recipient, resources array with legacy integer identifiers, optional name, and optional permissions beyond read access. Returns share ID for tracking. Returns 400 for validation errors, 403 for unauthorized sharers.
+
+
+        ### Example
+
+
+        ```json
+
+        {
+
+        "recipients": ["550e8400-e29b-41d4-a716-446655440000"],
+
+        "resources": ["277777"],
+
+        "name": "Share to Partner Org"
+
+        }
+
+        ```
+
+
+        **Notes:**
+
+        - `recipients`: UUID v4 identifiers for each recipient entity
+
+        - `resources`: Use the audience''s legacy integer ID (`audienceId` from v1 API, or `legacy_id` from v2 API), not UUIDs'
       requestBody:
         required: true
         description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp share_resources_v3_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.

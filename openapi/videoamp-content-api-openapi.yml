@@ -3,13 +3,7 @@ info:
   title: VideoAmp Public Content API
   version: '2026-07-31'
   summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
-  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
-
-
-    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
-
-
-    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  description: The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
   contact:
     name: VideoAmp Support
     email: support@videoamp.com
@@ -21,7 +15,7 @@ servers:
 security:
 - videoampOAuth: []
 tags:
-- name: content
+- name: Content
   description: content operations.
 paths:
   /external/v1/content/episodes:
@@ -29,7 +23,7 @@ paths:
       operationId: episode_list
       summary: List Episodes
       tags:
-      - content
+      - Content
       description: Retrieve a filtered list of TV episodes with associated metadata. Use this endpoint to discover available episode inventory for content measurement campaigns, build episode selection interfaces, or perform bulk analysis of programming content. Supports filtering by network, program, and currency of record to match specific measurement requirements.
       parameters:
       - name: currencyOfRecord
@@ -81,7 +75,7 @@ paths:
       operationId: episode_get
       summary: Get Episode
       tags:
-      - content
+      - Content
       description: Retrieve detailed metadata for a specific TV episode by ID. Use this endpoint to access episode-specific information needed for content measurement, advertising campaign planning, or media inventory analysis. Essential for workflows that require episode-level granularity in viewership reporting.
       parameters:
       - name: episodeId
@@ -101,7 +95,7 @@ paths:
       operationId: media_group_list
       summary: List Network MediaGroups
       tags:
-      - content
+      - Content
       description: Return a list of network media groups with metadata available to query networks.
       parameters:
       - name: name
@@ -135,7 +129,7 @@ paths:
       operationId: content_metric_compatibility_get
       summary: List Metric and Dimension Types
       tags:
-      - content
+      - Content
       description: Return the compatibility matrix of supported metrics and dimensions for content measurement requests. Use this endpoint before creating content metrics to validate your measurement configuration and discover available combinations. Essential for building dynamic UI forms or validating programmatic measurement requests.
       responses:
         '200':
@@ -148,7 +142,7 @@ paths:
       operationId: content_metric_create
       summary: Create Metrics
       tags:
-      - content
+      - Content
       description: Initiates an asynchronous content metric request that returns a universally unique identifier (uuid). The Get Content Metrics Request endpoint can be polled to obtain the status of the async request and, once complete, the output location in the client's configured S3 bucket.
       requestBody:
         required: true
@@ -168,7 +162,7 @@ paths:
       operationId: content_metric_get
       summary: Get Metrics
       tags:
-      - content
+      - Content
       description: Given a valid content metrics uuid, returns the status of the request and, if complete, the s3 location of the output CSV file.
       parameters:
       - name: id
@@ -187,7 +181,7 @@ paths:
       operationId: network_list
       summary: List Networks
       tags:
-      - content
+      - Content
       description: Returns a list of networks with metadata available for use.
       parameters:
       - name: currencyOfRecord
@@ -243,7 +237,7 @@ paths:
       operationId: network_get
       summary: Get Network
       tags:
-      - content
+      - Content
       description: Returns the network details provided an id.
       parameters:
       - name: id
@@ -262,7 +256,7 @@ paths:
       operationId: program_list
       summary: List Programs
       tags:
-      - content
+      - Content
       description: Returns a list of programs with metadata available for use.
       parameters:
       - name: currencyOfRecord
@@ -316,7 +310,7 @@ paths:
       operationId: program_get
       summary: Get Program
       tags:
-      - content
+      - Content
       description: Returns the program details provided an id.
       parameters:
       - name: programId

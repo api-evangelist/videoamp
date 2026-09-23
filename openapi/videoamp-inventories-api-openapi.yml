@@ -3,13 +3,7 @@ info:
   title: VideoAmp Public Inventories API
   version: '2026-07-31'
   summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
-  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
-
-
-    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
-
-
-    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  description: The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
   contact:
     name: VideoAmp Support
     email: support@videoamp.com
@@ -21,7 +15,7 @@ servers:
 security:
 - videoampOAuth: []
 tags:
-- name: inventories
+- name: Inventories
   description: inventories operations.
 paths:
   /v1beta/inventories:
@@ -29,7 +23,7 @@ paths:
       operationId: inventory_list
       summary: List Inventories
       tags:
-      - inventories
+      - Inventories
       description: 'Returns a paginated list of inventory sets accessible to the caller.
 
 
@@ -76,7 +70,7 @@ paths:
       operationId: inventory_get
       summary: Get Inventory
       tags:
-      - inventories
+      - Inventories
       description: 'Returns the complete inventory set definition including all titles and dimension configuration.
 
 
@@ -109,7 +103,7 @@ paths:
       operationId: inventory_update
       summary: Update Inventory Dimension Names
       tags:
-      - inventories
+      - Inventories
       description: 'Updates the dimension name labels for an inventory set''s custom parameters.
 
 
@@ -145,7 +139,7 @@ paths:
       operationId: rate_card_create
       summary: Create Rate Card
       tags:
-      - inventories
+      - Inventories
       description: 'Creates a new rate card with rates for an inventory set.
 
 
@@ -186,7 +180,7 @@ paths:
       operationId: rate_card_list
       summary: List Rate Cards
       tags:
-      - inventories
+      - Inventories
       description: 'Returns a paginated list of rate cards for an inventory set.
 
 
@@ -239,7 +233,7 @@ paths:
       operationId: rate_card_delete
       summary: Delete Rate Card
       tags:
-      - inventories
+      - Inventories
       description: 'Deletes a rate card and its rates. This action cannot be undone.
 
 
@@ -275,7 +269,7 @@ paths:
       operationId: rate_card_get
       summary: Get Rate Card
       tags:
-      - inventories
+      - Inventories
       description: 'Returns a rate card with its rates.
 
 
@@ -311,7 +305,7 @@ paths:
       operationId: rate_card_update
       summary: Update Rate Card
       tags:
-      - inventories
+      - Inventories
       description: 'Updates an existing rate card.
 
 
@@ -353,7 +347,7 @@ paths:
       operationId: reach_curve_create
       summary: Create Custom Reach Curve
       tags:
-      - inventories
+      - Inventories
       description: 'Creates a custom reach curve for use in media plan optimization. The curve is processed asynchronously — poll via GET to check status.
 
 
@@ -394,7 +388,7 @@ paths:
       operationId: reach_curve_list
       summary: List Custom Reach Curves
       tags:
-      - inventories
+      - Inventories
       description: 'Returns a paginated list of custom reach curves for an inventory set.
 
 
@@ -441,7 +435,7 @@ paths:
       operationId: reach_curve_delete
       summary: Delete Custom Reach Curve
       tags:
-      - inventories
+      - Inventories
       description: 'Deletes a custom reach curve. This action cannot be undone.
 
 
@@ -477,7 +471,7 @@ paths:
       operationId: reach_curve_get
       summary: Get Custom Reach Curve
       tags:
-      - inventories
+      - Inventories
       description: 'Returns the full details of a custom reach curve including status and errors.
 
 

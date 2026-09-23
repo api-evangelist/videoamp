@@ -3,13 +3,7 @@ info:
   title: VideoAmp Public Me API
   version: '2026-07-31'
   summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
-  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
-
-
-    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
-
-
-    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  description: The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
   contact:
     name: VideoAmp Support
     email: support@videoamp.com
@@ -21,7 +15,7 @@ servers:
 security:
 - videoampOAuth: []
 tags:
-- name: me
+- name: Me
   description: me operations.
 paths:
   /v1/me:
@@ -29,7 +23,7 @@ paths:
       operationId: user_info_get
       summary: Get Current User
       tags:
-      - me
+      - Me
       description: '### What
 
 
@@ -127,7 +121,7 @@ paths:
       operationId: user_profile_update
       summary: Update User Profile (Internal Only)
       tags:
-      - me
+      - Me
       description: '### What
 
 
@@ -194,7 +188,7 @@ paths:
       operationId: user_organization_list
       summary: List All User Organizations
       tags:
-      - me
+      - Me
       description: '### What
 
 

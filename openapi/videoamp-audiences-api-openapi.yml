@@ -3,13 +3,7 @@ info:
   title: VideoAmp Public Audiences API
   version: '2026-07-31'
   summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
-  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
-
-
-    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
-
-
-    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  description: The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
   contact:
     name: VideoAmp Support
     email: support@videoamp.com
@@ -21,7 +15,7 @@ servers:
 security:
 - videoampOAuth: []
 tags:
-- name: audiences
+- name: Audiences
   description: audiences operations.
 paths:
   /v1/audiences:
@@ -29,8 +23,8 @@ paths:
       operationId: audience_create_v1
       summary: Create Audience
       tags:
-      - audiences
-      description: This endpoint triggers the create audience process. To use the creation endpoint, the current holding company must be onboarded, please contact Videoamp support for more information. To see a full list of response messages please view our [help page](https://help.videoamp.dev/en/articles/9415579-audience-service-error-codes-messages).
+      - Audiences
+      description: This endpoint triggers the create audience process. To use the creation endpoint, the current holding company must be onboarded, please contact Videoamp support for more information. To see a full list of response messages please view our help page.
       parameters:
       - name: validateOnly
         in: query
@@ -55,8 +49,8 @@ paths:
       operationId: audience_list_v1
       summary: List Audiences
       tags:
-      - audiences
-      description: This endpoint returns a list of the audiences accessible to the user. The list can be filtered and sorted. To see a full list of response messages please view our [help page](https://help.videoamp.dev/en/articles/9415579-audience-service-error-codes-messages).
+      - Audiences
+      description: This endpoint returns a list of the audiences accessible to the user. The list can be filtered and sorted. To see a full list of response messages please view our help page.
       parameters:
       - name: audienceIds
         in: query
@@ -159,8 +153,8 @@ paths:
       operationId: audience_status_list
       summary: List Statuses
       tags:
-      - audiences
-      description: This endpoint returns a list of audience creation statuses. The list can be filtered and sorted. To see a full list of response messages please view our [help page](https://help.videoamp.dev/en/articles/9415579-audience-service-error-codes-messages).
+      - Audiences
+      description: This endpoint returns a list of audience creation statuses. The list can be filtered and sorted. To see a full list of response messages please view our help page.
       parameters:
       - name: orderBy
         in: query
@@ -203,7 +197,7 @@ paths:
       operationId: audience_export_create
       summary: Create Export
       tags:
-      - audiences
+      - Audiences
       description: 'Creates a new export of the audience to a downstream destination.
 
 
@@ -220,7 +214,7 @@ paths:
 
         - Calling organization onboarded for the chosen `exportType`. Onboarding populates `available_export_types`; contact VideoAmp Support if empty for an expected destination.
 
-        - For `LIVERAMP`: submit a [HelpDesk Ticket](https://help.videoamp.dev/en/articles/10609936-submit-a-help-desk-ticket) with the audience name and your LiveRamp destination account ID/name — the API call alone does not finalize the sync.
+        - For `LIVERAMP`: submit a HelpDesk Ticket with the audience name and your LiveRamp destination account ID/name — the API call alone does not finalize the sync.
 
 
         **How**: `audienceId` accepts the audience''s UUID or legacy integer (no `-` wildcard — a concrete audience is required). Request body is the `Export` object; see its `export` field for per-type required sub-fields and the `exportType`↔`*ExportTypeSpecification` matching rule.
@@ -262,7 +256,7 @@ paths:
       operationId: audience_export_list
       summary: List Exports
       tags:
-      - audiences
+      - Audiences
       description: 'Returns the paginated list of exports configured for the given audience.
 
 
@@ -315,7 +309,7 @@ paths:
       operationId: audience_export_get
       summary: Get Export
       tags:
-      - audiences
+      - Audiences
       description: 'Returns the full details of a single export, identified by its UUID and audience.
 
 
@@ -358,8 +352,8 @@ paths:
       operationId: audience_get_v1
       summary: Get Audience
       tags:
-      - audiences
-      description: This endpoint returns the requested audience and it's details. To see a full list of response messages please view our [help page](https://help.videoamp.dev/en/articles/9415579-audience-service-error-codes-messages).
+      - Audiences
+      description: This endpoint returns the requested audience and it's details. To see a full list of response messages please view our help page.
       parameters:
       - name: id
         in: path
@@ -378,8 +372,8 @@ paths:
       operationId: audience_batch_get
       summary: Batch Get Audiences
       tags:
-      - audiences
-      description: This endpoint returns the requested audiences and their details. To see a full list of response messages please view our [help page](https://help.videoamp.dev/en/articles/9415579-audience-service-error-codes-messages).
+      - Audiences
+      description: This endpoint returns the requested audiences and their details. To see a full list of response messages please view our help page.
       parameters:
       - name: ids
         in: query
@@ -400,7 +394,7 @@ paths:
       operationId: audience_id_types_lookup
       summary: Look Up Id Types
       tags:
-      - audiences
+      - Audiences
       description: 'Returns all identifier types supported for audience ingestion and export within the authenticated organization. Each entry includes the type name, description, and ingestible/exportable flags.
 
 
@@ -443,7 +437,7 @@ paths:
       operationId: audience_create
       summary: Create Audience
       tags:
-      - audiences
+      - Audiences
       description: 'Creates a new audience resource and queues it for processing. Returns the created Audience object with `status=QUEUED`. **Status lifecycle**: `QUEUED` → `PROCESSING` → `READY` (success) or `FAILED` (error). `READY` and `FAILED` are terminal; `QUEUED` and `PROCESSING` are non-terminal. Processing typically takes 10–20 minutes for common audience types; large or complex audiences (e.g., `COMPOSITE`, `USER_PROVIDED` with high identity-match volume) may take longer. Do not treat `PROCESSING` as a terminal state.
 
 
@@ -478,7 +472,7 @@ paths:
       operationId: audience_list
       summary: List Audiences
       tags:
-      - audiences
+      - Audiences
       description: 'Returns a paginated, filterable list of audiences accessible to the calling organization. The caller''s organization context controls visibility; the `use_cases` field on each audience determines eligible downstream operations.
 
 
@@ -623,7 +617,7 @@ paths:
       operationId: audience_demographic_filter_field_lookup
       summary: Lookup Demographic Filter Fields
       tags:
-      - audiences
+      - Audiences
       description: 'Returns a paginated list of demographic filter fields available for building Custom Demographic audiences. Each entry contains the field identifier (`field`), a human-readable label, and a detailed description of the demographic attribute.
 
 
@@ -664,7 +658,7 @@ paths:
       operationId: audience_demographic_filter_value_lookup
       summary: Lookup Demographic Filter Values
       tags:
-      - audiences
+      - Audiences
       description: 'Returns a paginated list of valid values for a specific demographic filter field. Each entry contains the value identifier (`value`), a human-readable label, and a description of what the value represents.
 
 
@@ -711,7 +705,7 @@ paths:
       operationId: audience_get
       summary: Get Audience
       tags:
-      - audiences
+      - Audiences
       description: 'Returns the complete Audience resource for a single known audience ID. Use this endpoint when you already have the audience UUID or legacy integer ID and need to retrieve full details including classification, status, use_cases, owned vs. shared ownership, and the classification-specific definition object (exposure, content, composite, etc.).
 
 
@@ -739,7 +733,7 @@ paths:
       operationId: audience_update
       summary: Update Audience
       tags:
-      - audiences
+      - Audiences
       description: 'Updates an audience''s `name` and/or `description` — the only editable fields. Other attributes (classification, definition, currency of record, use cases, status) are immutable. Provide at least one of `name` or `description`; an empty request returns 400. Returns the full updated Audience.
 
 

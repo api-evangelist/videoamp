@@ -3,13 +3,7 @@ info:
   title: VideoAmp Public Library API
   version: '2026-07-31'
   summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
-  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
-
-
-    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
-
-
-    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  description: The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
   contact:
     name: VideoAmp Support
     email: support@videoamp.com
@@ -21,7 +15,7 @@ servers:
 security:
 - videoampOAuth: []
 tags:
-- name: library
+- name: Library
   description: library operations.
 paths:
   /v1/library/conversionDataProviderOptionsSearch:
@@ -29,10 +23,10 @@ paths:
       operationId: datasource_conversion_provider_search
       summary: Search Conversion Data Providers
       tags:
-      - library
+      - Library
       description: 'Searches for a list of available Conversion Data Providers for a given agency advertiser. The response includes details such as the provider''s value and label.
 
-        Please view our [help page](https://help.videoamp.dev/en/articles/11429353-datasource-options) for more information on how datasource options can be used.'
+        Please view our help page for more information on how datasource options can be used.'
       requestBody:
         required: true
         description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp datasource_conversion_provider_search --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
@@ -51,10 +45,10 @@ paths:
       operationId: conversion_group_create
       summary: Create Conversion Group
       tags:
-      - library
-      description: 'Creates a new Conversion Group using the provided details. A valid `data_provider_id` must be specified. The `data_provider_id` can be retrieved using the [`Search Conversion Data Providers`](/#tag/datasource-options-service/POST/v1/library/conversionDataProviderOptionsSearch) endpoint. The response returns the details of the newly created Conversion Group, including its unique identifier, metadata, and associated datasources.
+      - Library
+      description: 'Creates a new Conversion Group using the provided details. A valid `data_provider_id` must be specified. The `data_provider_id` can be retrieved using the `Search Conversion Data Providers` endpoint. The response returns the details of the newly created Conversion Group, including its unique identifier, metadata, and associated datasources.
 
-        Please view our [help page](https://help.videoamp.dev/en/articles/11429351-conversion-groups) for more information on how conversion groups can be used.'
+        Please view our help page for more information on how conversion groups can be used.'
       parameters:
       - name: validateOnly
         in: query
@@ -79,7 +73,7 @@ paths:
       operationId: conversion_group_list
       summary: List Conversion Groups
       tags:
-      - library
+      - Library
       description: '### What
 
 
@@ -122,7 +116,7 @@ paths:
         - `POST /v2beta/adMeasurements` - Create outcomes report
 
 
-        See [help page](https://help.videoamp.dev/en/articles/11429351-conversion-groups) for more information.'
+        See help page for more information.'
       parameters:
       - name: agencyAdvertiserId
         in: query
@@ -213,10 +207,10 @@ paths:
       operationId: conversion_group_delete
       summary: Delete Conversion Group
       tags:
-      - library
+      - Library
       description: 'Soft deletes a Conversion Group by its unique identifier (UUID). The resource can still be referenced by ID but will not be included in list results unless `include_deleted` is set to true.
 
-        Please view our [help page](https://help.videoamp.dev/en/articles/11429351-conversion-groups) for more information on how conversion groups can be used.'
+        Please view our help page for more information on how conversion groups can be used.'
       parameters:
       - name: conversionGroupId
         in: path
@@ -233,8 +227,8 @@ paths:
       operationId: conversion_group_get
       summary: Get Conversion Group
       tags:
-      - library
-      description: 'Retrieves complete details of a specific Conversion Group by UUID. Returns the full resource configuration including datasources with filters, lookback window settings, metadata, and timestamps. The response structure matches the format used when creating or listing Conversion Groups. Use `top_level_only=true` to retrieve metadata without datasource details for reduced response size. Use `include_deleted=true` to retrieve soft-deleted groups by ID. Do NOT use for: listing multiple groups (use GET /v1/library/conversionGroups with query parameters instead); creating new groups (use POST /v1/library/conversionGroups). Next Steps: After retrieval, use the `id` field to reference this group in subsequent API operations; examine `datasources` array to understand filter configuration; cache response client-side if displaying in UI to avoid repeated calls. Typical latency under 100ms; full datasource details (top_level_only=false, default) may add 50-100ms for groups with extensive filter configurations. See [help page](https://help.videoamp.dev/en/articles/11429351-conversion-groups) for more information on Conversion Groups.'
+      - Library
+      description: 'Retrieves complete details of a specific Conversion Group by UUID. Returns the full resource configuration including datasources with filters, lookback window settings, metadata, and timestamps. The response structure matches the format used when creating or listing Conversion Groups. Use `top_level_only=true` to retrieve metadata without datasource details for reduced response size. Use `include_deleted=true` to retrieve soft-deleted groups by ID. Do NOT use for: listing multiple groups (use GET /v1/library/conversionGroups with query parameters instead); creating new groups (use POST /v1/library/conversionGroups). Next Steps: After retrieval, use the `id` field to reference this group in subsequent API operations; examine `datasources` array to understand filter configuration; cache response client-side if displaying in UI to avoid repeated calls. Typical latency under 100ms; full datasource details (top_level_only=false, default) may add 50-100ms for groups with extensive filter configurations. See help page for more information on Conversion Groups.'
       parameters:
       - name: conversionGroupId
         in: path
@@ -265,7 +259,7 @@ paths:
       operationId: datasource_filter_name_search
       summary: Search Datasource Filter Names
       tags:
-      - library
+      - Library
       description: '### What
 
 
@@ -326,7 +320,7 @@ paths:
       operationId: datasource_filter_value_search
       summary: Search Datasource Filter Values
       tags:
-      - library
+      - Library
       description: '### What
 
 
@@ -388,10 +382,10 @@ paths:
       operationId: datasource_group_create
       summary: Create Datasource Group
       tags:
-      - library
-      description: 'Creates a new Datasource Group using the provided details. To retrieve the `datasource_type`, use the [`Search Datasource Type Options`](/#tag/datasource-options-service/POST/v1/library/datasourceTypeOptionsSearch) endpoint. To retrieve filters, use the [`Search Datasource Filter Names`](/#tag/datasource-options-service/POST/v1/library/datasourceFilterNameOptionsSearch) and [`Search Datasource Filter Values`](/#tag/datasource-options-service/POST/v1/library/datasourceFilterValueOptionsSearch) endpoints. The response includes the details of the newly created Datasource Group, including its unique identifier, metadata, and associated datasources.
+      - Library
+      description: 'Creates a new Datasource Group using the provided details. To retrieve the `datasource_type`, use the `Search Datasource Type Options` endpoint. To retrieve filters, use the `Search Datasource Filter Names` and `Search Datasource Filter Values` endpoints. The response includes the details of the newly created Datasource Group, including its unique identifier, metadata, and associated datasources.
 
-        Please view our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more information on how Datasource Groups and Datasource Group Rules are used.'
+        Please view our help page for more information on how Datasource Groups and Datasource Group Rules are used.'
       requestBody:
         required: true
         description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp datasource_group_create --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
@@ -409,7 +403,7 @@ paths:
       operationId: datasource_group_list
       summary: List Datasource Groups
       tags:
-      - library
+      - Library
       description: '### What
 
 
@@ -453,7 +447,7 @@ paths:
         - `POST /v2beta/adMeasurements` - Create a Measurement report using specific Datasource Groups
 
 
-        Please view our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more information on how Datasource Groups and Datasource Group Rules are used.'
+        Please view our help page for more information on how Datasource Groups and Datasource Group Rules are used.'
       parameters:
       - name: advertiserId
         in: query
@@ -584,10 +578,10 @@ paths:
       operationId: datasource_group_delete
       summary: Delete Datasource Group
       tags:
-      - library
+      - Library
       description: 'Soft deletes a Datasource Group by its unique identifier (UUID). The resource can still be referenced by ID but will not be included in list results unless `include_deleted` is set to true.
 
-        Please view our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more information on how Datasource Groups and Datasource Group Rules are used.'
+        Please view our help page for more information on how Datasource Groups and Datasource Group Rules are used.'
       parameters:
       - name: datasourceGroupId
         in: path
@@ -604,7 +598,7 @@ paths:
       operationId: datasource_group_get
       summary: Get Datasource Group
       tags:
-      - library
+      - Library
       description: '### What
 
 
@@ -643,7 +637,7 @@ paths:
         - `DELETE /v1/library/datasourceGroups/{id}` - Delete a Datasource Group
 
 
-        See [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for details.'
+        See help page for details.'
       parameters:
       - name: datasourceGroupId
         in: path
@@ -686,7 +680,7 @@ paths:
       operationId: datasource_group_rule_create
       summary: Create Rule
       tags:
-      - library
+      - Library
       description: '### What
 
 
@@ -731,7 +725,7 @@ paths:
         `datasource_rule_filter_name_search`, `datasource_rule_filter_value_search`, `datasource_group_rule_get`, `datasource_group_rule_list`, `datasource_group_rule_delete`.
 
 
-        See [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more on Datasource Groups and Rules.'
+        See help page for more on Datasource Groups and Rules.'
       parameters:
       - name: datasourceGroupId
         in: path
@@ -756,10 +750,10 @@ paths:
       operationId: datasource_group_rule_list
       summary: List Rules
       tags:
-      - library
+      - Library
       description: 'Retrieves all Rules associated with a user or by Datasource Group ID, with the ability to bulk fetch by providing a list of Rule IDs. Use the `-` character to list all Rules associated to a user. Otherwise, provide the Datasource Group ID in the path to return Rules associated to the Datasource Group ID. The response includes a list of all Rules.
 
-        Please view our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more information on how Datasource Groups and Datasource Group Rules are used.'
+        Please view our help page for more information on how Datasource Groups and Datasource Group Rules are used.'
       parameters:
       - name: datasourceGroupId
         in: path
@@ -810,10 +804,10 @@ paths:
       operationId: datasource_group_rule_delete
       summary: Delete Rule
       tags:
-      - library
+      - Library
       description: 'Soft deletes a Rule by its unique identifier (UUID). The resource can still be referenced by ID but will not be included in list results unless `include_deleted` is set to true.
 
-        Please view our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more information on how Datasource Groups and Datasource Group Rules are used.'
+        Please view our help page for more information on how Datasource Groups and Datasource Group Rules are used.'
       parameters:
       - name: datasourceGroupId
         in: path
@@ -835,7 +829,7 @@ paths:
       operationId: datasource_group_rule_get
       summary: Get Rule
       tags:
-      - library
+      - Library
       description: 'Retrieves complete details of a specific Rule by UUID including name, description, Rule definition with operators and filters, and metadata (creator, timestamps). Use `top_level_only=true` to retrieve metadata without nested items for reduced response size. Use `include_deleted=true` to retrieve soft-deleted Rules.
 
 
@@ -871,7 +865,7 @@ paths:
         **Common Workflow**: List Rules -> Get detailed config -> Apply to measurement report
 
 
-        See our [help page](https://help.videoamp.dev/en/articles/11429358-datasource-groups-and-rules) for more information on Datasource Groups and Rules.'
+        See our help page for more information on Datasource Groups and Rules.'
       parameters:
       - name: datasourceGroupId
         in: path
@@ -912,7 +906,7 @@ paths:
       operationId: datasource_type_search
       summary: Search Datasource Types
       tags:
-      - library
+      - Library
       description: '### What
 
 
@@ -969,7 +963,7 @@ paths:
       operationId: datasource_rule_filter_name_search
       summary: Search Rule Filter Names
       tags:
-      - library
+      - Library
       description: '### What
 
 
@@ -1012,7 +1006,7 @@ paths:
         ### Related
 
 
-        `RuleFilterValueOptionsSearch`, `CreateRule`. [help page](https://help.videoamp.dev/en/articles/11429353-datasource-options).'
+        `RuleFilterValueOptionsSearch`, `CreateRule`. help page.'
       requestBody:
         required: true
         description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp datasource_rule_filter_name_search --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
@@ -1031,7 +1025,7 @@ paths:
       operationId: datasource_rule_filter_value_search
       summary: Search Rule Filter Values
       tags:
-      - library
+      - Library
       description: '### What
 
 
@@ -1078,7 +1072,7 @@ paths:
         ### Related
 
 
-        `RuleFilterNameOptionsSearch`, `CreateRule`. [help page](https://help.videoamp.dev/en/articles/11429353-datasource-options).'
+        `RuleFilterNameOptionsSearch`, `CreateRule`. help page.'
       requestBody:
         required: true
         description: JSON request body. The CLI accepts it via `--json`. The body schema is published only in the authenticated OpenAPI document served to logged-in callers (`videoamp datasource_rule_filter_value_search --oas`) and at https://docs.videoamp.dev, both of which require an Auth0 session; it is therefore not reproduced here.
@@ -1097,7 +1091,7 @@ paths:
       operationId: datasource_metadata_search
       summary: Search Datasource Metadata
       tags:
-      - library
+      - Library
       description: '### What
 
 
@@ -1163,7 +1157,7 @@ paths:
       operationId: datasource_schema_get
       summary: Get Datasource Schema
       tags:
-      - library
+      - Library
       description: '### What
 
 

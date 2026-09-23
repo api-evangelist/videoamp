@@ -1,20 +1,7 @@
 {
   "provider": "videoamp",
   "sources": [
-    "videoamp-admeasurements-api-openapi.yml",
-    "videoamp-audiences-api-openapi.yml",
-    "videoamp-campaigns-api-openapi.yml",
-    "videoamp-consents-api-openapi.yml",
-    "videoamp-content-api-openapi.yml",
-    "videoamp-currency-of-record-api-openapi.yml",
-    "videoamp-datastreams-api-openapi.yml",
-    "videoamp-datastreamtypes-api-openapi.yml",
-    "videoamp-inventories-api-openapi.yml",
-    "videoamp-library-api-openapi.yml",
-    "videoamp-me-api-openapi.yml",
-    "videoamp-plans-api-openapi.yml",
-    "videoamp-reports-api-openapi.yml",
-    "videoamp-shares-api-openapi.yml"
+    "_original/videoamp-public-api-openapi.yml"
   ],
   "outputs": [
     "videoamp-admeasurements-api-openapi.yml",
@@ -23,8 +10,8 @@
     "videoamp-consents-api-openapi.yml",
     "videoamp-content-api-openapi.yml",
     "videoamp-currency-of-record-api-openapi.yml",
-    "videoamp-datastreams-api-openapi.yml",
     "videoamp-datastreamtypes-api-openapi.yml",
+    "videoamp-datastreams-api-openapi.yml",
     "videoamp-inventories-api-openapi.yml",
     "videoamp-library-api-openapi.yml",
     "videoamp-me-api-openapi.yml",
@@ -32,25 +19,31 @@
     "videoamp-reports-api-openapi.yml",
     "videoamp-shares-api-openapi.yml"
   ],
-  "archived": [],
+  "archived": [
+    "deleted 1 superseded output(s) from the previous generation"
+  ],
   "errors": [],
   "warnings": [],
   "notes": [
-    "videoamp-admeasurements-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "videoamp-audiences-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "videoamp-campaigns-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "videoamp-consents-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "videoamp-content-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "videoamp-currency-of-record-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "videoamp-datastreams-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "videoamp-datastreamtypes-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "videoamp-inventories-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "videoamp-library-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "videoamp-me-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "videoamp-plans-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "videoamp-reports-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "videoamp-shares-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "apis.yml register: already-registered"
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "videoamp-public-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "superseded outputs removed: videoamp-data-streams-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 15 total)"
   ],
-  "skipped": []
+  "skipped": [
+    "videoamp-admeasurements-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoamp-audiences-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoamp-campaigns-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoamp-consents-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoamp-content-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoamp-currency-of-record-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoamp-data-streams-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoamp-datastreamtypes-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoamp-inventories-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoamp-library-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoamp-me-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoamp-plans-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoamp-reports-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoamp-shares-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

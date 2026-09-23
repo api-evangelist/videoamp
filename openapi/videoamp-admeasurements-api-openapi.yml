@@ -3,13 +3,7 @@ info:
   title: VideoAmp Public Ad Measurements API
   version: '2026-07-31'
   summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
-  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
-
-
-    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
-
-
-    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  description: The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
   contact:
     name: VideoAmp Support
     email: support@videoamp.com
@@ -285,7 +279,51 @@ paths:
       summary: List post-processes for an AdMeasurement
       tags:
       - adMeasurements
-      description: "Retrieves a paginated list of all post-process requests for a specific AdMeasurement.\n\n**What**: Returns all LIFT post-processes associated with the given AdMeasurement UUID\n\n**Use Cases**:\n- View history of all post-process analyses for a Measurement report\n- Monitor status of multiple post-processes\n- Retrieve links to completed post-process outputs\n\n**Response Fields**:\n- `results`: Array of post-process summary items\n  - `id`: Post-process UUID\n  - `status`: Current status (pending, running, complete, failed)\n  - `type`: Always 'linear_lift'\n  - `created_at`: When the post-process was created\n  - `through_date`: Data through date\n  - `outputs`: Result file links (when complete)\n  - `status_info`: Queue position and display status\n- `next_page_token`: Token for retrieving next page\n- `total_size`: Total number of post-processes\n\n**Pagination**:\n- Default page size: 50\n- Maximum page size: 100\n- Results ordered by created_at DESC (newest first)"
+      description: 'Retrieves a paginated list of all post-process requests for a specific AdMeasurement.
+
+
+        **What**: Returns all LIFT post-processes associated with the given AdMeasurement UUID
+
+
+        **Use Cases**:
+
+        - View history of all post-process analyses for a Measurement report
+
+        - Monitor status of multiple post-processes
+
+        - Retrieve links to completed post-process outputs
+
+
+        **Response Fields**:
+
+        - `results`: Array of post-process summary items
+
+        - `id`: Post-process UUID
+
+        - `status`: Current status (pending, running, complete, failed)
+
+        - `type`: Always ''linear_lift''
+
+        - `created_at`: When the post-process was created
+
+        - `through_date`: Data through date
+
+        - `outputs`: Result file links (when complete)
+
+        - `status_info`: Queue position and display status
+
+        - `next_page_token`: Token for retrieving next page
+
+        - `total_size`: Total number of post-processes
+
+
+        **Pagination**:
+
+        - Default page size: 50
+
+        - Maximum page size: 100
+
+        - Results ordered by created_at DESC (newest first)'
       parameters:
       - name: adMeasurement_uuid
         in: path
@@ -342,7 +380,43 @@ paths:
       summary: Get post-process request details
       tags:
       - adMeasurements
-      description: "Retrieves detailed information about a LIFT post-process request.\n\n**What**: Fetches the current status, configuration, outputs, and queue information for a post-process analysis\n\n**Use Case**: Monitor post-process execution and retrieve results when complete\n\n**Response Fields**:\n- `id`: Post-process request UUID\n- `ad_measurement_id`: Parent AdMeasurement UUID  \n- `status`: Current status (pending, running, complete, failed)\n- `created_at`: When the post-process was created\n- `through_date`: Data through date for the analysis\n- `outputs`: Pre-signed S3 URLs for result files (when complete)\n- `status_info`: Detailed status including queue position and display status\n- `conversion_group_ids`, `audience_ids`, `dimension_set_id`: Configuration\n\n**Status Values**:\n- `pending`: Waiting in queue\n- `running`: Currently processing\n- `complete`: Results available in outputs\n- `failed`: Processing error occurred"
+      description: 'Retrieves detailed information about a LIFT post-process request.
+
+
+        **What**: Fetches the current status, configuration, outputs, and queue information for a post-process analysis
+
+
+        **Use Case**: Monitor post-process execution and retrieve results when complete
+
+
+        **Response Fields**:
+
+        - `id`: Post-process request UUID
+
+        - `ad_measurement_id`: Parent AdMeasurement UUID
+
+        - `status`: Current status (pending, running, complete, failed)
+
+        - `created_at`: When the post-process was created
+
+        - `through_date`: Data through date for the analysis
+
+        - `outputs`: Pre-signed S3 URLs for result files (when complete)
+
+        - `status_info`: Detailed status including queue position and display status
+
+        - `conversion_group_ids`, `audience_ids`, `dimension_set_id`: Configuration
+
+
+        **Status Values**:
+
+        - `pending`: Waiting in queue
+
+        - `running`: Currently processing
+
+        - `complete`: Results available in outputs
+
+        - `failed`: Processing error occurred'
       parameters:
       - name: adMeasurement_uuid
         in: path
@@ -446,7 +520,27 @@ paths:
       summary: Get Measurement report details
       tags:
       - adMeasurements
-      description: "Retrieves complete details for a specific Measurement report including configuration, processing status, execution history, and downloadable export links. Essential for monitoring Measurement report processing progress, accessing completed analysis results, and tracking the lifecycle of advertising performance analyses from submission through completion. Enables automated polling workflows that wait for result availability and provides real-time status updates. \n**Use for**: monitoring processing status after creating a Measurement report, checking if asynchronous analysis has completed and results are ready, accessing S3 download links for exports (CSV/Excel/Parquet), retrieving detailed error messages on failures, reviewing historical configurations for audit or replication, displaying execution history for recurring Measurement requests, and or verifying parameters before triggering refresh\n**Requires**: Bearer token authentication with read permissions for the specified Measurement report\n**Typical latency**: Under 100ms for direct ID lookups; recommended polling interval 2-5 minutes during processing (typical completion 30min-4hrs)\n**Returns**: 404 error if ID not found or 403 if insufficient permissions\n**Related**:\n- `POST /v2/adMeasurements` (create, returns ID)\n- `GET /v2/adMeasurements` (list with filtering)\n- `PATCH /v2/adMeasurements/{id}` (update)\n- `DELETE /v2/adMeasurements/{id}` (delete)\n- `POST /v2/adMeasurements/trigger` (manually trigger recurring execution)."
+      description: 'Retrieves complete details for a specific Measurement report including configuration, processing status, execution history, and downloadable export links. Essential for monitoring Measurement report processing progress, accessing completed analysis results, and tracking the lifecycle of advertising performance analyses from submission through completion. Enables automated polling workflows that wait for result availability and provides real-time status updates.
+
+        **Use for**: monitoring processing status after creating a Measurement report, checking if asynchronous analysis has completed and results are ready, accessing S3 download links for exports (CSV/Excel/Parquet), retrieving detailed error messages on failures, reviewing historical configurations for audit or replication, displaying execution history for recurring Measurement requests, and or verifying parameters before triggering refresh
+
+        **Requires**: Bearer token authentication with read permissions for the specified Measurement report
+
+        **Typical latency**: Under 100ms for direct ID lookups; recommended polling interval 2-5 minutes during processing (typical completion 30min-4hrs)
+
+        **Returns**: 404 error if ID not found or 403 if insufficient permissions
+
+        **Related**:
+
+        - `POST /v2/adMeasurements` (create, returns ID)
+
+        - `GET /v2/adMeasurements` (list with filtering)
+
+        - `PATCH /v2/adMeasurements/{id}` (update)
+
+        - `DELETE /v2/adMeasurements/{id}` (delete)
+
+        - `POST /v2/adMeasurements/trigger` (manually trigger recurring execution).'
       parameters:
       - name: id
         in: path
@@ -469,7 +563,34 @@ paths:
       summary: Update Measurement configuration
       tags:
       - adMeasurements
-      description: "Update an existing Measurement configuration. This endpoint allows you to modify specific fields of an Measurement report.\n\n**Updatable Fields**: `name`, `start_date`, `end_date`, `streams`, `currency_of_record`, `audience_ids`, `data_source_group_ids`, `conversion_group_ids`, `rule_ids`, `delivery_schedule`, `export_results`\n\n**Required Field**: `type` must be provided in every request for validation but is not updatable.\n\n**Request Format**: Send a PATCH request with the Measurement report ID in the URL path and the fields to update in the request body. Use `update_mask` query parameter to specify which fields to update.\n\n**Example Payload For Editing Name**:\n```json\n{\n  \"name\": \"pt-test-export false 5\",\n  \"type\": \"ADVANCED_RF\"\n}\n```\n\n**Export Results**: When `export_results` is changed from `false`/`null` to `true`, outputs are automatically generated for the latest successful request. The latest request must be in a succeeded state. Enabling when already enabled has no effect."
+      description: 'Update an existing Measurement configuration. This endpoint allows you to modify specific fields of an Measurement report.
+
+
+        **Updatable Fields**: `name`, `start_date`, `end_date`, `streams`, `currency_of_record`, `audience_ids`, `data_source_group_ids`, `conversion_group_ids`, `rule_ids`, `delivery_schedule`, `export_results`
+
+
+        **Required Field**: `type` must be provided in every request for validation but is not updatable.
+
+
+        **Request Format**: Send a PATCH request with the Measurement report ID in the URL path and the fields to update in the request body. Use `update_mask` query parameter to specify which fields to update.
+
+
+        **Example Payload For Editing Name**:
+
+        ```json
+
+        {
+
+        "name": "pt-test-export false 5",
+
+        "type": "ADVANCED_RF"
+
+        }
+
+        ```
+
+
+        **Export Results**: When `export_results` is changed from `false`/`null` to `true`, outputs are automatically generated for the latest successful request. The latest request must be in a succeeded state. Enabling when already enabled has no effect.'
       parameters:
       - name: id
         in: path

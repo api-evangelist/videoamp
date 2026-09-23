@@ -3,13 +3,7 @@ info:
   title: VideoAmp Public Plans API
   version: '2026-07-31'
   summary: Audience, planning, measurement and data-collaboration APIs for VideoAmp's cross-platform media measurement platform.
-  description: 'The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
-
-
-    **Provenance.** VideoAmp does not publish an anonymous OpenAPI document: `https://docs.videoamp.dev` redirects to Auth0 and the CLI''s `--oas` flag fetches the specification from the authenticated API. This document was derived by API Evangelist from the operation table that VideoAmp itself ships inside the official `videoamp` CLI binary (GitHub release `v0.148.32`, api_edition `2026-07-31`) — every path, method, operationId, summary, description and parameter here is reproduced verbatim from that binary''s own `--help` output. Request and response body schemas are not exposed on any anonymous surface and have deliberately been left unspecified rather than invented.
-
-
-    **Not an official VideoAmp artifact.** See https://docs.videoamp.dev for the authoritative specification.'
+  description: The VideoAmp Public API powers audience building, media planning and optimization, ad and content measurement, inventory and rate cards, data streams, and cross-organization data sharing.
   contact:
     name: VideoAmp Support
     email: support@videoamp.com
@@ -21,7 +15,7 @@ servers:
 security:
 - videoampOAuth: []
 tags:
-- name: plans
+- name: Plans
   description: plans operations.
 paths:
   /v1beta/plans:
@@ -29,7 +23,7 @@ paths:
       operationId: plan_create
       summary: Create Plan
       tags:
-      - plans
+      - Plans
       description: 'Creates a new media plan optimization scenario. The plan defines a budget allocation strategy across inventory titles and constraints to maximize reach, impressions, or audience concentration for a campaign.
 
 
@@ -46,7 +40,7 @@ paths:
 
         1. Set `primary_objective.objective_type` to `OBJECTIVE_FORECAST_ONLY`. Set `budget` to `"0"`.
 
-        2. Add one `FIXED_INVESTMENT_UNITS` constraint per title: `constraint_type: FIXED_INVESTMENT_UNITS`, `operator: EQUAL`, `goal: "<unit_count>"`, `creative_duration_seconds`, and `title_filters` with `title_filter_type: ID`.
+        2. Add one `FIXED_INVESTMENT_UNITS` constraint per title: `constraint_type: FIXED_INVESTMENT_UNITS`, `operator: EQUAL`, `goal: ""`, `creative_duration_seconds`, and `title_filters` with `title_filter_type: ID`.
 
         3. Omit `target_budget`, saturation rules, and frequency rules — all are rejected with HTTP 400 when combined with `OBJECTIVE_FORECAST_ONLY`.
 
@@ -72,7 +66,7 @@ paths:
       operationId: plan_list
       summary: List Plans
       tags:
-      - plans
+      - Plans
       description: 'Returns a paginated, filterable list of Plans accessible to the caller. Plans represent optimization scenarios that allocate budget across campaigns and inventory titles.
 
 
@@ -155,7 +149,7 @@ paths:
       operationId: plan_delete
       summary: Delete Plan
       tags:
-      - plans
+      - Plans
       description: 'Deletes a Plan, removing it from all API responses. This action cannot be undone through the API — there is no undelete operation.
 
 
@@ -185,7 +179,7 @@ paths:
       operationId: plan_get
       summary: Get Plan
       tags:
-      - plans
+      - Plans
       description: 'Returns the complete Plan resource for a single known plan ID. Use this endpoint when you already have the plan UUID and need to retrieve full details including status, output, and configuration.
 
 
@@ -216,7 +210,7 @@ paths:
       operationId: plan_draft_create
       summary: Create Plan (Draft)
       tags:
-      - plans
+      - Plans
       description: 'Starts the draft branch of the planning workflow by creating a media plan in DRAFT status for a campaign. The draft captures the budget-allocation strategy — budget, constraints, objectives, filters, and rates — so it can be refined before optimization.
 
 
@@ -245,7 +239,7 @@ paths:
       operationId: draft_plan_update
       summary: Patch Plan (Draft)
       tags:
-      - plans
+      - Plans
       description: 'Refines a DRAFT media plan in the draft branch of the planning workflow. Send only the fields you want to change; omitted fields keep their current values.
 
 
@@ -281,7 +275,7 @@ paths:
       operationId: draft_plan_approve
       summary: Approve Plan
       tags:
-      - plans
+      - Plans
       description: 'Approves a DRAFT media plan, completing the draft branch of the planning workflow: it runs full cross-field validation and, on success, submits the plan for asynchronous optimization.
 
 
