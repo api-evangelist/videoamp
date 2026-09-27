@@ -52,7 +52,7 @@ tags:
   - Attribution
   - Data Collaboration
   - MCP
-  - agent-native
+  - Agent-Native
 tags_raw:
   - media-measurement
   - advertising
@@ -76,7 +76,7 @@ apis:
   baseURL: https://api.videoamp.dev/v1/mcp
   tags:
   - MCP
-  - agent-native
+  - Agent-Native
   - Media Measurement
   tags_raw:
   - mcp
