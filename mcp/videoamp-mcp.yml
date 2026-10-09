@@ -642,3 +642,16 @@ deployment:
   probe: gated
   checked: '2026-08-12'
   source: catalog MCP census
+rfc9728:
+  endpoint: https://api.videoamp.dev/v1/mcp
+  metadata_url: https://api.videoamp.dev/.well-known/oauth-protected-resource/v1/mcp
+  discovered_via: WWW-Authenticate resource_metadata on an anonymous POST initialize
+  fetched: '2026-09-25'
+  http_status: 200
+  content_type: application/json
+  document:
+    resource: https://api.videoamp.dev/v1/mcp
+    authorization_servers:
+    - https://login.videoamp.com/
+    bearer_methods_supported:
+    - header
