@@ -29,16 +29,59 @@ edges:
     detected: '2026-10-18'
   detected_by: sweep-official-sdks.py
   first_seen: '2026-10-18'
+- partner_name: Amazon Ads Partner Directory
+  partner: amazon
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://advertising.amazon.com/partners/directory
+  category: Amazon Ads partner (services)
+  contract_reference:
+    register: Amazon Ads Partner Directory (advertising.amazon.com/partners/directory, GetPartners)
+    registered_name: VideoAmp
+    register_id: amzn1.ads1.ma1.5k3dxnbuyah2abqoqhw1rmioa
+    matched_domain: videoamp.com
+    matched_by: domain
+    services:
+    - ADVERTISING_EFFECTIVENESS
+    - AUDIENCE_MEASUREMENT
+    - AUDIENCE_VERIFICATION
+    - AUDIO_MEASUREMENT
+    - CLEAN_ROOM_ANALYTICS
+    - CLEAN_ROOM_INTEGRATION
+    - DATA_CONNECTORS
+    - MOBILE_AND_APP_ATTRIBUTION
+    - MULTI_TOUCH_ATTRIBUTION
+    - REPORTING_AND_ANALYTICS
+    - VIDEO_MEASUREMENT
+    ads_products:
+    - AMAZON_ATTRIBUTION
+    - AMAZON_DSP
+    - AMAZON_MARKETING_CLOUD
+    - AUDIO_ADS
+    - VIDEO_ADS
+    service_models:
+    - TOOL_PROVIDER
+    signal_note: listing = participation; accreditation recorded as partner_tier; ads_certifications are Amazon
+      Ads LEARNING certifications held by staff, not product conformance, never certified_products
+    detected_by: sweep-amazon-sp-api-appstore.py
+    detected: '2026-10-21'
+  detected_by: sweep-amazon-sp-api-appstore.py
+  detected: '2026-10-21'
+  partner_tier:
+  - VERIFIED_PARTNER
 generated: '2026-10-18'
 method: searched
 source:
-- https://api.nuget.org/v3
-- https://crates.io/api/v1
-- https://proxy.golang.org
-- https://pypi.org/pypi
 - https://registry.npmjs.org
-- https://repo1.maven.org/maven2
+- https://pypi.org/pypi
 - https://rubygems.org/api/v1
+- https://crates.io/api/v1
+- https://repo1.maven.org/maven2
+- https://api.nuget.org/v3
+- https://proxy.golang.org
 checked:
 - https://api.nuget.org/v3
 - https://crates.io/api/v1
@@ -47,3 +90,6 @@ checked:
 - https://registry.npmjs.org
 - https://repo1.maven.org/maven2
 - https://rubygems.org/api/v1
+- https://advertising.amazon.com/partners/directory
+- https://sellercentral.amazon.com/gspn
+- https://sellercentral.amazon.com/selling-partner-appstore
