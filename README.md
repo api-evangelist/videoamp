@@ -64,57 +64,154 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-VideoAmp is a Los Angeles-based media measurement and advertising technology company, founded in
-2014, certified by the U.S. Joint Industry Committee as a national TV currency provider alongside
-Nielsen and Comscore. Its platform unifies linear TV, streaming and digital viewership onto one
-dataset and identity spine (VALID) so agencies, brands and publishers can build audiences, plan and
-optimize cross-screen media, and measure ad and content outcomes.
+VideoAmp is a Los Angeles-based media measurement and advertising technology company, founded in 2014, that operates as a certified national TV currency provider alongside Nielsen and Comscore. Its platform unifies linear TV, streaming and digital viewership onto a single dataset and identity spine (VALID) so agencies, brands and publishers can build audiences, plan and optimize cross-screen media, and measure ad and content outcomes. VideoAmp exposes this as a read-and-write Public API at api.videoamp.dev covering audiences, campaigns, media plans, inventories and rate cards, reach curves, ad and content measurement, data streams and ingestion, and cross-organization data sharing and consent — plus a first-party CLI and a hosted remote MCP server so agents can drive the same operations.
 
-- Website: https://videoamp.com/
-- Developer documentation: https://docs.videoamp.dev (Auth0-gated)
-- GitHub: https://github.com/VideoAmp
+**Areas:** Media Measurement · Advertising · AdTech · tv-currency · Audience Measurement · Media Planning · Streaming · Attribution · Data Collaboration · MCP · Agent-Native
 
-## API surface
+## VideoAmp on APIs.io
 
-| Surface | Location | Notes |
-|---|---|---|
-| VideoAmp Public API | `https://api.videoamp.dev` | 118 operations, OAuth 2.0 bearer |
-| VideoAmp MCP Server | `https://api.videoamp.dev/v1/mcp` | 101 tools, streamable HTTP, OAuth-protected |
-| VideoAmp CLI | `github.com/VideoAmp/cli` | Single Go binary; also runs the MCP server locally |
+Everything profiled for VideoAmp is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/videoamp/](https://apis.io/providers/videoamp/)** — or go straight to one of the APIs or properties below.
 
-## How this repo's contract was obtained
+### APIs (15)
 
-VideoAmp publishes **no anonymous OpenAPI**. `docs.videoamp.dev` 302-redirects every path to the
-Auth0 universal login, `api.videoamp.dev` returns 404 for `/openapi.json`, `/swagger.json`,
-`/v1/openapi.json`, `/api-docs`, `/docs` and `/redoc`, and an anonymous MCP `tools/list` returns 401.
+- [VideoAmp MCP Server](https://apis.io/apis/videoamp/videoamp-mcp-server/) — VideoAmp's hosted remote Model Context Protocol server, exposing 101 tools that mirror the VideoAmp Public API operations for audiences, measurement,…
+- [VideoAmp Ad Measurements API](https://apis.io/apis/videoamp/videoamp-admeasurements-api/) — adMeasurements operations.
+- [VideoAmp Audiences API](https://apis.io/apis/videoamp/videoamp-audiences-api/) — audiences operations.
+- [VideoAmp Campaigns API](https://apis.io/apis/videoamp/videoamp-campaigns-api/) — campaigns operations.
+- [VideoAmp Consents API](https://apis.io/apis/videoamp/videoamp-consents-api/) — consents operations.
+- [VideoAmp Content API](https://apis.io/apis/videoamp/videoamp-content-api/) — content operations.
+- [VideoAmp Currency Of Record API](https://apis.io/apis/videoamp/videoamp-currency-of-record-api/) — currency-of-record operations.
+- [VideoAmp Data Stream Types API](https://apis.io/apis/videoamp/videoamp-datastreamtypes-api/) — dataStreamTypes operations.
+- [VideoAmp Inventories API](https://apis.io/apis/videoamp/videoamp-inventories-api/) — inventories operations.
+- [VideoAmp Library API](https://apis.io/apis/videoamp/videoamp-library-api/) — library operations.
+- [VideoAmp Me API](https://apis.io/apis/videoamp/videoamp-me-api/) — me operations.
+- [VideoAmp Plans API](https://apis.io/apis/videoamp/videoamp-plans-api/) — plans operations.
+- [VideoAmp Reports API](https://apis.io/apis/videoamp/videoamp-reports-api/) — reports operations.
+- [VideoAmp Shares API](https://apis.io/apis/videoamp/videoamp-shares-api/) — shares operations.
+- [VideoAmp Data Streams API](https://apis.io/apis/videoamp/videoamp-data-streams-api/) — dataStreams operations.
 
-The contract in `openapi/` was instead derived from the operation table that VideoAmp itself ships
-inside its official CLI binary (GitHub release `v0.148.32`, `api_edition` 2026-07-31). Every path,
-method, operationId, summary, description and parameter is reproduced verbatim from that binary's
-`--help` output, and the 101 MCP tools come from `videoamp mcp list-tools`, which runs offline.
-Request and response body schemas are not exposed on any anonymous surface and were deliberately
-left unspecified rather than invented.
+### Published properties
 
-## Artifacts
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-- `openapi/` — OpenAPI 3.1, 118 operations across 84 paths and 14 tags
-- `overlays/` — API Evangelist enhancements as an OpenAPI Overlay 1.0.0
-- `mcp/` — MCP server manifest and the tool-to-operation crosswalk (101 tools, all bound)
-- `cli/` — the `videoamp` command surface
-- `skills/` — five packaged Agent Skills for the marquee flows
-- `agentic-access/` — recommended `x-agentic-access` contracts for all 118 operations
-- `authentication/`, `scopes/`, `well-known/` — Auth0 OIDC, RFC 8414 and RFC 9728 metadata
-- `conventions/`, `errors/`, `lifecycle/`, `data-model/`, `conformance/` — runtime semantics
-- `changelog/` — dated CLI release history
-- `packages/` — registry survey (no first-party API client SDK exists)
-- `security/` — domain security probe, trust center, and a verified-absent disclosure program
-- `llms/` — generated llms.txt
+#### MCP servers (1)
 
-## Notable gaps
+Model Context Protocol servers that expose the API to agents.
 
-- No anonymous OpenAPI, documentation or help-center content
-- No first-party API client SDK in any language registry
-- No A2A agent card, no `security.txt`, no `/.well-known/api-catalog`
-- No published deprecation policy, SLA or status page
-- No webhook, event or streaming surface — AsyncAPI is genuinely not applicable
-- Errors are a proprietary `<AREA>_<NNNN>` code scheme, not RFC 9457
+- [VideoAmp MCP](https://apis.io/servers/videoamp/videoamp-mcp/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Videoamp Agentic Access](https://apis.io/agentic-access/videoamp/videoamp-agentic-access/)
+
+#### Collections (14)
+
+Postman and Open Collection request collections.
+
+- [VideoAmp Public Ad Measurements API](https://apis.io/collections/videoamp/open-videoamp-admeasurements-api/)
+- [VideoAmp Public Audiences API](https://apis.io/collections/videoamp/open-videoamp-audiences-api/)
+- [VideoAmp Public Campaigns API](https://apis.io/collections/videoamp/open-videoamp-campaigns-api/)
+- [VideoAmp Public Consents API](https://apis.io/collections/videoamp/open-videoamp-consents-api/)
+- [VideoAmp Public Content API](https://apis.io/collections/videoamp/open-videoamp-content-api/)
+- [VideoAmp Public Currency Of Record API](https://apis.io/collections/videoamp/open-videoamp-currency-of-record-api/)
+- [VideoAmp Public Data Streams API](https://apis.io/collections/videoamp/open-videoamp-datastreams-api/)
+- [VideoAmp Public Data Stream Types API](https://apis.io/collections/videoamp/open-videoamp-datastreamtypes-api/)
+- [VideoAmp Public Inventories API](https://apis.io/collections/videoamp/open-videoamp-inventories-api/)
+- [VideoAmp Public Library API](https://apis.io/collections/videoamp/open-videoamp-library-api/)
+- [VideoAmp Public Me API](https://apis.io/collections/videoamp/open-videoamp-me-api/)
+- [VideoAmp Public Plans API](https://apis.io/collections/videoamp/open-videoamp-plans-api/)
+- [VideoAmp Public Reports API](https://apis.io/collections/videoamp/open-videoamp-reports-api/)
+- [VideoAmp Public Shares API](https://apis.io/collections/videoamp/open-videoamp-shares-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Videoamp Public Api Overlay](https://apis.io/overlays/videoamp/videoamp-public-api-overlay/)
+
+#### Security (4)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Videoamp Authentication](https://apis.io/security/videoamp/videoamp-authentication/)
+- [Videoamp Domain Security](https://apis.io/security/videoamp/videoamp-domain-security/)
+- [Videoamp Trust Center](https://apis.io/security/videoamp/videoamp-trust-center/)
+- [Videoamp Vulnerability Disclosure](https://apis.io/security/videoamp/videoamp-vulnerability-disclosure/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Videoamp Scopes](https://apis.io/scopes/videoamp/videoamp-scopes/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://videoamp.com/)
+- [Documentation](https://docs.videoamp.dev)
+- [Getting started](https://github.com/VideoAmp/cli#mcp-getting-started)
+- [API reference](https://docs.videoamp.dev)
+- [Support](https://help.videoamp.dev/)
+- [Blog](https://videoamp.com/blog/)
+- [Trust centre](https://trust.videoamp.com/)
+- [Terms of service](https://videoamp.com/terms-of-use/)
+- [Privacy policy](https://videoamp.com/privacy-notices/)
+- [GitHub](https://github.com/VideoAmp)
+
+## API Evangelist rating
+
+**Kin Score 48.4** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 52.4 |
+| Contract governance | 4.5 |
+| Operational transparency | 18.4 |
+| Developer ergonomics | 57.7 |
+| Access clarity | 35.5 |
+
+**Agent readiness 50.9** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | verified |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | — |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | yes |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | mostly (partial credit) |
+
+**Regulatory alignment 39.2** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/videoamp/](https://apis.io/providers/videoamp/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for VideoAmp: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/videoamp/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
